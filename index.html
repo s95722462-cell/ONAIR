@@ -1562,16 +1562,17 @@ const CHIMES = {                                          // [주파수, 시작 
   soft: { open: [[587.33, 0], [739.99, .3], [880, .6], [1174.66, .9]], close: [[1174.66, 0], [880, .3], [739.99, .6], [587.33, .9]], len: 2.2 },
   westminster: { open: [[659.25, 0], [523.25, .6], [587.33, 1.2], [392, 1.8]], close: [[392, 0], [587.33, .6], [659.25, 1.2], [523.25, 1.8]], len: 3.4 },
 };
+const sleepS = ms => new Promise(r => { const t0 = Date.now(), iv = setInterval(() => { if (stopFlag || Date.now() - t0 >= ms) { clearInterval(iv); r(); } }, 40); });   // 멈추기를 누르면 바로 끝나는 기다림
 async function chime(which) {
   audio();
   if (S.mood === "urgent") {                              // 긴급: 또렷한 경고음 3번
     const t0 = ctx.currentTime + 0.05;
     for (let k = 0; k < 3; k++) { bell(880, t0 + k * 0.55, 0.5, 0.35); bell(659.25, t0 + k * 0.55 + 0.25, 0.5, 0.35); }
-    await sleep(1900); return;
+    await sleepS(1900); return;
   }
   const c = CHIMES[S.chimeType] || CHIMES.classic, t0 = ctx.currentTime + 0.05;
   c[which].forEach(([f, t]) => bell(f, t0 + t));
-  await sleep(c.len * 1000);
+  await sleepS(c.len * 1000);
 }
 function bgStart() {                                      // 따뜻한 화음이 천천히 바뀌는 배경 음악
   audio(); bgStop(true);
@@ -1656,18 +1657,18 @@ async function run(real, rec) {
   try { navigator.wakeLock?.request("screen").then(l => (run.lock = l)).catch(() => {}); } catch (e) {}
   if (S.bg) bgStart();
   if (S.chime && !S.__noOpen) await chime("open");
-  if (S.bg && !S.chime) await sleep(1200);
+  if (S.bg && !S.chime) await sleepS(1200);
   let langPrev = null;
   for (const blk of seq) {
     if (stopFlag) break;
-    if (langPrev) await sleep(blk.L.id === langPrev ? 1100 : 900);
+    if (langPrev) await sleepS(blk.L.id === langPrev ? 1100 : 900);
     langPrev = blk.L.id;
     for (const p of blk.parts) {
       if (stopFlag) break;
       if (rec && $("recLine")) $("recLine").innerHTML = `<b>${blk.L.flag}</b> ${p.replace(/</g, "&lt;")}`;
       $("now").innerHTML = `${rec ? '<span class="recdot"></span>' : ""}<b>${blk.L.flag} ${real ? "방송 중" : rec ? "녹음 중" : "미리 듣기"}</b> — ${p.replace(/</g, "&lt;")}`;
       await say(p, blk.L, blk.alt ? altVoice(blk.L) : null);
-      await sleep(/[.!?。！？]$/.test(p) ? 380 : 200);    // 문장 사이 숨 고르기
+      await sleepS(/[.!?。！？]$/.test(p) ? 380 : 200);    // 문장 사이 숨 고르기
     }
   }
   if (!stopFlag && S.chime && !S.__noClose) await chime("close");
@@ -1931,7 +1932,7 @@ function cdInfo() {
 }
 $("cdTime").onchange = e => { S.cd.time = e.target.value || "19:00"; S.cd.done = {}; save(); cdInfo(); };
 $("cdWhat").oninput = e => { S.cd.what = e.target.value; save(); };
-$("cdOn").onchange = e => { S.cd.on = e.target.checked; S.cd.done = {}; if (S.cd.on) { audio(); try { navigator.wakeLock?.request("screen"); } catch (er) {} } save(); cdInfo(); };
+$("cdOn").onchange = e => { S.cd.on = e.target.checked; S.cd.done = {}; if (S.cd.on) { audio(); try { navigator.wakeLock?.request("screen").catch(() => {}); } catch (er) {} } save(); cdInfo(); };
 async function cdFire(n) {
   const keep = JSON.parse(JSON.stringify({ texts: S.texts, edited: S.edited }));
   for (const L of LANGS.filter(x => S.langs[x.id])) {
@@ -2169,7 +2170,7 @@ function schedInfo() {
   if (!w.hidden) w.textContent = "⏳ 예약 방송 대기 중 — 이 창을 닫거나 PC를 끄지 마세요. 정해진 시각에 자동으로 방송합니다.";
 }
 $("schedOn").onchange = e => {
-  if (e.target.checked) { audio(); speechSynthesis.getVoices(); try { navigator.wakeLock?.request("screen").then(l => (schedOn.lock = l)); } catch (er) {} }
+  if (e.target.checked) { audio(); speechSynthesis.getVoices(); try { navigator.wakeLock?.request("screen").then(l => (schedOn.lock = l)).catch(() => {}); } catch (er) {} }
   else schedOn.lock?.release?.();
   schedInfo();
 };
