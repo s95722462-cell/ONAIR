@@ -1281,11 +1281,24 @@ function josa(w, j) {                                   // 받침에 맞춰 은/
   const P = { 은: ["은", "는"], 는: ["은", "는"], 이: ["이", "가"], 가: ["이", "가"], 을: ["을", "를"], 를: ["을", "를"] }[j];
   return has ? P[0] : P[1];
 }
+function keepEdit(lang, text) {                          // ✏️ 고친 문장을 방송 종류별로 기억 (방송실·다른 화면에서도 같은 문장)
+  const t = curT();
+  if (t.mine) { const m = mine.find(x => "mine:" + x.id === S.tpl); if (m) { m.texts[lang] = text; m.langs = { ...m.langs, [lang]: !!S.langs[lang] }; ls.set("mine", mine); } return; }
+  const num = (S.vals.num || "").trim() || "1", hasNum = t.f.includes("num");
+  const v = hasNum ? text.replace(new RegExp(`(^|\\D)${num.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=\\D|$)`, "g"), "$1{num}") : text;
+  S.tplEdits = { ...(S.tplEdits || {}), [S.tpl]: { ...((S.tplEdits || {})[S.tpl] || {}), [lang]: v } };
+}
+function applyEdits() {                                   // 기억해 둔 고친 문장 다시 넣기 (번호는 지금 번호로)
+  const e = (S.tplEdits || {})[S.tpl]; if (!e || curT().mine) return;
+  const num = (S.vals.num || "").trim() || "1";
+  Object.entries(e).forEach(([lang, v]) => { S.texts[lang] = v.replace(/\{num\}/g, num); S.edited[lang] = true; });
+}
 function regen(force) {
   BASE_LANGS.forEach(({ id }) => {
     if (force || !S.edited[id]) { S.texts[id] = build(id); S.edited[id] = false; }
   });
   if (force && !curT().mine) LANGS.filter(L => L.extra).forEach(L => { S.edited[L.id] = false; });   // 내 방송은 저장한 번역 유지
+  if (force) applyEdits();
   renderLangs(); save(); estimate();
   autoTranslateSoon();
 }
@@ -1449,7 +1462,7 @@ function renderLangs() {
     };
     const ta = d.querySelector("textarea"); ta.value = S.texts[L.id] || "";
     ta.placeholder = L.id === "ko" ? "방송할 문장" : L.extra ? ("Translator" in self && !trFail[L.id] ? "🌐 자동 번역됩니다 (영어·한국어 문장을 번역)" : "이 언어는 자동 번역이 안 됩니다 — 이 칸에 직접 써 주세요 (파파고 등에서 붙여 넣어도 됩니다)") : (curT()[L.id] === "" ? "직접 입력한 내용은 이 언어로 직접 써 주세요 (또는 '자동 번역')" : "");
-    ta.oninput = () => { S.texts[L.id] = ta.value; S.edited[L.id] = true; save(); estimate(); tags(); };
+    ta.oninput = () => { S.texts[L.id] = ta.value; S.edited[L.id] = true; keepEdit(L.id, ta.value); save(); estimate(); tags(); };
     const sel = d.querySelector("select"); fillVoices(sel, L);
     sel.onchange = () => { S.voices[L.id] = sel.value; save(); altInfo(); };
     const tagBox = d.querySelector(".tags");
@@ -1539,7 +1552,7 @@ $("polNo").onclick = () => { speechSynthesis.cancel(); $("polDlg").close(); };
 $("polOk").onclick = () => {
   speechSynthesis.cancel();
   const v = $("polText").value.trim(); $("polDlg").close(); if (!polTa) return;
-  polTa.value = v; S.texts.ko = v; S.edited.ko = true; save(); renderLangs(); estimate(); autoTranslateSoon();
+  polTa.value = v; S.texts.ko = v; S.edited.ko = true; keepEdit("ko", v); save(); renderLangs(); estimate(); autoTranslateSoon();
   toast("✨ 다듬은 문장을 적용했습니다");
 };
 $("polPlay").onclick = () => { if (running) return; speechSynthesis.cancel(); (async () => { for (const p of sentences($("polText").value)) { await say(p, LANGS.find(x => x.id === "ko")); await sleep(300); } })(); };
@@ -1642,7 +1655,7 @@ async function translate(L, ta) {                       // 기본 언어 칸의 
   try {
     toast("번역 중… (처음엔 언어 파일을 받느라 조금 걸립니다)");
     ta.value = await trText(S.texts.ko, "ko", L === "zh" ? "zh" : L);
-    S.texts[L] = ta.value; S.edited[L] = true; save(); estimate(); toast("번역했습니다 — 내용을 한 번 확인해 주세요");
+    S.texts[L] = ta.value; S.edited[L] = true; keepEdit(L, ta.value); save(); estimate(); toast("번역했습니다 — 내용을 한 번 확인해 주세요");
   } catch (e) { toast("이 브라우저에서는 자동 번역을 쓸 수 없습니다"); }
 }
 
@@ -2048,7 +2061,10 @@ $("bgOn").onchange = e => {                               // 방송 도중에 �
 $("bgVol").oninput = e => { S.bgVol = +e.target.value; save(); if (bgG) bgDuck(speechSynthesis.speaking); };
 $("rep").onclick = e => { const v = +e.target.dataset.v; if (!v) return; S.rep = v; [...$("rep").children].forEach(b => b.classList.toggle("on", +b.dataset.v === v)); save(); estimate(); altInfo(); };
 $("altOn").onchange = e => { S.alt = e.target.checked; save(); altInfo(); };
-$("regen").onclick = () => regen(true);
+$("regen").onclick = () => {                             // ↻ 고친 문장을 버리고 기본 문장으로
+  const had = (S.tplEdits || {})[S.tpl]; if (had) { const e = { ...S.tplEdits }; delete e[S.tpl]; S.tplEdits = e; }
+  regen(true); if (had) toast("고친 문장을 지우고 기본 문장으로 되돌렸습니다");
+};
 function aptLabel() { $("setBtn").textContent = S.apt ? `${PL().icon} ${S.apt}` : "⚙ 장소 이름"; $("setBtn").title = S.apt ? "장소 이름 바꾸기·지우기" : "장소 이름 넣기"; }
 $("setBtn").onclick = () => { $("aptKo").value = S.apt; $("aptEn").value = S.aptEn; $("aptDlg").showModal(); $("aptKo").focus(); };
 $("aptNo").onclick = () => $("aptDlg").close();
