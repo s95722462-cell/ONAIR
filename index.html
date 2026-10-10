@@ -6,6 +6,10 @@
 <title>온에어 — 따뜻한 안내방송</title>
 <meta name="description" content="온에어(溫 On-Air) — 아나운서처럼 또박또박, 온기 있는 안내방송 (아파트·학교·회사·상가·병원·관공서). 한국어·영어·일본어·중국어 무료.">
 <meta name="theme-color" content="#c2410c">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="온에어">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='16' fill='%23ea580c'/%3E%3Ccircle cx='32' cy='30' r='9' fill='%23fff'/%3E%3Cpath d='M16 30a16 16 0 0 1 32 0M10 30a22 22 0 0 1 44 0' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' opacity='.85'/%3E%3Crect x='29' y='38' width='6' height='14' rx='3' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
@@ -160,6 +164,22 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .foot { margin-top: 26px; text-align: center; font-size: 13px; color: var(--dim); }
   .foot a { color: var(--accent2); text-decoration: none; font-weight: 600; }
+  #room { position: fixed; inset: 0; z-index: 45; background: #1c140c; color: #f5ede4; display: flex; flex-direction: column; padding: 16px; gap: 14px; }
+  #room[hidden] { display: none; }
+  #room .rbar { display: flex; align-items: center; gap: 14px; }
+  #room .rbar .sp { flex: 1; }
+  #room .rbar button { height: 46px; padding: 0 18px; border-radius: 12px; border: 1px solid #ffffff33; background: #ffffff14; color: #fff; font-size: 16px; cursor: pointer; }
+  #room .rbody { flex: 1; display: grid; grid-template-columns: 1fr 380px; gap: 16px; min-height: 0; }
+  @media (max-width: 860px) { #room .rbody { grid-template-columns: 1fr; } }
+  #roomGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; overflow: auto; align-content: start; }
+  .rtile { min-height: 120px; border-radius: 18px; border: 2px solid #ffffff22; background: #ffffff10; color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 17px; padding: 10px; }
+  .rtile span { font-size: 40px; } .rtile:hover { background: #ffffff1c; }
+  .rtile.on { border-color: #fb923c; background: #fb923c33; } .rtile.urg { border-color: #f87171; background: #7f1d1d66; }
+  #room .rside { display: flex; flex-direction: column; gap: 12px; }
+  #roomNow { flex: 1; min-height: 140px; border-radius: 16px; background: #ffffff10; padding: 16px; font-size: 18px; line-height: 1.6; overflow: auto; }
+  #roomAir { min-height: 110px; border: none; border-radius: 20px; font-size: 30px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #f97316, #c2410c); cursor: pointer; }
+  #roomAir.stop { background: #374151; }
+  #roomPre { min-height: 60px; border-radius: 16px; border: 1px solid #ffffff33; background: #ffffff10; color: #fff; font-size: 18px; cursor: pointer; }
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(16px); background: #2b2118; color: #fff; padding: 11px 18px;
     border-radius: 12px; font-size: 14px; opacity: 0; transition: .25s; pointer-events: none; z-index: 30; max-width: 90vw; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%); }
@@ -178,6 +198,7 @@
     </div>
     <span class="onair" id="onair"><i></i>ON AIR</span>
     <button class="hbtn" id="setBtn">⚙ 장소 이름</button>
+    <button class="hbtn" id="roomBtn" title="큰 버튼만 있는 전체 화면">🖥 방송실 모드</button>
     <button class="hbtn" id="helpBtn" title="사용법">❓</button>
   </header>
 
@@ -193,7 +214,7 @@
       </section>
 
       <section class="card">
-        <h2>② 방송 문장 <span class="sp"></span><button class="mini" id="mineSave" title="지금 문장을 버튼으로 고정해 두기" style="border-color:#fde68a;background:#fefce8">⭐ 내 방송으로 저장</button><button class="mini" id="regen" title="빈칸 내용으로 다시 만들기">↻ 다시 만들기</button></h2>
+        <h2>② 방송 문장 <span class="sp"></span><button class="mini" id="notice" title="게시판·엘리베이터용 공지문 (인쇄·PDF)">📄 공지문</button><button class="mini" id="kakao" title="카톡·문자로 보낼 글 복사">💬 카톡 복사</button><button class="mini" id="mineSave" title="지금 문장을 버튼으로 고정해 두기" style="border-color:#fde68a;background:#fefce8">⭐ 내 방송으로 저장</button><button class="mini" id="regen" title="빈칸 내용으로 다시 만들기">↻ 다시 만들기</button></h2>
         <p class="muted" style="margin:-4px 0 10px">빈칸을 채우면 4개 언어 문장이 자동으로 만들어집니다. 문장을 직접 고쳐도 됩니다.</p>
         <div class="langs" id="langs"></div>
         <button class="mini" id="addLang" style="margin-top:10px;height:38px;width:100%;border-style:dashed;font-size:14px">＋ 언어 추가 (베트남어 · 태국어 · 러시아어 · 아랍어 … 27개)</button>
@@ -249,6 +270,12 @@
         <div class="row"><label>무엇이 시작?</label><input id="cdWhat" placeholder="비우면 장소에 맞게 (공연·예식·행사)" style="flex:1;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px"></div>
         <div class="row" style="align-items:flex-start"><label style="padding-top:6px">알릴 때</label><div class="days" id="cdSteps" style="flex-wrap:wrap"></div></div>
         <div class="wait" id="cdWait" hidden></div>
+      </section>
+
+      <section class="card">
+        <h2>📚 방송 묶음 <span class="sp"></span><button class="mini" id="packAdd">＋ 지금 방송 담기</button></h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">여러 방송을 <b>한 번에 이어서</b> 내보냅니다. 예: 아침 공지 = 분리수거 + 주차 + 소독. 차임은 처음과 끝에 한 번씩만 울립니다.</p>
+        <div id="packList" style="display:flex;flex-direction:column;gap:8px"></div>
       </section>
 
       <section class="card">
@@ -331,6 +358,17 @@
   <div class="muted" style="font-size:13px;line-height:1.6">💡 가장 자연스러운 목소리는 <b>PC의 Microsoft Edge</b>에서 나옵니다. 모든 내용은 이 PC 브라우저에 저장되니, 가끔 <b>💼 백업</b>을 해 두세요.</div>
   <div class="btns" style="margin-top:12px"><button class="ok" id="helpOk">시작하기</button></div>
 </dialog>
+<div id="room" hidden>
+  <div class="rbar"><span class="onair" id="roomLive"><i></i>ON AIR</span><b style="font-size:20px">🖥 방송실</b><span class="sp"></span><span id="roomClock" style="font-size:28px;font-weight:300;font-variant-numeric:tabular-nums"></span><button id="roomExit">나가기 ✕</button></div>
+  <div class="rbody">
+    <div id="roomGrid"></div>
+    <div class="rside">
+      <div id="roomNow"></div>
+      <button id="roomAir">📢 방송 시작</button>
+      <button id="roomPre">▶ 미리 듣기</button>
+    </div>
+  </div>
+</div>
 <dialog id="aptDlg">
   <h3>⚙ 장소 이름</h3>
   <div class="muted" style="font-size:14px;margin-bottom:12px">방송 첫 인사에 들어갑니다. 예: "안녕하십니까. <b>행복마을 3단지</b> 관리사무소에서…", "<b>겐시스템 구미공장</b> 총무팀에서…"</div>
@@ -1534,7 +1572,7 @@ async function run(real, rec) {
   audio(); speechSynthesis.cancel();
   try { navigator.wakeLock?.request("screen").then(l => (run.lock = l)).catch(() => {}); } catch (e) {}
   if (S.bg) bgStart();
-  if (S.chime) await chime("open");
+  if (S.chime && !S.__noOpen) await chime("open");
   if (S.bg && !S.chime) await sleep(1200);
   let langPrev = null;
   for (const blk of seq) {
@@ -1549,7 +1587,7 @@ async function run(real, rec) {
       await sleep(/[.!?。！？]$/.test(p) ? 380 : 200);    // 문장 사이 숨 고르기
     }
   }
-  if (!stopFlag && S.chime) await chime("close");
+  if (!stopFlag && S.chime && !S.__noClose) await chime("close");
   if (S.bg) { await sleep(400); bgStop(); }
   if (real) addHistory(stopFlag ? "stop" : S.__cd ? "cd" : (S.__sched ? "sched" : "air"), S.__cd || "");
   running = false; setLive(""); run.lock?.release?.(); run.lock = null;
@@ -1882,6 +1920,132 @@ $("bkMerge").onclick = () => {
   toast("백업을 합쳤습니다 — 다시 엽니다"); setTimeout(() => location.reload(), 900);
 };
 
+// ================= 📄 공지문 · 💬 카톡 복사 =================
+function noticeParts() {
+  const t = curT(), langs = LANGS.filter(L => S.langs[L.id] && (S.texts[L.id] || "").trim());
+  const who = `${S.apt ? S.apt + " " : ""}${PL().sender[0]}`;
+  const d = new Date(), date = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
+  return { t, langs, who, date };
+}
+$("notice").onclick = () => {
+  const { t, langs, who, date } = noticeParts(); if (!langs.length) { toast("공지할 문장이 없습니다"); return; }
+  const esc = x => String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const blocks = langs.map((L, i) => `<section class="${i ? "sub" : "main"}"><div class="lang">${L.flag} ${esc(L.extra ? L.name : L.name)}</div><p>${esc(S.texts[L.id].trim())}</p></section>`).join("");
+  const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>공지문 — ${esc(t.name)}</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>@page{size:A4;margin:16mm}*{box-sizing:border-box}body{margin:0;font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif;color:#1f1a14}
+.top{display:flex;align-items:center;gap:14px;border-bottom:4px solid #ea580c;padding-bottom:12px;margin-bottom:18px}.badge{font-size:15px;font-weight:800;letter-spacing:3px;color:#fff;background:#ea580c;padding:8px 14px;border-radius:10px}
+h1{margin:0;font-size:34px;letter-spacing:-.5px;flex:1}.date{font-size:15px;color:#6b5d50}.ic{font-size:44px}
+section{margin:0 0 14px;padding:14px 18px;border-radius:14px;break-inside:avoid}.main{background:#fff7ed;border:2px solid #fdba74}.main p{font-size:23px;line-height:1.75;font-weight:600}
+.sub{border:1px solid #e7ddd2}.sub p{font-size:16.5px;line-height:1.65}.lang{font-size:13px;font-weight:700;color:#9a3412;margin-bottom:4px}p{margin:0}
+.foot{margin-top:22px;text-align:right;font-size:18px;font-weight:700}.foot small{display:block;font-size:12px;color:#8a7a6a;font-weight:400;margin-top:4px}</style></head>
+<body><div class="top"><span class="ic">${t.icon}</span><h1>${esc(t.name)}</h1><div style="text-align:right"><div class="badge">안 내</div><div class="date">${date}</div></div></div>
+${blocks}<div class="foot">${esc(who)}<small>온에어(溫 On-Air) 안내방송과 같은 내용입니다</small></div>
+<script>setTimeout(() => print(), 600)<\/script></body></html>`;
+  const w = window.open("", "_blank"); if (!w) { toast("새 창이 막혔습니다 — 팝업 허용 후 다시 눌러 주세요"); return; }
+  w.document.write(html); w.document.close();
+  toast("📄 공지문을 열었습니다 — 인쇄 창에서 'PDF로 저장'도 됩니다");
+};
+$("kakao").onclick = async () => {
+  const { t, langs, who } = noticeParts(); if (!langs.length) { toast("보낼 문장이 없습니다"); return; }
+  const txt = `📢 [안내] ${t.name}\n\n` + langs.map(L => `${L.flag} ${S.texts[L.id].trim()}`).join("\n\n") + `\n\n— ${who}`;
+  try { await navigator.clipboard.writeText(txt); }
+  catch (e) { const ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+  toast("💬 복사했습니다 — 카톡 대화창에 붙여 넣기(Ctrl+V) 하세요");
+};
+
+// ================= 📚 방송 묶음 =================
+S.packs = S.packs || [];
+function renderPacks() {
+  const box = $("packList"); if (!box) return; box.innerHTML = "";
+  if (!S.packs.length) { box.innerHTML = '<div class="muted">묶음이 없습니다. 방송을 고른 뒤 <b>＋ 지금 방송 담기</b>를 누르세요.</div>'; return; }
+  S.packs.forEach(pk => {
+    const el = document.createElement("div"); el.style.cssText = "border:1px solid var(--line);border-radius:12px;padding:8px 10px";
+    el.innerHTML = `<div style="display:flex;align-items:center;gap:8px"><b style="flex:1"></b><span class="muted" style="font-size:12px">${pk.items.length}개</span>
+      <button class="mini play" style="background:var(--accent);border-color:var(--accent);color:#fff">📢 방송</button><button class="mini open">▾</button><button class="mini del" title="묶음 지우기">✕</button></div><div class="items" hidden style="margin-top:6px"></div>`;
+    el.querySelector("b").textContent = `📚 ${pk.name}`;
+    const items = el.querySelector(".items");
+    pk.items.forEach((it, i) => {
+      const r = document.createElement("div"); r.className = "li"; r.style.marginTop = "4px";
+      r.innerHTML = `<span class="t" style="min-width:24px">${i + 1}</span><span class="nm"></span><button title="앞으로">▲</button><button title="뒤로">▼</button><button title="빼기">✕</button>`;
+      r.querySelector(".nm").textContent = `${it.icon} ${it.name} — ${firstText(it.texts, it.langs).slice(0, 26)}`;
+      const [u, d, x] = r.querySelectorAll("button");
+      u.onclick = () => { if (i) { [pk.items[i - 1], pk.items[i]] = [pk.items[i], pk.items[i - 1]]; save(); renderPacks(); } };
+      d.onclick = () => { if (i < pk.items.length - 1) { [pk.items[i + 1], pk.items[i]] = [pk.items[i], pk.items[i + 1]]; save(); renderPacks(); } };
+      x.onclick = () => { pk.items.splice(i, 1); save(); renderPacks(); };
+      items.appendChild(r);
+    });
+    el.querySelector(".open").onclick = () => { items.hidden = !items.hidden; };
+    el.querySelector(".del").onclick = () => { if (confirm(`'${pk.name}' 묶음을 지울까요?`)) { S.packs = S.packs.filter(x => x !== pk); save(); renderPacks(); } };
+    el.querySelector(".play").onclick = () => playPack(pk);
+    box.appendChild(el);
+  });
+}
+function addToPack() {
+  const t = curT(); if (!firstText(S.texts, S.langs)) { toast("담을 문장이 없습니다"); return; }
+  const names = S.packs.map(x => x.name);
+  const name = prompt(`어느 묶음에 담을까요?\n${names.length ? "있는 묶음: " + names.join(", ") + "\n" : ""}새 이름을 쓰면 새 묶음을 만듭니다.`, names[0] || "아침 공지");
+  if (!name || !name.trim()) return;
+  let pk = S.packs.find(x => x.name === name.trim()); if (!pk) { pk = { id: Date.now().toString(36), name: name.trim(), items: [] }; S.packs.push(pk); }
+  const texts = {}, langs = {}; LANGS.forEach(L => { if (S.langs[L.id] && (S.texts[L.id] || "").trim()) { texts[L.id] = S.texts[L.id].trim(); langs[L.id] = true; } });
+  pk.items.push({ name: t.name, icon: t.icon, texts, langs, mood: S.mood });
+  save(); renderPacks(); toast(`📚 '${pk.name}'에 담았습니다 (${pk.items.length}개)`);
+}
+async function playPack(pk) {
+  if (running) { toast("다른 방송이 끝난 뒤에 눌러 주세요"); return; }
+  if (!pk.items.length) { toast("묶음이 비어 있습니다"); return; }
+  const keep = JSON.parse(JSON.stringify({ texts: S.texts, langs: S.langs, edited: S.edited, mood: S.mood }));
+  for (let i = 0; i < pk.items.length; i++) {
+    const it = pk.items[i];
+    S.texts = { ...S.texts, ...it.texts }; S.langs = { ...it.langs }; S.mood = it.mood || "calm";
+    S.__noOpen = i > 0; S.__noClose = i < pk.items.length - 1; S.__label = `📚 ${pk.name} ${i + 1}/${pk.items.length} · ${it.icon} ${it.name}`;
+    const ok = await run(true);
+    if (!ok) break;
+    if (i < pk.items.length - 1) await sleep(1500);
+  }
+  S.__noOpen = S.__noClose = false; S.__label = "";
+  Object.assign(S, keep); renderLangs(); estimate();
+}
+
+// ================= 🖥 방송실 모드 =================
+function roomTiles() {
+  const tiles = [];
+  (S.fav || []).forEach(id => { const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = !m && T.find(x => x.id === id); if (m) tiles.push({ kind: "tpl", id, icon: m.icon, name: m.name }); else if (t) tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: t.urgent }); });
+  mine.forEach(m => { if (!tiles.some(x => x.id === "mine:" + m.id)) tiles.push({ kind: "tpl", id: "mine:" + m.id, icon: m.icon, name: m.name }); });
+  S.packs.forEach(pk => tiles.push({ kind: "pack", pk, icon: "📚", name: pk.name }));
+  ["efire", "equake", "urgent"].forEach(id => { if (!tiles.some(x => x.id === id)) { const t = T.find(x => x.id === id); tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: true }); } });
+  return tiles;
+}
+function renderRoom() {
+  const g = $("roomGrid"); g.innerHTML = "";
+  roomTiles().forEach(x => {
+    const b = document.createElement("button"); b.className = "rtile" + (x.urgent ? " urg" : "") + (x.kind === "tpl" && S.tpl === x.id ? " on" : "");
+    b.innerHTML = `<span>${x.icon}</span><b></b>`; b.querySelector("b").textContent = x.name;
+    b.onclick = () => { if (x.kind === "pack") { playPack(x.pk); return; } pickTpl(x.id); renderRoom(); };
+    g.appendChild(b);
+  });
+}
+function roomTick() {
+  if ($("room").hidden) return;
+  const n = new Date(); $("roomClock").textContent = `${pad2(n.getHours())}:${pad2(n.getMinutes())}`;
+  $("roomLive").classList.toggle("live", running && $("onair").classList.contains("live"));
+  $("roomNow").innerHTML = running ? $("now").innerHTML : `<b>${curT().icon} ${curT().name}</b> — ${firstText(S.texts, S.langs).replace(/</g, "&lt;")}`;
+  $("roomAir").textContent = running ? "■ 멈추기" : "📢 방송 시작"; $("roomAir").classList.toggle("stop", running);
+}
+setInterval(roomTick, 400);
+function roomOpen(on) {
+  $("room").hidden = !on;
+  if (on) { renderRoom(); roomTick(); try { document.documentElement.requestFullscreen?.(); } catch (e) {} }
+  else { try { document.fullscreenElement && document.exitFullscreen(); } catch (e) {} }
+}
+
+$("packAdd").onclick = addToPack;
+$("roomBtn").onclick = () => roomOpen(true);
+$("roomExit").onclick = () => roomOpen(false);
+$("roomAir").onclick = () => $("airBtn").click();
+$("roomPre").onclick = () => $("preBtn").click();
+document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && !$("room").hidden) roomOpen(false); });
+
 // ================= ❓ 사용법 (처음 열 때 한 번) =================
 $("helpBtn").onclick = () => $("helpDlg").showModal();
 $("helpOk").onclick = () => { $("helpDlg").close(); ls.set("seenHelp", true); };
@@ -1945,7 +2109,7 @@ let hist = ls.get("hist", []);
 const HK = { cd: ["⏱ 카운트다운", "#7c3aed", "#f5f3ff"], air: ["📢 방송", "#c2410c", "#fff7ed"], sched: ["⏰ 예약 방송", "#15803d", "#f0fdf4"], file: ["💾 파일 저장", "#3730a3", "#eef2ff"], stop: ["■ 중단", "#6b7280", "#f3f4f6"] };
 function addHistory(kind = "air", extra = "") {          // 방송 · 예약 방송 · 파일 저장 · 중단 모두 기록 (최근 200개)
   const t = curT();
-  hist.unshift({ at: new Date().toLocaleString("ko-KR"), kind, extra, label: `${t.icon} ${t.name}`, texts: { ...S.texts }, langs: { ...S.langs } });
+  hist.unshift({ at: new Date().toLocaleString("ko-KR"), kind, extra, label: S.__label || `${t.icon} ${t.name}`, texts: { ...S.texts }, langs: { ...S.langs } });
   hist = hist.slice(0, 200); ls.set("hist", hist); renderHist();
 }
 function renderHist() {
@@ -1979,7 +2143,7 @@ $("hClear").onclick = () => { if (confirm("방송 기록을 모두 지울까요?
 
 // ================= 시작 =================
 function renderAll() {
-  renderPlaces(); renderTpls(); renderDict(); renderCd(); bkInfo(); renderFields(); renderLangs();
+  renderPlaces(); renderTpls(); renderDict(); renderCd(); bkInfo(); renderPacks(); renderFields(); renderLangs();
   [...$("mood").children].forEach(b => b.classList.toggle("on", b.dataset.v === S.mood));
   $("rate").value = S.rate; $("rateL").textContent = (+S.rate).toFixed(2);
   $("vol").value = S.vol; $("volL").textContent = Math.round(S.vol * 100) + "%";
@@ -1991,6 +2155,7 @@ function renderAll() {
 renderDays(); renderSched(); renderHist();
 regen();                                                 // 직접 고치지 않은 문장은 최신 템플릿으로 다시 만듦
 renderAll(); loadVoices(); aptLabel();
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});   // 인터넷 주소로 열면 홈 화면 앱·오프라인
 })();
 </script>
 </body>

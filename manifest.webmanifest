@@ -1,0 +1,16 @@
+{
+  "name": "온에어 — 따뜻한 안내방송",
+  "short_name": "온에어",
+  "description": "아나운서처럼 또박또박, 온기 있는 안내방송. 한국어·영어·일본어·중국어 + 27개 언어",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbf7f2",
+  "theme_color": "#c2410c",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
