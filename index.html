@@ -299,11 +299,9 @@
         <div class="row"><label>목소리 크기</label><input type="range" id="vol" min="0.3" max="1" step="0.05"><span id="volL" style="width:46px"></span></div>
         <div class="row"><label>차임 (딩동댕동)</label><label class="switch"><input type="checkbox" id="chimeOn"><span></span></label>
           <select id="chimeType" class="mini" style="height:32px"><option value="classic">딩동댕동 (기본)</option><option value="soft">부드러운 실로폰</option><option value="westminster">웨스트민스터</option></select></div>
-        <details class="adv" id="advSet"><summary>⚙ 자세히 설정 <span class="muted">말투 · 배경 음악 · 반복 · 남·여 번갈아 · 목소리 높이 · 자동 다듬기</span></summary>
+        <details class="adv" id="advSet"><summary>⚙ 자세히 설정 <span class="muted">말투 · 반복 · 남·여 번갈아 · 목소리 높이 · 자동 다듬기</span></summary>
         <div class="row"><label>말투</label>
           <div class="seg" id="mood"><button data-v="calm">차분하게</button><button data-v="bright">밝게</button><button data-v="urgent">긴급</button></div></div>
-        <div class="row"><label>배경 음악</label><label class="switch"><input type="checkbox" id="bgOn"><span></span></label>
-          <input type="range" id="bgVol" min="0" max="1" step="0.05" title="배경 음악 크기 (말할 때는 자동으로 작아짐)"></div>
         <div class="row"><label>자동 다듬기</label><label class="switch" title="방송·미리 듣기·파일 저장 때 직접 쓴 한국어 문장에 쉼표를 알아서 넣음"><input type="checkbox" id="autoPol"><span></span></label>
           <span class="muted" style="font-size:12.5px">직접 쓰거나 고친 한국어 문장을, 방송할 때 쉼표를 넣어 읽음 (화면 글자는 그대로)</span></div>
         <div class="row"><label>반복</label><div class="seg" id="rep"><button data-v="1">1번</button><button data-v="2">2번</button><button data-v="3">3번</button></div></div>
@@ -446,7 +444,7 @@
   <ol style="font-size:15px;line-height:1.9;margin:6px 0 10px;padding-left:22px">
     <li><b>① 장소</b>를 고르고 <b>방송 종류</b>를 누릅니다. (🔍 찾기, ★ 즐겨찾기도 쓸 수 있어요)</li>
     <li>날짜·시간 같은 <b>빈칸</b>을 채우면 <b>② 방송 문장</b>이 4개 국어로 자동으로 만들어집니다. 문장은 직접 고쳐도 됩니다.</li>
-    <li><b>③ ▶ 미리 듣기</b>로 확인하고 <b>📢 방송 시작</b>을 누릅니다. 빠르기·크기·차임은 ③에서, 말투·배경 음악·반복은 <b>⚙ 자세히 설정</b>에서 바꿉니다.</li>
+    <li><b>③ ▶ 미리 듣기</b>로 확인하고 <b>📢 방송 시작</b>을 누릅니다. 빠르기·크기·차임은 ③에서, 말투·반복은 <b>⚙ 자세히 설정</b>에서 바꿉니다.</li>
     <li>자주 쓰는 방송은 <b>⭐ 내 방송</b>으로 저장하고, 매일 하는 방송은 위쪽 <b>📅 예약·자동</b> 탭에서 예약·방송 묶음으로 정해 두세요.</li>
     <li>게시판용 공지는 <b>📄 공지문</b>, 카톡은 <b>💬 카톡 복사</b>, USB에 담을 방송 파일은 모두 <b>💾 파일·인쇄</b> 탭에 있습니다. 지난 방송은 <b>📊 기록</b>, 장소 이름·언어 추가·백업은 <b>⚙ 설정</b> 탭에 있어요.</li>
   </ol>
@@ -1238,10 +1236,10 @@ const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getT
 let S = Object.assign({
   apt: "", aptEn: "", place: "apt", tpl: "water", vals: { date: today(), start: "09:00", end: "15:00" },
   langs: { ko: true, en: false, ja: false, zh: false }, mood: "calm", rate: 0.95, vol: 1,
-  chime: true, chimeType: "classic", bg: true, bgVol: 0.5, rep: 1, voices: {},
+  chime: true, chimeType: "classic", rep: 1, voices: {},
   texts: { ko: "", en: "", ja: "", zh: "" }, edited: {},
 }, ls.get("state", {}));
-if (S.bgVol === 0.35) S.bgVol = 0.5;
+delete S.bg; delete S.bgVol;                               // 배경 음악 기능 삭제 (사용자 요청)
 rebuildLangs();                     // 예전 기본값(너무 작음) → 새 기본값
 const save = () => { ls.set("state", S); clearTimeout(save.t); save.t = setTimeout(() => { try { bkInfo(); } catch (e) {} }, 300); };   // 백업 칸 개수도 갱신
 
@@ -1784,8 +1782,8 @@ function primeSpeech() {                                  // 아이폰(Safari·E
 }
 ["touchend", "click"].forEach(ev => document.addEventListener(ev, primeSpeech, { capture: true, passive: true }));
 
-// ================= 오디오: 차임 · 배경 음악 =================
-let ctx = null, master, bgG, bgNodes = [];
+// ================= 오디오: 차임 =================
+let ctx = null, master;
 function audio() {
   if (!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination); }
   if (ctx.state !== "running") ctx.resume();
@@ -1815,32 +1813,6 @@ async function chime(which) {
   c[which].forEach(([f, t]) => bell(f, t0 + t));
   await sleepS(c.len * 1000);
 }
-function bgStart() {                                      // 따뜻한 화음이 천천히 바뀌는 배경 음악
-  audio(); bgStop(true);
-  bgG = ctx.createGain(); bgG.gain.value = 0; bgG.connect(master);
-  const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1400; lp.connect(bgG);
-  const CH = [[261.63, 329.63, 392, 493.88], [220, 261.63, 329.63, 392], [174.61, 220, 261.63, 329.63], [196, 246.94, 293.66, 392]];
-  const voicesN = CH[0].map((_, i) => {
-    const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(); o.type = "triangle"; o2.type = "sine"; o2.detune.value = 7;
-    g.gain.value = 0.12; o.connect(g); o2.connect(g); g.connect(lp); o.start(); o2.start(); return [o, o2];
-  });
-  let k = 0;
-  const step = () => {
-    const t = ctx.currentTime;
-    CH[k % 4].forEach((f, i) => voicesN[i].forEach(o => o.frequency.setTargetAtTime(f, t, 0.6)));
-    k++;
-  };
-  step(); const timer = setInterval(step, 4000);
-  bgNodes = [voicesN.flat(), timer];
-  bgG.gain.setTargetAtTime(S.bgVol * (speechSynthesis.speaking ? 0.32 : 1), ctx.currentTime, 0.8);   // 말하는 중이면 작게 시작
-}
-function bgDuck(speaking) { if (bgG) bgG.gain.setTargetAtTime(S.bgVol * (speaking ? 0.32 : 1), ctx.currentTime, 0.25); }   // 말할 때는 1/3 로
-function bgStop(now) {
-  if (!bgG) return;
-  const g = bgG, [os, timer] = bgNodes; bgG = null;
-  g.gain.setTargetAtTime(0, ctx.currentTime, now ? 0.01 : 0.6);
-  setTimeout(() => { clearInterval(timer); os.forEach(o => { try { o.stop(); } catch (e) {} }); g.disconnect(); }, now ? 50 : 2500);
-}
 
 // ================= 말하기 =================
 const MOODS = { calm: { rate: 0.97, pitch: 1.0 }, bright: { rate: 1.04, pitch: 1.04 }, urgent: { rate: 1.05, pitch: 1.0 } };
@@ -1869,9 +1841,9 @@ function say(text, L, voice) {
     u.voice = v; u.lang = isMulti(v, L) ? L.bcp : v.lang;          // 다국어 목소리는 읽을 언어를 알려 줌
     u.rate = S.rate * (L.id === "ko" ? 1 : 0.97); u.volume = S.vol;
     u.pitch = /natural|neural|premium|enhanced/i.test(v.name) ? vPitch(v) : MOODS[S.mood].pitch * vPitch(v);   // AI 음성: 목소리별로 정한 높이만
-    let done = false; const fin = ok => { if (done) return; done = true; clearTimeout(guard); bgDuck(false); res(ok); };
+    let done = false; const fin = ok => { if (done) return; done = true; clearTimeout(guard); res(ok); };
     const guard = setTimeout(() => fin(false), 8000 + text.length * 260);   // 엔진이 멈췄을 때 대비
-    u.onstart = () => bgDuck(true); u.onend = () => fin(true); u.onerror = () => fin(false);
+    u.onend = () => fin(true); u.onerror = () => fin(false);
     if (IOS) { try { speechSynthesis.resume(); } catch (e) {} }
     speechSynthesis.speak(u);
   });
@@ -1904,9 +1876,7 @@ async function run(real, rec) {
   if (real && curT().f.includes("num")) { boardPush((S.vals.num || "").trim() || "1", curT().id); phonePush((S.vals.num || "").trim() || "1", curT().id); }   // 🖥 번호판 · 📱 손님 휴대폰
   audio(); speechSynthesis.cancel();
   try { navigator.wakeLock?.request("screen").then(l => (run.lock = l)).catch(() => {}); } catch (e) {}
-  if (S.bg) bgStart();
   if (S.chime && !S.__noOpen) await chime("open");
-  if (S.bg && !S.chime) await sleepS(1200);
   let langPrev = null;
   for (const blk of seq) {
     if (stopFlag) break;
@@ -1921,13 +1891,12 @@ async function run(real, rec) {
     }
   }
   if (!stopFlag && S.chime && !S.__noClose) await chime("close");
-  if (S.bg) { await sleep(400); bgStop(); }
   if (real) addHistory(stopFlag ? "stop" : S.__cd ? "cd" : (S.__sched ? "sched" : "air"), S.__cd || "");
   running = false; setLive(""); run.lock?.release?.(); run.lock = null;
   if (!rec) $("now").innerHTML = stopFlag ? "방송을 멈췄습니다." : (real ? "✅ 방송을 마쳤습니다." : "미리 듣기를 마쳤습니다. 괜찮으면 <b>방송 시작</b>을 누르세요.");
   return !stopFlag;
 }
-function stop() { stopFlag = true; speechSynthesis.cancel(); bgStop(); }
+function stop() { stopFlag = true; speechSynthesis.cancel(); }
 function setLive(mode) {
   $("onair").classList.toggle("live", mode === "air");
   $("preBtn").textContent = mode === "pre" ? "■ 멈추기" : "▶ 미리 듣기";
@@ -2077,11 +2046,6 @@ $("vol").oninput = e => { S.vol = +e.target.value; $("volL").textContent = Math.
 $("chimeOn").onchange = e => { S.chime = e.target.checked; save(); estimate(); };
 $("chimeType").onchange = e => { S.chimeType = e.target.value; save(); estimate(); audio(); chime("open"); };
 $("autoPol").onchange = e => { S.autoPolish = e.target.checked; save(); estimate(); toast(S.autoPolish ? "✨ 자동 다듬기를 켰습니다 — 직접 쓴 한국어 문장에 쉼표를 넣어 읽습니다" : "자동 다듬기를 껐습니다"); };
-$("bgOn").onchange = e => {                               // 방송 도중에 켜고 꺼도 바로 반영
-  S.bg = e.target.checked; save();
-  if (!S.bg) bgStop(); else if (running && !bgG) bgStart();
-};
-$("bgVol").oninput = e => { S.bgVol = +e.target.value; save(); if (bgG) bgDuck(speechSynthesis.speaking); };
 $("rep").onclick = e => { const v = +e.target.dataset.v; if (!v) return; S.rep = v; [...$("rep").children].forEach(b => b.classList.toggle("on", +b.dataset.v === v)); save(); estimate(); altInfo(); };
 $("altOn").onchange = e => { S.alt = e.target.checked; save(); altInfo(); };
 $("regen").onclick = () => {                             // ↻ 고친 문장을 버리고 기본 문장으로
@@ -2473,7 +2437,7 @@ function renderSched() {
 $("sAdd").onclick = () => {
   const t = curT();
   sched.push({ id: Date.now(), time: $("sTime").value, days: [...sDays], label: `${t.icon} ${t.name} — ${firstText(S.texts, S.langs).slice(0, 30)}`,
-               snap: JSON.parse(JSON.stringify({ texts: S.texts, langs: S.langs, mood: S.mood, rate: S.rate, rep: S.rep, alt: S.alt, place: S.place, chime: S.chime, chimeType: S.chimeType, bg: S.bg })) });
+               snap: JSON.parse(JSON.stringify({ texts: S.texts, langs: S.langs, mood: S.mood, rate: S.rate, rep: S.rep, alt: S.alt, place: S.place, chime: S.chime, chimeType: S.chimeType })) });
   ls.set("sched", sched); renderSched(); toast("예약을 추가했습니다");
 };
 function schedInfo() {
@@ -2702,7 +2666,7 @@ function renderAll() {
   $("rate").value = S.rate; $("rateL").textContent = (+S.rate).toFixed(2);
   $("vol").value = S.vol; $("volL").textContent = Math.round(S.vol * 100) + "%";
   $("autoPol").checked = !!S.autoPolish;
-  $("chimeOn").checked = S.chime; $("chimeType").value = S.chimeType; $("bgOn").checked = S.bg; $("bgVol").value = S.bgVol;
+  $("chimeOn").checked = S.chime; $("chimeType").value = S.chimeType;
   [...$("rep").children].forEach(b => b.classList.toggle("on", +b.dataset.v === S.rep));
   estimate(); altInfo();
 }
