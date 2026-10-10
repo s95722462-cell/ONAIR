@@ -922,7 +922,7 @@ const T = [
     en: "Today's performance has ended. When leaving, please do not push, and move slowly. For parking, please use the automatic pay station next to the exit. Thank you for coming.",
     ja: "本日の公演は、すべて終了いたしました。ご退場の際は、前の方を押さず、ゆっくりお進みください。駐車料金は、出口横の自動精算機をご利用ください。ご来場ありがとうございました。",
     zh: "今天的演出到此全部结束。离场时请不要推挤，慢慢移动。停车费请使用出口旁的自助缴费机。感谢您的光临。" },
-  // ---- 절·사찰
+  // ---- 사찰
   { id: "b_service", icon: "🪷", name: "법회 시작", f: ["what", "start", "loc", "note"], labels: { what: "법회 이름 (예: 초하루 법회 / 비우면 '법회')", start: "시작 시각", loc: "장소 (비우면 '대웅전')" }, places: ["temple"],
     ko: "잠시 후, {time}부터, {loc}에서, {what|이} 봉행됩니다. 불자 여러분께서는, 법당으로 들어오셔서, 자리를 정돈해 주시기 바랍니다.",
     en: "{What} will be held shortly, at {time}, in {loc}. Please come into the hall and take your seats.",
@@ -1015,7 +1015,7 @@ const PLACES = {
   hospital: { icon: "🏥", name: "병원",        sender: ["원무과", "hospital administration office", "医事課", "医院服务中心"], aud: ["환자와 보호자 여러분", "patients and visitors", "患者様とご家族の皆様", "各位患者和家属"] },
   church:   { icon: "⛪", name: "교회",        sender: ["교회 사무실", "church office", "教会事務室", "教会办公室"], aud: ["성도 여러분", "everyone", "皆様", "各位弟兄姐妹"] },
   welfare:  { icon: "🏠", name: "복지관",      sender: ["복지관 사무실", "welfare center office", "福祉館事務室", "福利中心办公室"], aud: ["이용자 여러분", "everyone", "ご利用の皆様", "各位朋友"] },
-  temple:   { icon: "🪷", name: "절·사찰",     sender: ["종무소", "temple office", "寺務所", "寺院办公室"], aud: ["불자 여러분", "everyone", "皆様", "各位信众"] },
+  temple:   { icon: "🪷", name: "사찰",     sender: ["종무소", "temple office", "寺務所", "寺院办公室"], aud: ["불자 여러분", "everyone", "皆様", "各位信众"] },
   airport:  { icon: "✈️", name: "공항·역",     sender: ["안내 센터", "information center", "インフォメーションセンター", "问询处"], aud: ["승객 여러분", "passengers", "ご利用のお客様", "各位旅客"] },
   wedding:  { icon: "💒", name: "예식장",      sender: ["안내 데스크", "information desk", "案内デスク", "服务台"], aud: ["하객 여러분", "guests", "ご列席の皆様", "各位来宾"] },
   show:     { icon: "🎭", name: "공연장",      sender: ["안내실", "front of house", "案内所", "服务台"], aud: ["관객 여러분", "ladies and gentlemen", "ご来場の皆様", "各位观众"] },
