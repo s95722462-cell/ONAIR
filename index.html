@@ -1275,6 +1275,12 @@ function renderTpls() {
 }
 $("tplQ").oninput = () => { $("tplQx").hidden = !$("tplQ").value; renderTpls(); };
 $("tplQx").onclick = () => { $("tplQ").value = ""; $("tplQx").hidden = true; renderTpls(); $("tplQ").focus(); };
+function setNum(v) {                                     // ☕ 주문 번호: 고친 문장·번역 문장 속 번호까지 항상 새 번호로
+  const old = (S.vals.num || "").trim() || "1", nu = String(v || "").trim() || "1"; S.vals.num = String(v || "");
+  regen(true);
+  if (old !== nu) LANGS.filter(L => L.extra && S.texts[L.id]).forEach(L => { S.texts[L.id] = S.texts[L.id].replace(new RegExp(`(^|\\D)${old.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=\\D|$)`, "g"), `$1${nu}`); });
+  renderLangs(); save(); estimate();
+}
 function renderFields() {
   const t = curT(), box = $("fields"); box.innerHTML = "";
   if (t.mine) { box.innerHTML = `<div class="fld wide muted" style="font-size:13.5px">⭐ <b>${t.name.replace(/</g, "&lt;")}</b> — 저장해 둔 내 방송입니다. 아래 문장을 고친 뒤 <b>⭐ 내 방송으로 저장</b>을 누르면 같은 이름으로 덮어씁니다.</div>`; return; }
@@ -1285,14 +1291,14 @@ function renderFields() {
     if (f.type !== "textarea") el.type = f.type;
     else { el.rows = 4; el.style.cssText = "width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;line-height:1.6;resize:vertical"; el.placeholder = "예: 오늘 오후 3시부터 지하 주차장 바닥 청소가 있습니다. 차량을 지상으로 옮겨 주세요."; }
     el.value = S.vals[k] ?? (k === "date2" ? S.vals.date : "");
-    el.oninput = () => { S.vals[k] = el.value; regen(); };
+    el.oninput = () => { if (k === "num") return setNum(el.value); S.vals[k] = el.value; regen(); };
     d.appendChild(el); box.appendChild(d);
     if (k === "num") {                                    // ☕ 번호 빠르게: −1 / +1 / 바로 호출
       el.inputMode = "numeric"; el.style.cssText = "font-size:22px;font-weight:800;text-align:center;letter-spacing:2px";
       const row = document.createElement("div"); row.style.cssText = "display:flex;gap:6px;margin-top:6px";
       row.innerHTML = `<button class="mini" data-d="-1" style="flex:1;height:40px;font-size:18px">−1</button><button class="mini" data-d="1" style="flex:1;height:40px;font-size:18px">+1</button><button class="mini" data-go style="flex:2;height:40px;font-size:15px;font-weight:800;background:var(--accent);border-color:var(--accent);color:#fff">📢 바로 호출</button>`;
-      row.querySelectorAll("[data-d]").forEach(b => b.onclick = () => { const n = Math.max(1, (parseInt(S.vals.num, 10) || 0) + +b.dataset.d); S.vals.num = el.value = String(n); regen(); });
-      row.querySelector("[data-go]").onclick = () => { if (!(S.vals.num || "").trim()) { S.vals.num = el.value = "1"; regen(); } $("airBtn").click(); };
+      row.querySelectorAll("[data-d]").forEach(b => b.onclick = () => { el.value = String(Math.max(1, (parseInt(S.vals.num, 10) || 0) + +b.dataset.d)); setNum(el.value); });
+      row.querySelector("[data-go]").onclick = () => { setNum(el.value); $("airBtn").click(); };
       d.appendChild(row);
     }
   });
