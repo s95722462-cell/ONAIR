@@ -44,6 +44,21 @@
   .hbtn { height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 14px; }
   .hbtn:hover { border-color: var(--accent); color: var(--accent2); }
 
+  .tabs { display: flex; gap: 6px; margin: -6px 0 16px; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { flex: none; height: 42px; padding: 0 16px; border-radius: 12px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 15px; font-weight: 600; color: #57534e; }
+  .tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .pane { display: none; } body[data-tab="air"] .pane[data-pane="air"], body[data-tab="auto"] .pane[data-pane="auto"], body[data-tab="file"] .pane[data-pane="file"], body[data-tab="log"] .pane[data-pane="log"], body[data-tab="set"] .pane[data-pane="set"] { display: block; }
+  .pane.cards { display: none; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 16px; align-items: start; }
+  body[data-tab="auto"] .pane[data-pane="auto"], body[data-tab="file"] .pane[data-pane="file"], body[data-tab="log"] .pane[data-pane="log"], body[data-tab="set"] .pane[data-pane="set"] { display: grid; }
+  body.allView .tabs { display: none; } body.allView .pane { display: block !important; margin-bottom: 16px; } body.allView .pane.cards { display: grid !important; }
+  details.adv { margin: 6px 0 4px; border-top: 1px dashed var(--line); padding-top: 8px; } details.adv > summary { cursor: pointer; font-weight: 700; font-size: 14px; padding: 4px 0 8px; color: #57534e; }
+  details.adv > summary .muted { font-weight: 400; font-size: 12px; }
+  details.more { position: relative; } details.more > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; } details.more > summary::-webkit-details-marker { display: none; }
+  details.more .menu { position: absolute; right: 0; top: 36px; z-index: 20; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px #0002; padding: 6px; display: flex; flex-direction: column; min-width: 180px; }
+  details.more .menu button { text-align: left; border: 0; background: none; padding: 10px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; } details.more .menu button:hover { background: var(--soft); }
+  .lang.off textarea, .lang.off .tags { display: none; }
+  #hList:not(.all) > .li:nth-child(n+6) { display: none; }
   .grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; }
   @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: 0 1px 2px #0000000a; min-width: 0; }
@@ -88,7 +103,7 @@
 
   .langs { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
   .lang { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-  .lang.off { opacity: .45; }
+  .lang.off { opacity: .6; }
   .lang .lh { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #fffaf5; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
   .lang .lh b { font-size: 14px; }
   .lang .lh .sp { flex: 1; }
@@ -210,8 +225,10 @@
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(16px); background: #2b2118; color: #fff; padding: 11px 18px;
     border-radius: 12px; font-size: 14px; opacity: 0; transition: .25s; pointer-events: none; z-index: 30; max-width: 90vw; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%); }
+  @media (max-width: 359px) { .tpls { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
   @media (max-width: 600px) {
-    .tpls { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tpl b { font-size: 13px; }
+    .tpls { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .tpl { padding: 9px 4px 8px; border-radius: 12px; } .tpl .ic { font-size: 20px; } .tpl b { font-size: 12.5px; }
+    .tpl .fv { font-size: 12px; left: 3px; top: 1px; }
     input, select, textarea { font-size: 16px !important; }
     .go { grid-template-columns: 1fr; }
   }
@@ -225,12 +242,14 @@
       <div><b>온에어 <em>溫 On-Air</em></b><small>따뜻한 안내방송 · 우리 공간의 목소리 · 한국어 · English · 日本語 · 中文</small></div>
     </div>
     <span class="onair" id="onair"><i></i>ON AIR</span>
-    <button class="hbtn" id="setBtn">⚙ 장소 이름</button>
     <button class="hbtn" id="roomBtn" title="큰 버튼만 있는 전체 화면">🖥 방송실 모드</button>
     <button class="hbtn" id="helpBtn" title="사용법">❓</button>
   </header>
+  <nav class="tabs" id="tabs">
+    <button data-tab="air">📢 방송</button><button data-tab="auto">📅 예약·자동</button><button data-tab="file">💾 파일·인쇄</button><button data-tab="log">📊 기록</button><button data-tab="set">⚙ 설정</button>
+  </nav>
 
-  <div class="grid">
+  <div class="pane" data-pane="air"><div class="grid">
     <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
       <section class="card">
         <h2>① 어떤 방송인가요?</h2>
@@ -240,24 +259,25 @@
         <div id="tpls"></div>
         <div class="fields" id="fields"></div>
       </section>
-
-      <section class="card">
-        <h2>② 방송 문장 <span class="sp"></span><button class="mini" id="notice" title="게시판·엘리베이터용 공지문 (인쇄·PDF)">📄 공지문</button><button class="mini" id="kakao" title="카톡·문자로 보낼 글 복사">💬 카톡 복사</button><button class="mini" id="mineSave" title="지금 문장을 버튼으로 고정해 두기" style="border-color:#fde68a;background:#fefce8">⭐ 내 방송으로 저장</button><button class="mini" id="regen" title="빈칸 내용으로 다시 만들기">↻ 다시 만들기</button></h2>
-        <p class="muted" style="margin:-4px 0 10px">빈칸을 채우면 4개 언어 문장이 자동으로 만들어집니다. 문장을 직접 고쳐도 됩니다.</p>
-        <div class="langs" id="langs"></div>
-        <button class="mini" id="addLang" style="margin-top:10px;height:38px;width:100%;border-style:dashed;font-size:14px">＋ 언어 추가 (베트남어 · 태국어 · 러시아어 · 아랍어 … 27개)</button>
-      </section>
     </div>
-
     <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
       <section class="card">
-        <h2>③ 목소리 · 분위기 · 방송</h2>
-        <div class="row"><label>말투</label>
-          <div class="seg" id="mood"><button data-v="calm">차분하게</button><button data-v="bright">밝게</button><button data-v="urgent">긴급</button></div></div>
+        <h2>② 방송 문장 <span class="sp"></span><button class="mini" id="regen" title="빈칸 내용으로 다시 만들기">↻ 다시 만들기</button>
+          <details class="more"><summary class="mini">⋯ 더 보기</summary><div class="menu">
+            <button id="mineSave" title="지금 문장을 버튼으로 고정해 두기">⭐ 내 방송으로 저장</button>
+            <button id="mNotice">📄 공지문 인쇄</button><button id="mKakao">💬 카톡 복사</button><button id="mAddLang">🌐 언어 추가</button></div></details></h2>
+        <p class="muted" style="margin:-4px 0 10px">빈칸을 채우면 문장이 자동으로 만들어집니다. 직접 고쳐도 됩니다.</p>
+        <div class="langs" id="langs"></div>
+      </section>
+      <section class="card">
+        <h2>③ 방송하기</h2>
         <div class="row"><label>말 빠르기</label><input type="range" id="rate" min="0.75" max="1.25" step="0.01"><span id="rateL" style="width:46px">1.00</span></div>
         <div class="row"><label>목소리 크기</label><input type="range" id="vol" min="0.3" max="1" step="0.05"><span id="volL" style="width:46px"></span></div>
         <div class="row"><label>차임 (딩동댕동)</label><label class="switch"><input type="checkbox" id="chimeOn"><span></span></label>
           <select id="chimeType" class="mini" style="height:32px"><option value="classic">딩동댕동 (기본)</option><option value="soft">부드러운 실로폰</option><option value="westminster">웨스트민스터</option></select></div>
+        <details class="adv" id="advSet"><summary>⚙ 자세히 설정 <span class="muted">말투 · 배경 음악 · 반복 · 남·여 번갈아 · 목소리 높이 · 자동 다듬기</span></summary>
+        <div class="row"><label>말투</label>
+          <div class="seg" id="mood"><button data-v="calm">차분하게</button><button data-v="bright">밝게</button><button data-v="urgent">긴급</button></div></div>
         <div class="row"><label>배경 음악</label><label class="switch"><input type="checkbox" id="bgOn"><span></span></label>
           <input type="range" id="bgVol" min="0" max="1" step="0.05" title="배경 음악 크기 (말할 때는 자동으로 작아짐)"></div>
         <div class="row"><label>자동 다듬기</label><label class="switch" title="방송·미리 듣기·파일 저장 때 직접 쓴 한국어 문장에 쉼표를 알아서 넣음"><input type="checkbox" id="autoPol"><span></span></label>
@@ -266,6 +286,7 @@
         <div class="row" id="altRow"><label>남·여 번갈아</label><label class="switch" title="반복할 때 두 번째는 반대 성별 목소리로"><input type="checkbox" id="altOn"><span></span></label>
           <span class="muted" id="altInfo"></span></div>
         <div class="row" style="align-items:flex-start"><label style="padding-top:6px">목소리 높이</label><div id="pitchBox" style="display:flex;flex-wrap:wrap;gap:6px 10px;flex:1"></div></div>
+        </details>
         <div class="go">
           <button class="big pre" id="preBtn">▶ 미리 듣기</button>
           <button class="big air" id="airBtn">📢 방송 시작</button>
@@ -273,9 +294,35 @@
         <div class="now" id="now">방송할 문장을 만든 뒤 <b>미리 듣기</b>로 확인하고 <b>방송 시작</b>을 누르세요.</div>
         <div class="est" id="est"></div>
       </section>
+    </div>
+  </div></div>
 
+  <div class="pane cards" data-pane="auto">
+      <section class="card">
+        <h2>⏰ 예약 방송 <span class="sp"></span><label class="switch" title="예약 방송 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="schedOn"><span></span></label></h2>
+        <div class="row"><input type="time" id="sTime" value="09:00" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"><div class="days" id="sDays"></div></div>
+        <div class="row"><button class="mini" id="sAdd">＋ 지금 문장으로 예약 추가</button><span class="muted">요일을 안 고르면 매일</span></div>
+        <div class="list" id="sList"></div>
+        <div class="wait" id="sWait" hidden></div>
+      </section>
+      <section class="card" id="cdCard">
+        <h2>⏱ 카운트다운 방송 <span class="sp"></span><label class="switch" title="카운트다운 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="cdOn"><span></span></label></h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">공연·예식 시작 시각을 정하면, <b>정한 분 전마다 자동으로</b> 안내합니다. (예: 10분 전 → 5분 전 → 1분 전 → 정각)</p>
+        <div class="row"><label>시작 시각</label><input type="time" id="cdTime" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"></div>
+        <div class="row"><label>무엇이 시작?</label><input id="cdWhat" placeholder="비우면 장소에 맞게 (공연·예식·행사)" style="flex:1;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px"></div>
+        <div class="row" style="align-items:flex-start"><label style="padding-top:6px">알릴 때</label><div class="days" id="cdSteps" style="flex-wrap:wrap"></div></div>
+        <div class="wait" id="cdWait" hidden></div>
+      </section>
+      <section class="card">
+        <h2>📚 방송 묶음 <span class="sp"></span><button class="mini" id="packAdd">＋ 지금 방송 담기</button></h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">여러 방송을 <b>한 번에 이어서</b> 내보냅니다. 예: 아침 공지 = 분리수거 + 주차 + 소독. 차임은 처음과 끝에 한 번씩만 울립니다.</p>
+        <div id="packList" style="display:flex;flex-direction:column;gap:8px"></div>
+      </section>
+  </div>
+
+  <div class="pane cards" data-pane="file">
       <section class="card" style="border-color:#c7d2fe;background:#f8faff">
-        <h2>④ 안내방송 파일로 만들기 (USB)</h2>
+        <h2>💾 안내방송 파일로 만들기 (USB)</h2>
         <p class="muted" style="margin:-4px 0 8px;line-height:1.6">안내방송을 할 내용을 선택하고 <b>💾 음성 파일로 저장</b>을 누르면 <b>MP3·WAV 파일</b>이 만들어집니다. USB에 담아 방송 앰프·스피커 같은 <b>외부 장비에서 실행</b>할 수 있습니다.</p>
         <div style="margin:0 0 10px;padding:10px 12px;border-radius:10px;background:#eef2ff;font-size:14px;line-height:1.7">
           <b>예시)</b> ① 방송 종류에서 <b>🚗 차량 이동</b> 선택 → 차량 번호 입력 → <b>💾 음성 파일로 저장</b> 클릭하세요.
@@ -286,35 +333,29 @@
           <select id="recFmt" title="파일 형식"><option value="mp3">MP3</option><option value="wav">WAV</option></select>
         </div>
       </section>
-
       <section class="card">
-        <h2>⑤ 예약 방송 <span class="sp"></span><label class="switch" title="예약 방송 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="schedOn"><span></span></label></h2>
-        <div class="row"><input type="time" id="sTime" value="09:00" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"><div class="days" id="sDays"></div></div>
-        <div class="row"><button class="mini" id="sAdd">＋ 지금 문장으로 예약 추가</button><span class="muted">요일을 안 고르면 매일</span></div>
-        <div class="list" id="sList"></div>
-        <div class="wait" id="sWait" hidden></div>
+        <h2>📄 공지문 · 💬 카톡</h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">지금 방송 문장을 <b>게시판용 A4 공지문</b>으로 인쇄하거나, <b>카톡·문자</b>로 보낼 글로 복사합니다.</p>
+        <div class="row"><button class="mini" id="notice" style="height:40px;flex:1;font-size:14px" title="게시판·엘리베이터용 공지문 (인쇄·PDF)">📄 공지문 인쇄</button><button class="mini" id="kakao" style="height:40px;flex:1;font-size:14px" title="카톡·문자로 보낼 글 복사">💬 카톡 복사</button></div>
       </section>
+  </div>
 
-      <section class="card" id="cdCard">
-        <h2>⏱ 카운트다운 방송 <span class="sp"></span><label class="switch" title="카운트다운 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="cdOn"><span></span></label></h2>
-        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">공연·예식 시작 시각을 정하면, <b>정한 분 전마다 자동으로</b> 안내합니다. (예: 10분 전 → 5분 전 → 1분 전 → 정각)</p>
-        <div class="row"><label>시작 시각</label><input type="time" id="cdTime" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"></div>
-        <div class="row"><label>무엇이 시작?</label><input id="cdWhat" placeholder="비우면 장소에 맞게 (공연·예식·행사)" style="flex:1;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px"></div>
-        <div class="row" style="align-items:flex-start"><label style="padding-top:6px">알릴 때</label><div class="days" id="cdSteps" style="flex-wrap:wrap"></div></div>
-        <div class="wait" id="cdWait" hidden></div>
-      </section>
-
+  <div class="pane cards" data-pane="log">
       <section class="card">
-        <h2>📚 방송 묶음 <span class="sp"></span><button class="mini" id="packAdd">＋ 지금 방송 담기</button></h2>
-        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">여러 방송을 <b>한 번에 이어서</b> 내보냅니다. 예: 아침 공지 = 분리수거 + 주차 + 소독. 차임은 처음과 끝에 한 번씩만 울립니다.</p>
-        <div id="packList" style="display:flex;flex-direction:column;gap:8px"></div>
-      </section>
-
-      <section class="card">
-        <h2>⑥ 방송 기록 <span class="muted" id="hCount" style="font-weight:400;font-size:12px"></span><span class="sp"></span><button class="mini" id="hCsv" title="엑셀에서 열 수 있는 파일로 저장 (업무일지용)">📊 엑셀</button><button class="mini" id="hClear">비우기</button></h2>
+        <h2>📊 방송 기록 <span class="muted" id="hCount" style="font-weight:400;font-size:12px"></span><span class="sp"></span><button class="mini" id="hCsv" title="엑셀에서 열 수 있는 파일로 저장 (업무일지용)">📊 엑셀</button><button class="mini" id="hClear">비우기</button></h2>
         <div class="list" id="hList"></div>
+        <button class="mini" id="hMore" hidden style="margin-top:8px;width:100%;height:34px">전체 보기</button>
       </section>
+  </div>
 
+  <div class="pane cards" data-pane="set">
+      <section class="card">
+        <h2>🏷 장소 이름 · 🌐 언어</h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">첫 인사에 들어갈 이름(예: 행복마을 관리사무소)과, 4개 국어 말고 더 방송할 언어를 정합니다.</p>
+        <div class="row"><button class="hbtn" id="setBtn">⚙ 장소 이름</button></div>
+        <button class="mini" id="addLang" style="margin-top:10px;height:38px;width:100%;border-style:dashed;font-size:14px">＋ 언어 추가 (베트남어 · 태국어 · 러시아어 · 아랍어 … 27개)</button>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:12px"><label class="switch" style="flex:none"><input type="checkbox" id="allView"><span></span></label><span><b>전체 보기</b> <span class="muted">— 탭 없이 모든 기능을 한 화면에 펼쳐 보기</span></span></div>
+      </section>
       <section class="card">
         <h2>📖 발음 사전</h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">이름·고유명사를 원하는 대로 읽게 합니다. 화면 글자는 그대로, <b>읽을 때만</b> 바꿉니다. (예: 행복마을 → 행봉마을, KE → 대한항공)</p>
@@ -323,7 +364,6 @@
         <div class="row"><select id="dLang" class="mini" style="height:34px"></select><button class="mini" id="dTest">▶ 들어 보기</button><button class="mini" id="dAdd" style="background:var(--accent);border-color:var(--accent);color:#fff">＋ 추가</button></div>
         <div class="list" id="dList"></div>
       </section>
-
       <section class="card">
         <h2>💼 백업 · 옮기기</h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">내 방송 · 즐겨찾기 · 예약 · 카운트다운 · 발음 사전 · 방송 기록 · 더한 언어 · 목소리·설정을 <b>파일 하나</b>로 저장합니다. 다른 PC나 브라우저에서 불러오면 그대로 옮겨집니다.</p>
@@ -332,13 +372,12 @@
         <div class="muted" id="bkInfo" style="margin-top:8px;font-size:12.5px"></div>
         <input type="file" id="bkFile" accept=".json,application/json" hidden>
       </section>
-
       <section class="card">
-        <h2>🎙 쓸 수 있는 목소리</h2>
+        <details><summary style="cursor:pointer;font-weight:700">🎙 이 PC에서 쓸 수 있는 목소리</summary>
         <div class="voices" id="voiceInfo">목소리를 찾는 중…</div>
         <div class="tip" id="voiceTip" hidden></div>
+        </details>
       </section>
-    </div>
   </div>
 </div>
 <div class="foot">온에어 (溫 On-Air) · 따뜻한 안내방송 · 문의 : <a href="mailto:ds5yrj@hotmail.com">ds5yrj@hotmail.com</a></div>
@@ -383,9 +422,9 @@
   <ol style="font-size:15px;line-height:1.9;margin:6px 0 10px;padding-left:22px">
     <li><b>① 장소</b>를 고르고 <b>방송 종류</b>를 누릅니다. (🔍 찾기, ★ 즐겨찾기도 쓸 수 있어요)</li>
     <li>날짜·시간 같은 <b>빈칸</b>을 채우면 <b>② 방송 문장</b>이 4개 국어로 자동으로 만들어집니다. 문장은 직접 고쳐도 됩니다.</li>
-    <li><b>③ ▶ 미리 듣기</b>로 확인하고 <b>📢 방송 시작</b>을 누릅니다. 목소리·빠르기·차임·배경 음악은 ③에서 바꿉니다.</li>
-    <li>자주 쓰는 방송은 <b>⭐ 내 방송</b>으로 저장하고, 매일 하는 방송은 <b>⑤ 예약</b>·<b>📚 방송 묶음</b>으로 묶어 두세요.</li>
-    <li>게시판용 공지는 <b>📄 공지문</b>, 카톡은 <b>💬 카톡 복사</b>, USB에 담을 방송 파일은 <b>④ 안내방송 파일로 만들기</b>로 만듭니다.</li>
+    <li><b>③ ▶ 미리 듣기</b>로 확인하고 <b>📢 방송 시작</b>을 누릅니다. 빠르기·크기·차임은 ③에서, 말투·배경 음악·반복은 <b>⚙ 자세히 설정</b>에서 바꿉니다.</li>
+    <li>자주 쓰는 방송은 <b>⭐ 내 방송</b>으로 저장하고, 매일 하는 방송은 위쪽 <b>📅 예약·자동</b> 탭에서 예약·방송 묶음으로 정해 두세요.</li>
+    <li>게시판용 공지는 <b>📄 공지문</b>, 카톡은 <b>💬 카톡 복사</b>, USB에 담을 방송 파일은 모두 <b>💾 파일·인쇄</b> 탭에 있습니다. 지난 방송은 <b>📊 기록</b>, 장소 이름·언어 추가·백업은 <b>⚙ 설정</b> 탭에 있어요.</li>
   </ol>
   <div class="muted" style="font-size:13px;line-height:1.6">💡 가장 자연스러운 목소리는 <b>PC의 Microsoft Edge</b>에서 나옵니다. 모든 내용은 이 PC 브라우저에 저장되니, 가끔 <b>💼 백업</b>을 해 두세요.</div>
   <div class="btns" style="margin-top:12px"><button class="ok" id="helpOk">시작하기</button></div>
@@ -2360,9 +2399,10 @@ function renderHist() {
     const d = document.createElement("div"); d.className = "li"; d.style.cursor = "pointer"; d.title = "누르면 이 문장을 다시 불러옵니다";
     d.innerHTML = `<span class="d" style="min-width:118px"></span><span class="tag" style="background:${k[2]};color:${k[1]};white-space:nowrap">${k[0]}</span><span class="nm"></span>`;
     d.querySelector(".d").textContent = h.at; d.querySelector(".nm").textContent = `${h.label} — ${h.extra ? h.extra + " · " : ""}${firstText(h.texts, h.langs)}`;
-    d.onclick = () => { S.texts = { ...h.texts }; S.langs = { ...h.langs }; S.edited = { ko: true, en: true, ja: true, zh: true }; save(); renderLangs(); estimate(); toast("기록의 문장을 불러왔습니다"); };
+    d.onclick = () => { S.texts = { ...h.texts }; S.langs = { ...h.langs }; S.edited = { ko: true, en: true, ja: true, zh: true }; save(); renderLangs(); estimate(); goTab("air"); toast("기록의 문장을 불러왔습니다"); };
     box.appendChild(d);
   });
+  if ($("hMore")) { $("hMore").hidden = hist.length <= 5; if (!$("hList").classList.contains("all")) $("hMore").textContent = `전체 보기 (${hist.length}건)`; }
 }
 $("hCsv").onclick = () => {
   if (!hist.length) { toast("내보낼 기록이 없습니다"); return; }
@@ -2489,8 +2529,26 @@ if (WAIT) {                                               // 📱 손님 휴대�
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && es && $("wGo").hidden) { listen(); try { navigator.wakeLock?.request("screen").catch(() => {}); } catch (e) {} } });
 }
 
+// ================= 화면 탭 (간결하게) =================
+function goTab(t) {
+  document.body.dataset.tab = t; [...$("tabs").children].forEach(b => b.classList.toggle("on", b.dataset.tab === t));
+  try { localStorage.setItem("onair_tab", t); } catch (e) {}
+}
+[...$("tabs").children].forEach(b => b.onclick = () => { goTab(b.dataset.tab); window.scrollTo({ top: 0 }); });
+let tab0 = "air"; try { tab0 = localStorage.getItem("onair_tab") || "air"; } catch (e) {}
+goTab(tab0);
+$("allView").checked = ls.get("allView", false); document.body.classList.toggle("allView", $("allView").checked);
+$("allView").onchange = () => { ls.set("allView", $("allView").checked); document.body.classList.toggle("allView", $("allView").checked); toast($("allView").checked ? "모든 기능을 한 화면에 펼쳤습니다" : "탭으로 나눠 보기로 돌아왔습니다"); };
+const closeMore = () => document.querySelectorAll("details.more[open]").forEach(d => d.open = false);
+$("mNotice").onclick = () => { closeMore(); $("notice").click(); };
+$("mKakao").onclick = () => { closeMore(); $("kakao").click(); };
+$("mAddLang").onclick = () => { closeMore(); $("addLang").click(); };
+$("mineSave").addEventListener("click", closeMore);
+document.addEventListener("click", e => { if (!e.target.closest("details.more")) closeMore(); });
+$("hMore").onclick = () => { const all = $("hList").classList.toggle("all"); $("hMore").textContent = all ? "최근 5건만 보기" : `전체 보기 (${hist.length}건)`; };
+
 // ================= 시작 =================
-$("exCar").onclick = () => {                             // 🧪 ④ 예시: 차량 이동 → 음성 파일로 저장
+$("exCar").onclick = () => {                             // 🧪 💾 예시: 차량 이동 → 음성 파일로 저장
   S.place = "apt"; S.tpl = "car"; S.edited = {}; S.vals = { ...S.vals, car: S.vals.car || "12가 3456" };
   save(); renderPlaces(); renderTpls(); renderFields(); regen(true); aptLabel();
   $("recBtn").scrollIntoView({ behavior: "smooth", block: "center" });
