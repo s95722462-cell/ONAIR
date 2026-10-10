@@ -134,6 +134,16 @@
   #board .br { display: flex; gap: 2vw; align-items: center; justify-content: center; flex-wrap: wrap; font-size: 3vh; padding-top: 2vh; border-top: 1px solid #ffffff22; }
   #board .br span { background: #ffffff14; border-radius: 1.2vh; padding: .6vh 1.6vw; font-size: 4.2vh; font-weight: 800; font-variant-numeric: tabular-nums; }
   #board .bx { position: absolute; right: 2vw; top: 2vh; } 
+  #waitp { position: fixed; inset: 0; z-index: 95; background: #fff7ed; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; gap: 14px; }
+  #waitp[hidden] { display: none; }
+  body.waitOnly > *:not(#waitp):not(.toast) { display: none !important; }
+  #waitp .wn { font-size: min(34vw, 170px); font-weight: 900; line-height: 1; color: var(--accent2); font-variant-numeric: tabular-nums; }
+  #waitp .wt { font-size: 22px; font-weight: 800; } #waitp .wm { font-size: 15px; color: #78716c; line-height: 1.6; }
+  #waitp .wb { height: 56px; padding: 0 28px; border-radius: 16px; border: 0; background: var(--accent); color: #fff; font-size: 19px; font-weight: 800; }
+  #waitp input { height: 60px; width: 200px; font-size: 32px; text-align: center; font-weight: 800; border: 2px solid #fdba74; border-radius: 14px; }
+  #waitp.ready { background: #f97316; color: #fff; animation: wflash .5s ease-in-out infinite alternate; } #waitp.ready .wn, #waitp.ready .wm { color: #fff; }
+  @keyframes wflash { to { background: #dc2626; } }
+  #qrBox { display: flex; justify-content: center; padding: 10px; background: #fff; border-radius: 12px; } #qrBox img, #qrBox canvas { width: 240px !important; height: 240px !important; }
   .now { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: #fffaf5; border: 1px dashed #fdba74; font-size: 14px; min-height: 46px; line-height: 1.55; }
   .now b { color: var(--accent2); }
   .est { font-size: 12.5px; color: var(--dim); margin-top: 6px; }
@@ -418,6 +428,23 @@
   <div class="bm"><div class="bl" id="bdLabel">주문하신 메뉴가 준비되면 번호가 표시됩니다</div><div class="bn" id="bdNum">—</div><div class="bs" id="bdSub">Order ready · ご注文の品ができました · 您的餐品已备好</div></div>
   <div class="br" id="bdList"><b>최근 호출</b></div>
 </div>
+<div id="waitp" hidden>
+  <div class="wt" id="wTitle">🔔 주문 번호 알림</div>
+  <div id="wAsk"><div class="wm">영수증의 <b>주문 번호</b>를 넣어 주세요<br><span style="font-size:13px">Enter your order number</span></div>
+    <input id="wNum" inputmode="numeric" maxlength="6" placeholder="24"></div>
+  <div class="wn" id="wBig" hidden></div>
+  <div class="wm" id="wMsg">버튼을 누르면 준비됐을 때 <b>소리·진동</b>으로 알려 드립니다.</div>
+  <button class="wb" id="wGo">🔔 알림 받기</button>
+  <div class="wm" id="wNote" style="font-size:13px">⚠️ 알림을 받으려면 <b>이 화면을 켜 둔 채</b> 기다려 주세요.<br>Keep this screen open to get notified.</div>
+</div>
+<dialog id="qrDlg" style="width:min(440px,94vw);text-align:center">
+  <h3 id="qrTitle">📱 휴대폰 알림 QR</h3>
+  <div class="muted" id="qrDesc" style="font-size:14px;line-height:1.6;margin-bottom:10px"></div>
+  <div id="qrBox"></div>
+  <label style="display:flex;gap:8px;justify-content:center;align-items:center;margin:10px 0;font-size:14px"><input type="checkbox" id="qrShared"> 매장 공용 QR (손님이 번호를 직접 입력 · 카운터에 붙여 두기)</label>
+  <div class="muted" style="font-size:12px;line-height:1.5">손님 휴대폰에 대기 화면이 열리고, 그 번호를 <b>📢 방송</b>하면 손님 휴대폰이 소리·진동으로 울립니다.<br>메시지는 무료 중계 서비스(ntfy.sh)를 거칩니다 — 매장 코드와 번호만 보냅니다.</div>
+  <div class="btns" style="margin-top:12px"><button id="qrPrint">🖨 인쇄</button><button class="ok" id="qrClose">닫기</button></div>
+</dialog>
 <div class="recbar" id="recBar" hidden></div>
 <div class="toast" id="toast"></div>
 
@@ -425,6 +452,7 @@
 (() => {
 const $ = id => document.getElementById(id);
 const BOARD = /[?&]board\b/.test(location.search);       // 🖥 번호판 전용 창
+const WAIT = new URLSearchParams(location.search).get("wait");   // 📱 손님 대기 화면 (QR로 연 휴대폰)
 const ls = { get(k, d) { try { const v = localStorage.getItem("onair_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
              set(k, v) { try { localStorage.setItem("onair_" + k, JSON.stringify(v)); } catch (e) {} } };
 function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2200); }
@@ -1335,10 +1363,11 @@ function renderFields() {
     if (k === "num") {                                    // ☕ 번호 빠르게: −1 / +1 / 바로 호출
       el.inputMode = "numeric"; el.style.cssText = "font-size:22px;font-weight:800;text-align:center;letter-spacing:2px";
       const row = document.createElement("div"); row.style.cssText = "display:flex;gap:6px;margin-top:6px";
-      row.innerHTML = `<button class="mini" data-d="-1" style="flex:1;height:40px;font-size:18px">−1</button><button class="mini" data-d="1" style="flex:1;height:40px;font-size:18px">+1</button><button class="mini" data-board title="TV·모니터에 띄울 번호판 창 열기" style="flex:1.2;height:40px;font-size:14px">🖥 번호판</button><button class="mini" data-go style="flex:2;height:40px;font-size:15px;font-weight:800;background:var(--accent);border-color:var(--accent);color:#fff">📢 바로 호출</button>`;
+      row.innerHTML = `<button class="mini" data-d="-1" style="flex:1;height:40px;font-size:18px">−1</button><button class="mini" data-d="1" style="flex:1;height:40px;font-size:18px">+1</button><button class="mini" data-board title="TV·모니터에 띄울 번호판 창 열기" style="flex:1.2;height:40px;font-size:14px">🖥 번호판</button><button class="mini" data-qr title="손님 휴대폰 알림 QR" style="flex:1;height:40px;font-size:14px">📱 QR</button><button class="mini" data-go style="flex:2;height:40px;font-size:15px;font-weight:800;background:var(--accent);border-color:var(--accent);color:#fff">📢 바로 호출</button>`;
       row.querySelectorAll("[data-d]").forEach(b => b.onclick = () => { el.value = String(Math.max(1, (parseInt(S.vals.num, 10) || 0) + +b.dataset.d)); setNum(el.value); });
       row.querySelector("[data-go]").onclick = () => { setNum(el.value); $("airBtn").click(); };
       row.querySelector("[data-board]").onclick = boardOpen;
+      row.querySelector("[data-qr]").onclick = () => { setNum(el.value); qrOpen(); };
       d.appendChild(row);
     }
   });
@@ -1777,7 +1806,7 @@ async function run(real, rec) {
   if (LANGS.some(x => x.extra && S.langs[x.id])) { $("now").textContent = "🌐 더한 언어 인사말 준비 중…"; await prepareExtras(); }
   const seq = plan(); if (!seq.length) { toast("방송할 문장이 없습니다"); return; }
   running = true; stopFlag = false; setLive(real ? "air" : rec ? "rec" : "pre");
-  if (real && curT().f.includes("num")) boardPush((S.vals.num || "").trim() || "1", curT().id);   // 🖥 번호판에 크게
+  if (real && curT().f.includes("num")) { boardPush((S.vals.num || "").trim() || "1", curT().id); phonePush((S.vals.num || "").trim() || "1", curT().id); }   // 🖥 번호판 · 📱 손님 휴대폰
   audio(); speechSynthesis.cancel();
   try { navigator.wakeLock?.request("screen").then(l => (run.lock = l)).catch(() => {}); } catch (e) {}
   if (S.bg) bgStart();
@@ -2070,7 +2099,7 @@ async function cdFire(n) {
   S.__bare = false; S.__cd = ""; Object.assign(S, keep); renderLangs(); estimate();
 }
 setInterval(async () => {
-  if (!$("cdOn").checked || BOARD) return;                // 번호판 창에서는 방송 안 함
+  if (!$("cdOn").checked || BOARD || WAIT) return;                // 번호판 창에서는 방송 안 함
   cdInfo();
   if (running) return;
   const t = cdTarget(), now = Date.now();
@@ -2301,7 +2330,7 @@ $("schedOn").onchange = e => {
 };
 const schedOn = {};
 setInterval(async () => {
-  if (!$("schedOn").checked || running || BOARD) return;
+  if (!$("schedOn").checked || running || BOARD || WAIT) return;
   const n = new Date(), hm = `${pad2(n.getHours())}:${pad2(n.getMinutes())}`, key = today() + " " + hm;
   for (const it of sched) {
     if (it.time !== hm || it.last === key || (it.days.length && !it.days.includes(n.getDay()))) continue;
@@ -2375,6 +2404,64 @@ if (BOARD) {                                             // 번호판 전용 창
   document.body.classList.add("boardOnly"); $("board").hidden = false; document.title = "🍽 호출 번호판 — 온에어"; ls.set("seenHelp", true);
   const tick = () => { const d = new Date(); $("bdClock").textContent = `${d.getHours() < 12 ? "오전" : "오후"} ${d.getHours() % 12 || 12}:${pad2(d.getMinutes())}`; };
   tick(); setInterval(tick, 10000); boardRender(false);
+}
+
+// ================= 📱 손님 휴대폰 알림 (QR · ntfy.sh 중계) =================
+const RELAY = "https://ntfy.sh/", PUBLIC_URL = "https://s95722462-cell.github.io/ONAIR/";
+function shopId() {                                       // 매장 코드: 아무도 짐작할 수 없는 값 (처음 한 번 만들고 저장)
+  let id = ls.get("shopId", "");
+  if (!id) { const a = new Uint8Array(12); crypto.getRandomValues(a); id = [...a].map(b => b.toString(36).padStart(2, "0")).join("").slice(0, 20); ls.set("shopId", id); }
+  return id;
+}
+function phonePush(num, kind) {
+  if (!ls.get("shopId", "")) return;                      // QR을 한 번도 안 만들었으면 보내지 않음
+  fetch(RELAY + "onair-" + shopId(), { method: "POST", body: `${num}|${kind}|${Date.now()}` }).catch(() => toast("📱 휴대폰 알림을 보내지 못했습니다 (인터넷 연결 확인)"));
+}
+function waitUrl(num) { const base = location.protocol.startsWith("http") ? location.href.split("#")[0].split("?")[0] : PUBLIC_URL; return base + "?wait=" + shopId() + (num ? "&n=" + encodeURIComponent(num) : ""); }
+function loadQR() { return window.QRCode ? Promise.resolve() : new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc); }); }
+async function qrDraw() {
+  const shared = $("qrShared").checked, num = (S.vals.num || "").trim() || "1", url = waitUrl(shared ? "" : num);
+  $("qrTitle").textContent = shared ? "📱 매장 공용 알림 QR" : `📱 ${num}번 알림 QR`;
+  $("qrDesc").innerHTML = shared ? "카운터·테이블에 붙여 두세요. 손님이 찍고 <b>자기 주문 번호</b>를 넣으면 됩니다." : `영수증과 함께 보여 주거나 인쇄해 드리세요. 손님이 찍으면 <b>${num}번</b>을 기다립니다.`;
+  $("qrBox").innerHTML = "<div class='muted'>QR 만드는 중…</div>";
+  try { await loadQR(); $("qrBox").innerHTML = ""; new QRCode($("qrBox"), { text: url, width: 480, height: 480, correctLevel: QRCode.CorrectLevel.M }); $("qrBox").title = url; }
+  catch (e) { $("qrBox").innerHTML = "<div class='muted'>QR 그리기 도구를 불러오지 못했습니다 (인터넷 연결 확인)</div>"; }
+}
+function qrOpen() { shopId(); $("qrShared").checked = ls.get("qrShared", false); $("qrDlg").showModal(); qrDraw(); }
+$("qrShared").onchange = () => { ls.set("qrShared", $("qrShared").checked); qrDraw(); };
+$("qrClose").onclick = () => $("qrDlg").close();
+$("qrPrint").onclick = () => {
+  const img = $("qrBox").querySelector("img")?.src || $("qrBox").querySelector("canvas")?.toDataURL(); if (!img) return;
+  const w = window.open("", "_blank", "width=500,height=700"); if (!w) { toast("팝업이 막혔습니다"); return; }
+  w.document.write(`<!doctype html><meta charset="utf-8"><title>알림 QR</title><body style="font-family:sans-serif;text-align:center;padding:30px"><h2>${$("qrTitle").textContent}</h2><img src="${img}" style="width:300px;height:300px"><p style="font-size:18px">휴대폰 카메라로 찍으면<br>메뉴가 준비됐을 때 알려 드립니다 🔔</p><p style="color:#888">Scan to get notified when your order is ready</p><script>setTimeout(() => print(), 400)<\/script></body>`); w.document.close();
+};
+if (WAIT) {                                               // 📱 손님 휴대폰: 대기 화면
+  document.body.classList.add("waitOnly"); $("waitp").hidden = false; document.title = "🔔 주문 번호 알림"; ls.set("seenHelp", true);
+  const q = new URLSearchParams(location.search); let num = (q.get("n") || "").trim(), es = null, ring = null, seen = new Set();
+  const since = Math.floor(Date.now() / 1000) - 120;      // 연결이 잠깐 끊겨도 놓치지 않게 (2분 전부터)
+  if (num) { $("wAsk").hidden = true; $("wBig").hidden = false; $("wBig").textContent = num; $("wTitle").textContent = "🔔 주문 번호"; }
+  const beep = () => { try { audio(); const t = ctx.currentTime; [0, .25, .5].forEach(d => { bell(1046.5, t + d, .22, .5); bell(1318.5, t + d + .12, .22, .5); }); } catch (e) {} };
+  const ready = kind => {
+    const msg = { rs_wait: "자리가 준비되었습니다! 입구로 와 주세요", rs_take: "포장 주문이 준비되었습니다! 카운터로 와 주세요" }[kind] || "메뉴가 준비되었습니다! 픽업대로 와 주세요";
+    $("waitp").classList.add("ready"); $("wTitle").textContent = "✅ " + num + "번 고객님"; $("wMsg").innerHTML = `<b style="font-size:22px">${msg}</b><br>Your order is ready!`;
+    $("wNote").hidden = true; $("wGo").hidden = false; $("wGo").textContent = "확인했어요"; $("wGo").onclick = () => { clearInterval(ring); navigator.vibrate?.(0); $("waitp").classList.remove("ready"); $("wGo").hidden = true; $("wMsg").textContent = "맛있게 드세요 😊"; };
+    clearInterval(ring); const go = () => { beep(); navigator.vibrate?.([500, 200, 500, 200, 900]); }; go(); ring = setInterval(go, 2500);
+    try { if (Notification.permission === "granted") navigator.serviceWorker?.ready.then(r => r.showNotification("🔔 " + num + "번 " + msg, { body: "Your order is ready!", tag: "onair", renotify: true, vibrate: [500, 200, 500] })).catch(() => {}); } catch (e) {}
+  };
+  const listen = () => {
+    es?.close(); es = new EventSource(RELAY + "onair-" + encodeURIComponent(WAIT) + "/sse?since=" + since);
+    es.onmessage = e => { try { const d = JSON.parse(e.data); if (d.event !== "message" || seen.has(d.id)) return; seen.add(d.id); const [n, kind] = String(d.message).split("|"); if (n.trim() === num) ready(kind); } catch (er) {} };
+  };
+  $("wGo").onclick = () => {
+    if (!num) { num = $("wNum").value.trim(); if (!num) { $("wNum").focus(); return; } $("wAsk").hidden = true; $("wBig").hidden = false; $("wBig").textContent = num; }
+    audio(); try { ctx.resume(); } catch (e) {}           // 소리 잠금 풀기 (한 번 눌러야 소리가 남)
+    navigator.vibrate?.(60);
+    try { navigator.wakeLock?.request("screen").catch(() => {}); } catch (e) {}
+    try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(() => {}); } catch (e) {}
+    listen(); $("wGo").hidden = true; $("wTitle").textContent = "⏳ 기다리는 중";
+    $("wMsg").innerHTML = `<b>${num}번</b>이 준비되면 소리·진동으로 알려 드립니다.<br>Waiting for order <b>${num}</b>…`;
+  };
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && es && $("wGo").hidden) { listen(); try { navigator.wakeLock?.request("screen").catch(() => {}); } catch (e) {} } });
 }
 
 // ================= 시작 =================
