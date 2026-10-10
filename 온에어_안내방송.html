@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>온에어 — 따뜻한 안내방송</title>
+<meta name="description" content="온에어(溫 On-Air) — 아나운서처럼 또박또박, 온기 있는 안내방송 (아파트·학교·회사·상가·병원·관공서). 한국어·영어·일본어·중국어 무료.">
+<meta name="theme-color" content="#c2410c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='16' fill='%23ea580c'/%3E%3Ccircle cx='32' cy='30' r='9' fill='%23fff'/%3E%3Cpath d='M16 30a16 16 0 0 1 32 0M10 30a22 22 0 0 1 44 0' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' opacity='.85'/%3E%3Crect x='29' y='38' width='6' height='14' rx='3' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --bg: #fbf7f2; --card: #ffffff; --line: #eee4d8; --ink: #2b2118; --dim: #8a7a6a; --accent: #ea580c; --accent2: #c2410c;
+    --soft: #fff1e6; --ok: #15803d; --red: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: "Pretendard Variable", Pretendard, "Malgun Gothic", sans-serif; color: var(--ink); background: var(--bg); }
+  input, select, textarea, button { font: inherit; color: inherit; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: max(16px, env(safe-area-inset-top)) 16px 60px; }
+
+  header { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+  .logo { display: flex; align-items: center; gap: 12px; margin-right: auto; }
+  .logo .mark { width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(145deg, #fb923c, #c2410c); display: grid; place-items: center; box-shadow: 0 10px 24px -10px #c2410caa; }
+  .logo b { font-size: 22px; letter-spacing: -.5px; display: block; }
+  .logo b em { font-style: normal; color: var(--accent); }
+  .logo small { color: var(--dim); font-size: 13px; }
+  .onair {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px; font-weight: 800; letter-spacing: 2px; font-size: 13px;
+    background: #f3ebe2; color: #b8a796; border: 1px solid var(--line); transition: .3s;
+  }
+  .onair i { width: 10px; height: 10px; border-radius: 50%; background: #d6c8b9; }
+  .onair.live { background: #dc2626; color: #fff; border-color: #dc2626; box-shadow: 0 0 0 4px #dc262633, 0 0 24px #dc262688; }
+  .onair.live i { background: #fff; animation: blink 1s infinite; }
+  @keyframes blink { 50% { opacity: .2; } }
+  .hbtn { height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 14px; }
+  .hbtn:hover { border-color: var(--accent); color: var(--accent2); }
+
+  .grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; }
+  @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: 0 1px 2px #0000000a; min-width: 0; }
+  .card h2 { margin: 0 0 12px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .card h2 .sp { flex: 1; }
+  .muted { color: var(--dim); font-size: 13px; }
+
+  .tpls { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+  .tpl { padding: 12px 8px; border-radius: 14px; border: 1px solid var(--line); background: #fffaf5; cursor: pointer; text-align: center; transition: .15s; }
+  .tpl:hover { border-color: #fdba74; background: var(--soft); }
+  .tpl.on { border-color: var(--accent); background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
+  .tpl .ic { font-size: 24px; display: block; }
+  .tpl b { font-size: 13.5px; font-weight: 600; }
+  .tpl.urgent { background: #fef2f2; border-color: #fecaca; }
+  .places { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .places button { padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 13.5px; }
+  .places button.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .grp + .grp { margin-top: 14px; }
+  .grp h4 { margin: 0 0 8px; font-size: 13px; color: var(--dim); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .grp h4::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .grp.em h4 { color: #b91c1c; }
+  .grp.mine h4 { color: #a16207; }
+  .grp.fav h4 { color: #b45309; }
+  .tpl { position: relative; }
+  .tpl .fv { position: absolute; left: 6px; top: 3px; font-size: 15px; color: #d6c8b9; padding: 0 3px; border-radius: 6px; line-height: 1.3; }
+  .tpl .fv:hover { color: #f59e0b; background: #fef3c7; }
+  .tpl .fv.on { color: #f59e0b; }
+  .grp.mine .tpl { position: relative; background: #fefce8; border-color: #fde68a; }
+  .grp.mine .tpl.on { border-color: #ca8a04; box-shadow: inset 0 0 0 1px #ca8a04; }
+  .tpl .x { position: absolute; right: 6px; top: 4px; font-size: 12px; color: #a8a29e; opacity: 0; padding: 2px 4px; border-radius: 6px; }
+  .tpl:hover .x { opacity: 1; } .tpl .x:hover { color: var(--red); background: #fee2e2; }
+  @media (hover: none) { .tpl .x { opacity: .7; } }
+  .icons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .icons button { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-size: 20px; cursor: pointer; }
+  .icons button.on { border-color: var(--accent); background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
+
+  .fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px 14px; margin-top: 14px; }
+  .fld label { display: block; font-size: 12.5px; color: var(--dim); margin-bottom: 4px; }
+  .fld input, .fld select { width: 100%; height: 40px; border: 1px solid var(--line); border-radius: 10px; padding: 0 10px; background: #fff; font-size: 15px; }
+  .fld input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px #fb923c33; }
+  .fld.wide { grid-column: 1 / -1; }
+
+  .langs { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+  .lang { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .lang.off { opacity: .45; }
+  .lang .lh { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #fffaf5; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .lang .lh b { font-size: 14px; }
+  .lang .lh .sp { flex: 1; }
+  .lang .lh select { height: 32px; border: 1px solid var(--line); border-radius: 8px; padding: 0 6px; max-width: 230px; font-size: 13px; background: #fff; }
+  .lang textarea { width: 100%; border: none; padding: 10px 12px; min-height: 92px; resize: vertical; line-height: 1.6; font-size: 15px; display: block; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: #fef3c7; color: #92400e; }
+  .tag.ok { background: #dcfce7; color: #166534; }
+  .mini { height: 30px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 12.5px; }
+  .mini:hover { border-color: var(--accent); color: var(--accent2); }
+  .switch { position: relative; width: 38px; height: 22px; flex: none; display: inline-block; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch span { position: absolute; inset: 0; border-radius: 22px; background: #e5d9cc; cursor: pointer; transition: .2s; }
+  .switch span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: .2s; box-shadow: 0 1px 3px #0003; }
+  .switch input:checked + span { background: var(--accent); }
+  .switch input:checked + span::after { transform: translateX(16px); }
+
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; }
+  .row + .row { margin-top: 12px; }
+  .row > label:first-child { min-width: 92px; color: var(--dim); font-size: 13px; }
+  .row input[type=range] { flex: 1; min-width: 120px; accent-color: var(--accent); }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .seg button { border: none; background: #fff; padding: 8px 12px; cursor: pointer; font-size: 13.5px; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on { background: var(--accent); color: #fff; }
+
+  .go { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; margin-top: 16px; }
+  .big { padding: 18px 10px; border-radius: 16px; border: none; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform .1s, filter .15s; }
+  .big:active { transform: scale(.98); }
+  .big.pre { background: #fff1e6; color: var(--accent2); border: 1px solid #fed7aa; }
+  .big.air { background: linear-gradient(135deg, #f97316, #c2410c); color: #fff; box-shadow: 0 14px 30px -14px #c2410c; }
+  .big.stop { background: #1f2937; color: #fff; }
+  .big:hover { filter: brightness(1.05); }
+  .now { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: #fffaf5; border: 1px dashed #fdba74; font-size: 14px; min-height: 46px; line-height: 1.55; }
+  .now b { color: var(--accent2); }
+  .est { font-size: 12.5px; color: var(--dim); margin-top: 6px; }
+
+  .list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; max-height: 260px; overflow: auto; }
+  .li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 12px; font-size: 13.5px; }
+  .li .t { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 52px; }
+  .li .d { color: var(--dim); font-size: 12px; }
+  .li .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .li button { border: none; background: none; cursor: pointer; color: var(--dim); font-size: 14px; }
+  .li button:hover { color: var(--red); }
+  .days { display: flex; gap: 4px; }
+  .days button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 12.5px; }
+  .days button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .wait { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #ecfdf5; border: 1px solid #bbf7d0; color: #166534; font-size: 13px; }
+  .voices { font-size: 12.5px; color: var(--dim); line-height: 1.7; }
+  .voices b { color: var(--ink); }
+  .tip { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; font-size: 13px; line-height: 1.6; }
+
+  .save { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+  .save .big { flex: 1; padding: 13px 10px; font-size: 15.5px; background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  .save select { height: 46px; border: 1px solid var(--line); border-radius: 12px; padding: 0 10px; background: #fff; }
+  dialog { border: none; border-radius: 18px; padding: 22px; width: min(520px, 92vw); box-shadow: 0 30px 80px #0005; color: var(--ink); }
+  dialog::backdrop { background: #2b211880; }
+  dialog h3 { margin: 0 0 10px; font-size: 18px; }
+  dialog ol { margin: 8px 0 12px; padding-left: 22px; line-height: 1.85; font-size: 14.5px; }
+  dialog .btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+  dialog .btns button { height: 42px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 15px; }
+  dialog .btns .ok { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+  .recdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #dc2626; margin-right: 6px; animation: blink 1s infinite; }
+  .recbar { position: fixed; inset: 0; z-index: 2147483000; display: flex; align-items: center; justify-content: center; background: #1c140ccc; padding: 20px; }
+  .recbar .box { width: min(560px, 100%); border-radius: 24px; padding: 30px 28px 24px; text-align: center; box-shadow: 0 30px 80px #0008; background: #fff; color: var(--ink); }
+  .recbar .big1 { font-size: 30px; font-weight: 800; margin: 6px 0 8px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .recbar .sub1 { font-size: 15px; color: var(--dim); line-height: 1.6; min-height: 24px; }
+  .recbar .line { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: #fff7ed; font-size: 15px; min-height: 46px; text-align: left; }
+  .recbar .act { margin-top: 18px; display: flex; justify-content: center; gap: 10px; }
+  .recbar .act button { height: 48px; padding: 0 24px; border-radius: 12px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; }
+  .recbar .dot { width: 22px; height: 22px; border-radius: 50%; background: #dc2626; box-shadow: 0 0 0 6px #dc262633; animation: blink 1s infinite; }
+  .recbar[hidden] { display: none; }
+  .recbar.rec .big1 { color: #dc2626; }
+  .recbar.done .big1 { color: #15803d; }
+  .recbar.err .big1 { color: #b91c1c; font-size: 22px; }
+  .recbar .tm { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+  .recbar .spin { width: 26px; height: 26px; border: 4px solid #e5d9cc; border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .foot { margin-top: 26px; text-align: center; font-size: 13px; color: var(--dim); }
+  .foot a { color: var(--accent2); text-decoration: none; font-weight: 600; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(16px); background: #2b2118; color: #fff; padding: 11px 18px;
+    border-radius: 12px; font-size: 14px; opacity: 0; transition: .25s; pointer-events: none; z-index: 30; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%); }
+  @media (max-width: 600px) {
+    input, select, textarea { font-size: 16px !important; }
+    .go { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <div class="mark"><svg width="28" height="28" viewBox="0 0 64 64"><circle cx="32" cy="30" r="9" fill="#fff"/><path d="M16 30a16 16 0 0 1 32 0M8 30a24 24 0 0 1 48 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".85"/><rect x="29" y="38" width="6" height="16" rx="3" fill="#fff"/></svg></div>
+      <div><b>온에어 <em>溫 On-Air</em></b><small>따뜻한 안내방송 · 우리 공간의 목소리 · 한국어 · English · 日本語 · 中文</small></div>
+    </div>
+    <span class="onair" id="onair"><i></i>ON AIR</span>
+    <button class="hbtn" id="setBtn">⚙ 장소 이름</button>
+    <button class="hbtn" id="helpBtn" title="사용법">❓</button>
+  </header>
+
+  <div class="grid">
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <section class="card">
+        <h2>① 어떤 방송인가요?</h2>
+        <div class="places" id="places"></div>
+        <div style="position:relative;margin-bottom:12px"><input id="tplQ" placeholder="🔍 방송 찾기 (예: 주차, 단수, 엘리베이터, 화재)" style="width:100%;height:42px;border:1px solid var(--line);border-radius:12px;padding:0 40px 0 14px;font-size:15px;background:#fffaf5">
+          <button id="tplQx" class="mini" style="position:absolute;right:6px;top:6px;height:30px" hidden>✕</button></div>
+        <div id="tpls"></div>
+        <div class="fields" id="fields"></div>
+      </section>
+
+      <section class="card">
+        <h2>② 방송 문장 <span class="sp"></span><button class="mini" id="mineSave" title="지금 문장을 버튼으로 고정해 두기" style="border-color:#fde68a;background:#fefce8">⭐ 내 방송으로 저장</button><button class="mini" id="regen" title="빈칸 내용으로 다시 만들기">↻ 다시 만들기</button></h2>
+        <p class="muted" style="margin:-4px 0 10px">빈칸을 채우면 4개 언어 문장이 자동으로 만들어집니다. 문장을 직접 고쳐도 됩니다.</p>
+        <div class="langs" id="langs"></div>
+        <button class="mini" id="addLang" style="margin-top:10px;height:38px;width:100%;border-style:dashed;font-size:14px">＋ 언어 추가 (베트남어 · 태국어 · 러시아어 · 아랍어 … 27개)</button>
+      </section>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <section class="card">
+        <h2>③ 목소리 · 분위기 · 방송</h2>
+        <div class="row"><label>말투</label>
+          <div class="seg" id="mood"><button data-v="calm">차분하게</button><button data-v="bright">밝게</button><button data-v="urgent">긴급</button></div></div>
+        <div class="row"><label>말 빠르기</label><input type="range" id="rate" min="0.75" max="1.25" step="0.01"><span id="rateL" style="width:46px">1.00</span></div>
+        <div class="row"><label>목소리 크기</label><input type="range" id="vol" min="0.3" max="1" step="0.05"><span id="volL" style="width:46px"></span></div>
+        <div class="row"><label>차임 (딩동댕동)</label><label class="switch"><input type="checkbox" id="chimeOn"><span></span></label>
+          <select id="chimeType" class="mini" style="height:32px"><option value="classic">딩동댕동 (기본)</option><option value="soft">부드러운 실로폰</option><option value="westminster">웨스트민스터</option></select></div>
+        <div class="row"><label>배경 음악</label><label class="switch"><input type="checkbox" id="bgOn"><span></span></label>
+          <input type="range" id="bgVol" min="0" max="1" step="0.05" title="배경 음악 크기 (말할 때는 자동으로 작아짐)"></div>
+        <div class="row"><label>자동 다듬기</label><label class="switch" title="방송·미리 듣기·파일 저장 때 직접 쓴 한국어 문장에 쉼표를 알아서 넣음"><input type="checkbox" id="autoPol"><span></span></label>
+          <span class="muted" style="font-size:12.5px">직접 쓰거나 고친 한국어 문장을, 방송할 때 쉼표를 넣어 읽음 (화면 글자는 그대로)</span></div>
+        <div class="row"><label>반복</label><div class="seg" id="rep"><button data-v="1">1번</button><button data-v="2">2번</button><button data-v="3">3번</button></div></div>
+        <div class="row" id="altRow"><label>남·여 번갈아</label><label class="switch" title="반복할 때 두 번째는 반대 성별 목소리로"><input type="checkbox" id="altOn"><span></span></label>
+          <span class="muted" id="altInfo"></span></div>
+        <div class="row" style="align-items:flex-start"><label style="padding-top:6px">목소리 높이</label><div id="pitchBox" style="display:flex;flex-wrap:wrap;gap:6px 10px;flex:1"></div></div>
+        <div class="go">
+          <button class="big pre" id="preBtn">▶ 미리 듣기</button>
+          <button class="big air" id="airBtn">📢 방송 시작</button>
+        </div>
+        <div class="now" id="now">방송할 문장을 만든 뒤 <b>미리 듣기</b>로 확인하고 <b>방송 시작</b>을 누르세요.</div>
+        <div class="est" id="est"></div>
+      </section>
+
+      <section class="card" style="border-color:#c7d2fe;background:#f8faff">
+        <h2>④ 음성 파일 만들기</h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">미리 듣기·방송 시작과는 <b>따로 동작</b>합니다. 아래 버튼 하나만 누르면 방송을 한 번 틀면서 녹음해 <b>MP3·WAV 파일</b>로 저장합니다. 방송 장비에 넣거나 카톡으로 보낼 때 쓰세요.</p>
+        <div class="save" style="margin-top:0">
+          <button class="big" id="recBtn" title="방송을 음성 파일로 저장 (PC의 Edge·Chrome)" style="background:#eef2ff;border-color:#c7d2fe;color:#3730a3">💾 음성 파일로 저장</button>
+          <select id="recFmt" title="파일 형식"><option value="mp3">MP3</option><option value="wav">WAV</option></select>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>⑤ 예약 방송 <span class="sp"></span><label class="switch" title="예약 방송 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="schedOn"><span></span></label></h2>
+        <div class="row"><input type="time" id="sTime" value="09:00" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"><div class="days" id="sDays"></div></div>
+        <div class="row"><button class="mini" id="sAdd">＋ 지금 문장으로 예약 추가</button><span class="muted">요일을 안 고르면 매일</span></div>
+        <div class="list" id="sList"></div>
+        <div class="wait" id="sWait" hidden></div>
+      </section>
+
+      <section class="card" id="cdCard">
+        <h2>⏱ 카운트다운 방송 <span class="sp"></span><label class="switch" title="카운트다운 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="cdOn"><span></span></label></h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">공연·예식 시작 시각을 정하면, <b>정한 분 전마다 자동으로</b> 안내합니다. (예: 10분 전 → 5분 전 → 1분 전 → 정각)</p>
+        <div class="row"><label>시작 시각</label><input type="time" id="cdTime" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"></div>
+        <div class="row"><label>무엇이 시작?</label><input id="cdWhat" placeholder="비우면 장소에 맞게 (공연·예식·행사)" style="flex:1;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px"></div>
+        <div class="row" style="align-items:flex-start"><label style="padding-top:6px">알릴 때</label><div class="days" id="cdSteps" style="flex-wrap:wrap"></div></div>
+        <div class="wait" id="cdWait" hidden></div>
+      </section>
+
+      <section class="card">
+        <h2>⑥ 방송 기록 <span class="muted" id="hCount" style="font-weight:400;font-size:12px"></span><span class="sp"></span><button class="mini" id="hCsv" title="엑셀에서 열 수 있는 파일로 저장 (업무일지용)">📊 엑셀</button><button class="mini" id="hClear">비우기</button></h2>
+        <div class="list" id="hList"></div>
+      </section>
+
+      <section class="card">
+        <h2>📖 발음 사전</h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">이름·고유명사를 원하는 대로 읽게 합니다. 화면 글자는 그대로, <b>읽을 때만</b> 바꿉니다. (예: 행복마을 → 행봉마을, KE → 대한항공)</p>
+        <div class="row"><input id="dFrom" placeholder="쓰는 말" style="flex:1;min-width:90px;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px">
+          <span>→</span><input id="dTo" placeholder="읽는 말" style="flex:1;min-width:90px;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px"></div>
+        <div class="row"><select id="dLang" class="mini" style="height:34px"></select><button class="mini" id="dTest">▶ 들어 보기</button><button class="mini" id="dAdd" style="background:var(--accent);border-color:var(--accent);color:#fff">＋ 추가</button></div>
+        <div class="list" id="dList"></div>
+      </section>
+
+      <section class="card">
+        <h2>💼 백업 · 옮기기</h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">내 방송 · 즐겨찾기 · 예약 · 카운트다운 · 발음 사전 · 방송 기록 · 더한 언어 · 목소리·설정을 <b>파일 하나</b>로 저장합니다. 다른 PC나 브라우저에서 불러오면 그대로 옮겨집니다.</p>
+        <div class="row"><button class="mini" id="bkSave" style="height:40px;flex:1;background:var(--accent);border-color:var(--accent);color:#fff;font-size:14px">⬇ 백업 파일 저장</button>
+          <button class="mini" id="bkLoad" style="height:40px;flex:1;font-size:14px">⬆ 백업 불러오기</button></div>
+        <div class="muted" id="bkInfo" style="margin-top:8px;font-size:12.5px"></div>
+        <input type="file" id="bkFile" accept=".json,application/json" hidden>
+      </section>
+
+      <section class="card">
+        <h2>🎙 쓸 수 있는 목소리</h2>
+        <div class="voices" id="voiceInfo">목소리를 찾는 중…</div>
+        <div class="tip" id="voiceTip" hidden></div>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="foot">온에어 (溫 On-Air) · 따뜻한 안내방송 · 문의 : <a href="mailto:ds5yrj@hotmail.com">ds5yrj@hotmail.com</a></div>
+<dialog id="mineDlg">
+  <h3>⭐ 내 방송으로 저장</h3>
+  <div class="muted" style="font-size:14px;margin-bottom:12px">지금 문장(켜 둔 언어 모두)을 버튼으로 고정합니다. 맨 위 <b>⭐ 내 방송</b> 묶음에 생기고, 장소를 바꿔도 남아 있습니다.</div>
+  <div class="fld"><label>버튼 이름</label><input id="mineName" placeholder="예: 주차장 물청소 / 놀이터 공사"></div>
+  <div class="fld" style="margin-top:10px"><label>아이콘</label><div class="icons" id="mineIcons"></div></div>
+  <div class="btns" style="margin-top:16px"><button id="mineNo">취소</button><button class="ok" id="mineOk">저장</button></div>
+</dialog>
+<dialog id="langDlg" style="width:min(640px,94vw)">
+  <h3>＋ 언어 추가</h3>
+  <div class="muted" style="font-size:13.5px;line-height:1.6;margin-bottom:10px">고른 언어는 방송 문장이 <b>자동 번역</b>됩니다 (기기 안에서 무료 · 처음 한 번 번역 파일을 받음). 번역이 안 되는 언어는 직접 써 주세요.<br>★★★ = 고품질 AI 목소리 · 🌐 = 자동 번역 가능</div>
+  <div id="langGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;max-height:56vh;overflow:auto"></div>
+  <div class="btns" style="margin-top:14px"><button id="langClose" class="ok">닫기</button></div>
+</dialog>
+<dialog id="polDlg" style="width:min(640px,94vw)">
+  <h3>✨ 방송용으로 다듬기</h3>
+  <div class="muted" style="font-size:13px;margin-bottom:8px">아나운서처럼 끊어 읽도록 <b>쉼표</b>를 넣고, 시간·전화번호를 읽기 좋게 바꿉니다. 고칠 점도 알려 드립니다.</div>
+  <div id="polReport" style="font-size:14px;line-height:1.8;margin-bottom:10px"></div>
+  <div class="fld"><label>다듬은 문장 (여기서 더 고쳐도 됩니다)</label>
+    <textarea id="polText" rows="6" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;line-height:1.7;resize:vertical"></textarea></div>
+  <div class="btns" style="justify-content:space-between;margin-top:12px">
+    <button id="polPlay">▶ 다듬은 문장 듣기</button>
+    <span style="display:flex;gap:8px"><button id="polNo">취소</button><button class="ok" id="polOk">적용</button></span>
+  </div>
+</dialog>
+<dialog id="bkDlg">
+  <h3>⬆ 백업 불러오기</h3>
+  <div id="bkSum" style="font-size:14px;line-height:1.8"></div>
+  <div class="muted" style="font-size:13px;margin-top:8px;line-height:1.6"><b>합치기</b>: 지금 것은 그대로 두고, 백업에 있는 내 방송·예약·사전·기록을 더합니다 (같은 이름은 백업 것으로).<br><b>모두 바꾸기</b>: 지금 것을 지우고 백업 그대로 되돌립니다.</div>
+  <div class="btns" style="margin-top:14px"><button id="bkNo">취소</button><button id="bkReplace" style="color:var(--red)">모두 바꾸기</button><button class="ok" id="bkMerge">합치기</button></div>
+</dialog>
+<dialog id="urgDlg" style="border:3px solid #dc2626">
+  <h3 style="color:#b91c1c">🚨 긴급 방송을 내보낼까요?</h3>
+  <div class="muted" style="font-size:14px;line-height:1.6">입주민·이용자 모두에게 <b>긴급 안내</b>가 바로 나갑니다. 내용을 한 번 더 확인해 주세요.</div>
+  <div id="urgSum" style="margin-top:10px;padding:12px;border-radius:10px;background:#fef2f2;font-size:15px;line-height:1.6"></div>
+  <div class="btns" style="margin-top:14px"><button id="urgNo">취소</button><button id="urgGo" style="background:#dc2626;border-color:#dc2626;color:#fff;font-weight:800">🚨 긴급 방송 시작</button></div>
+</dialog>
+<dialog id="helpDlg" style="width:min(600px,94vw)">
+  <h3>👋 온에어 사용법</h3>
+  <ol style="font-size:15px;line-height:1.9;margin:6px 0 10px;padding-left:22px">
+    <li><b>① 장소</b>를 고르고 <b>방송 종류</b>를 누릅니다. (🔍 찾기, ★ 즐겨찾기도 쓸 수 있어요)</li>
+    <li>날짜·시간 같은 <b>빈칸</b>을 채우면 <b>② 방송 문장</b>이 4개 국어로 자동으로 만들어집니다. 문장은 직접 고쳐도 됩니다.</li>
+    <li><b>③ ▶ 미리 듣기</b>로 확인하고 <b>📢 방송 시작</b>을 누릅니다. 목소리·빠르기·차임·배경 음악은 ③에서 바꿉니다.</li>
+    <li>자주 쓰는 방송은 <b>⭐ 내 방송</b>으로 저장하고, 매일 하는 방송은 <b>⑤ 예약</b>·<b>📚 방송 묶음</b>으로 묶어 두세요.</li>
+    <li>게시판용 공지는 <b>📄 공지문</b>, 카톡은 <b>💬 카톡 복사</b>, 방송 장비용 파일은 <b>④ 음성 파일</b>로 만듭니다.</li>
+  </ol>
+  <div class="muted" style="font-size:13px;line-height:1.6">💡 가장 자연스러운 목소리는 <b>PC의 Microsoft Edge</b>에서 나옵니다. 모든 내용은 이 PC 브라우저에 저장되니, 가끔 <b>💼 백업</b>을 해 두세요.</div>
+  <div class="btns" style="margin-top:12px"><button class="ok" id="helpOk">시작하기</button></div>
+</dialog>
+<dialog id="aptDlg">
+  <h3>⚙ 장소 이름</h3>
+  <div class="muted" style="font-size:14px;margin-bottom:12px">방송 첫 인사에 들어갑니다. 예: "안녕하십니까. <b>행복마을 3단지</b> 관리사무소에서…", "<b>겐시스템 구미공장</b> 총무팀에서…"</div>
+  <div class="fld" style="margin-bottom:10px"><label>한국어 방송용</label><input id="aptKo" placeholder="예: 행복마을 3단지 / 겐시스템 구미공장"></div>
+  <div class="fld"><label>영어·일본어·중국어 방송용 (비워도 됩니다)</label><input id="aptEn" placeholder="예: Haengbok Village Complex 3"></div>
+  <div class="btns" style="justify-content:space-between;margin-top:16px">
+    <button id="aptDel" style="color:var(--red)">🗑 이름 지우기</button>
+    <span style="display:flex;gap:8px"><button id="aptNo">취소</button><button class="ok" id="aptOk">저장</button></span>
+  </div>
+</dialog>
+<dialog id="recDlg">
+  <h3>💾 음성 파일로 저장</h3>
+  <div class="muted" style="font-size:14px;line-height:1.6">브라우저 음성은 직접 파일로 꺼낼 수 없어서, <b>PC에서 나오는 소리를 그대로 녹음</b>합니다. 녹음하는 동안 스피커로 방송이 한 번 나옵니다.</div>
+  <ol>
+    <li>아래 <b>녹음 시작</b>을 누르면 화면 공유 창이 뜹니다.</li>
+    <li><b>전체 화면</b>(화면 1)을 고르세요.</li>
+    <li>창 아래쪽 <b>"시스템 오디오도 공유"</b>를 꼭 켜세요. (안 켜면 소리가 담기지 않습니다)</li>
+    <li><b>공유</b>를 누르면 방송이 나오고, 끝나면 파일이 자동으로 저장됩니다.</li>
+  </ol>
+  <div class="muted" style="font-size:13px">녹음 중에는 다른 소리(음악·유튜브·알림)를 꺼 주세요. 함께 녹음됩니다. 화면은 녹화하지 않습니다.</div>
+  <div class="btns"><button id="recNo">취소</button><button class="ok" id="recGo">녹음 시작</button></div>
+</dialog>
+<div class="recbar" id="recBar" hidden></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const ls = { get(k, d) { try { const v = localStorage.getItem("onair_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+             set(k, v) { try { localStorage.setItem("onair_" + k, JSON.stringify(v)); } catch (e) {} } };
+function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2200); }
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const pad2 = n => String(n).padStart(2, "0");
+
+// ================= 언어별 표기 =================
+const BASE_LANGS = [
+  { id: "ko", name: "한국어", flag: "🇰🇷", bcp: "ko-KR" },
+  { id: "en", name: "English", flag: "🇺🇸", bcp: "en-US" },
+  { id: "ja", name: "日本語", flag: "🇯🇵", bcp: "ja-JP" },
+  { id: "zh", name: "中文", flag: "🇨🇳", bcp: "zh-CN" },
+];
+// 더할 수 있는 언어 (Edge·Chrome 무료 AI 음성이 있는 언어) — tr: 자동 번역 언어 코드
+const MORE_LANGS = [
+  ["vi", "베트남어", "Tiếng Việt", "🇻🇳", "vi-VN"], ["th", "태국어", "ไทย", "🇹🇭", "th-TH"], ["id", "인도네시아어", "Bahasa Indonesia", "🇮🇩", "id-ID"],
+  ["ms", "말레이어", "Bahasa Melayu", "🇲🇾", "ms-MY"], ["fil", "필리핀어", "Filipino", "🇵🇭", "fil-PH"], ["uz", "우즈베크어", "Oʻzbek", "🇺🇿", "uz-UZ"],
+  ["mn", "몽골어", "Монгол", "🇲🇳", "mn-MN"], ["kk", "카자흐어", "Қазақ", "🇰🇿", "kk-KZ"], ["ru", "러시아어", "Русский", "🇷🇺", "ru-RU"],
+  ["ne", "네팔어", "नेपाली", "🇳🇵", "ne-NP"], ["km", "캄보디아어", "ខ្មែរ", "🇰🇭", "km-KH"], ["lo", "라오어", "ລາວ", "🇱🇦", "lo-LA"],
+  ["my", "미얀마어", "မြန်မာ", "🇲🇲", "my-MM"], ["si", "싱할라어(스리랑카)", "සිංහල", "🇱🇰", "si-LK"], ["bn", "벵골어", "বাংলা", "🇧🇩", "bn-BD"],
+  ["hi", "힌디어", "हिन्दी", "🇮🇳", "hi-IN"], ["ur", "우르두어", "اردو", "🇵🇰", "ur-PK"], ["ta", "타밀어", "தமிழ்", "🇮🇳", "ta-IN"],
+  ["zht", "중국어(번체·대만)", "繁體中文", "🇹🇼", "zh-TW", "zh-Hant"], ["ar", "아랍어", "العربية", "🇸🇦", "ar-SA"], ["fa", "페르시아어", "فارسی", "🇮🇷", "fa-IR"],
+  ["tr", "터키어", "Türkçe", "🇹🇷", "tr-TR"], ["es", "스페인어", "Español", "🇪🇸", "es-ES"], ["fr", "프랑스어", "Français", "🇫🇷", "fr-FR"],
+  ["de", "독일어", "Deutsch", "🇩🇪", "de-DE"], ["it", "이탈리아어", "Italiano", "🇮🇹", "it-IT"], ["pt", "포르투갈어(브라질)", "Português", "🇧🇷", "pt-BR"],
+].map(([id, ko, name, flag, bcp, tr]) => ({ id, ko, name, flag, bcp, tr: tr || id, extra: true }));
+let LANGS = [...BASE_LANGS];
+function rebuildLangs() {
+  LANGS = [...BASE_LANGS, ...(S.extra || []).map(id => MORE_LANGS.find(x => x.id === id)).filter(Boolean)];
+  const o = S.order || []; LANGS.sort((a, b) => (o.indexOf(a.id) + 1 || 99) - (o.indexOf(b.id) + 1 || 99));   // 사용자가 정한 방송 순서
+}
+function moveLang(id, dir) {
+  const ids = LANGS.map(L => L.id), i = ids.indexOf(id), j = i + dir; if (j < 0 || j >= ids.length) return;
+  [ids[i], ids[j]] = [ids[j], ids[i]]; S.order = ids; rebuildLangs(); save(); renderLangs(); estimate(); altInfo();
+}
+const WD = { ko: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+             en: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+             ja: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"],
+             zh: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"] };
+const MON = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+function fDate(v, L) {
+  if (!v) return "";
+  const d = new Date(v + "T00:00:00"), m = d.getMonth() + 1, day = d.getDate(), w = d.getDay();
+  return L === "ko" ? `${m}월 ${day}일 ${WD.ko[w]}` : L === "en" ? `${WD.en[w]}, ${MON[m - 1]} ${day}` : L === "ja" ? `${m}月${day}日${WD.ja[w]}` : `${m}月${day}日${WD.zh[w]}`;
+}
+function fTime(v, L) {
+  if (!v) return "";
+  let [h, m] = v.split(":").map(Number);
+  if (L === "ko") {
+    const pre = h === 0 ? "밤" : h < 12 ? "오전" : h === 12 ? "낮" : "오후";
+    const hh = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    return `${pre} ${hh}시${m ? ` ${m}분` : ""}`;
+  }
+  if (L === "en") {
+    if (h === 12 && !m) return "noon"; if (h === 0 && !m) return "midnight";
+    const hh = h % 12 || 12; return `${hh}${m ? ":" + pad2(m) : ""} ${h < 12 ? "a.m." : "p.m."}`;
+  }
+  if (L === "ja") { const hh = h % 12 || 12; return `${h < 12 ? "午前" : "午後"}${hh}時${m ? m + "分" : ""}`; }
+  const pre = h < 6 ? "凌晨" : h < 12 ? "上午" : h === 12 ? "中午" : h < 18 ? "下午" : "晚上";
+  const hh = h > 12 ? h - 12 : h; return `${pre}${hh}点${m ? m + "分" : ""}`;
+}
+function fRange(s, e, L) {
+  const a = fTime(s, L), b = fTime(e, L);
+  if (!a) return "";
+  if (!b) return L === "ko" ? `${a}부터` : L === "en" ? `from ${a}` : L === "ja" ? `${a}から` : `${a}起`;
+  return L === "ko" ? `${a}부터 ${b}까지` : L === "en" ? `from ${a} to ${b}` : L === "ja" ? `${a}から${b}まで` : `${a}至${b}`;
+}
+function fDateRange(s, e, L) {
+  const a = fDate(s, L), b = fDate(e, L);
+  if (!b || s === e) return a;
+  return L === "ko" ? `${a}부터 ${b}까지` : L === "en" ? `from ${a} to ${b}` : L === "ja" ? `${a}から${b}まで` : `${a}至${b}`;
+}
+// 동·호 → 각 언어 (예: "101동, 102동" / "101동 1203호" / "전 세대")
+function fPlace(v, L, kind = "bld") {
+  v = (v || "").trim();
+  const all = !v || /^(전\s*세대|전체|모든\s*세대|전\s*동|단지\s*전체)$/.test(v);
+  if (all) return { ko: kind === "elev" ? "전체 동" : "전 세대", en: kind === "elev" ? "all buildings" : "all households", ja: kind === "elev" ? "全棟" : "全世帯", zh: kind === "elev" ? "所有楼栋" : "全体住户" }[L];
+  const units = [...v.matchAll(/(\d+)\s*동\s*(\d+)\s*호/g)];
+  if (units.length) {
+    const it = units.map(([, b, u]) => L === "ko" ? `${b}동 ${u}호` : L === "en" ? `Unit ${u}, Building ${b}` : L === "ja" ? `${b}棟${u}号室` : `${b}栋${u}室`);
+    return join(it, L);
+  }
+  const blds = [...v.matchAll(/(\d+)\s*동/g)].map(m => m[1]);
+  if (blds.length) {
+    if (L === "ko") return blds.map(b => b + "동").join(", ");
+    if (L === "en") return (blds.length > 1 ? "Buildings " : "Building ") + join(blds, "en");
+    return join(blds.map(b => b + (L === "ja" ? "棟" : "栋")), L);
+  }
+  return v;                                              // 그 밖의 글은 그대로 (외국어 문장은 직접 확인)
+}
+function koBetween(s, e) {                               // "오전 8시부터 오후 1시 사이"
+  if (!s) return "이사 시간";
+  return e ? `${fTime(s, "ko")}부터 ${fTime(e, "ko")} 사이` : `${fTime(s, "ko")} 이후`;
+}
+function fFirePos(v, L) {                                // "103동 5층" → the 5th floor of Building 103 / 103棟5階 / 103栋5楼
+  v = (v || "").trim();
+  if (!v) return (S.place && S.place !== "apt" ? { ko: "건물 내", en: "in the building", ja: "建物内", zh: "楼内" } : { ko: "단지 내", en: "in our apartment complex", ja: "団地内", zh: "小区内" })[L];
+  const m = v.match(/^(\d+)\s*동(?:\s*(\d+)\s*층)?$/);
+  if (!m) return L === "en" ? "at " + v : v;
+  const [, b, f] = m, ord = n => n + (/1[123]$/.test(n) ? "th" : { 1: "st", 2: "nd", 3: "rd" }[n.slice(-1)] || "th");
+  if (L === "ko") return f ? `${b}동 ${f}층` : `${b}동`;
+  if (L === "en") return f ? `on the ${ord(f)} floor of Building ${b}` : `in Building ${b}`;
+  if (L === "ja") return f ? `${b}棟${f}階` : `${b}棟`;
+  return f ? `${b}栋${f}楼` : `${b}栋`;
+}
+const CITY = {                                           // 자주 쓰는 도시: 한국어로 쓰면 외국어 이름으로 바꿈 [en, ja, zh]
+  서울: ["Seoul", "ソウル", "首尔"], 인천: ["Incheon", "仁川", "仁川"], 김포: ["Gimpo", "金浦", "金浦"], 부산: ["Busan", "釜山", "釜山"], 제주: ["Jeju", "済州", "济州"],
+  대구: ["Daegu", "大邱", "大邱"], 광주: ["Gwangju", "光州", "光州"], 대전: ["Daejeon", "大田", "大田"], 울산: ["Ulsan", "蔚山", "蔚山"], 강릉: ["Gangneung", "江陵", "江陵"],
+  여수: ["Yeosu", "麗水", "丽水"], 목포: ["Mokpo", "木浦", "木浦"], 포항: ["Pohang", "浦項", "浦项"], 구미: ["Gumi", "亀尾", "龟尾"], 수원: ["Suwon", "水原", "水原"],
+  도쿄: ["Tokyo", "東京", "东京"], 오사카: ["Osaka", "大阪", "大阪"], 후쿠오카: ["Fukuoka", "福岡", "福冈"], 삿포로: ["Sapporo", "札幌", "札幌"], 나고야: ["Nagoya", "名古屋", "名古屋"], 오키나와: ["Okinawa", "沖縄", "冲绳"],
+  베이징: ["Beijing", "北京", "北京"], 상하이: ["Shanghai", "上海", "上海"], 칭다오: ["Qingdao", "青島", "青岛"], 홍콩: ["Hong Kong", "香港", "香港"], 타이베이: ["Taipei", "台北", "台北"],
+  방콕: ["Bangkok", "バンコク", "曼谷"], 하노이: ["Hanoi", "ハノイ", "河内"], 호찌민: ["Ho Chi Minh City", "ホーチミン", "胡志明市"], 다낭: ["Da Nang", "ダナン", "岘港"], 마닐라: ["Manila", "マニラ", "马尼拉"], 세부: ["Cebu", "セブ", "宿务"],
+  싱가포르: ["Singapore", "シンガポール", "新加坡"], 쿠알라룸푸르: ["Kuala Lumpur", "クアラルンプール", "吉隆坡"], 자카르타: ["Jakarta", "ジャカルタ", "雅加达"], 발리: ["Bali", "バリ", "巴厘岛"],
+  울란바토르: ["Ulaanbaatar", "ウランバートル", "乌兰巴托"], 타슈켄트: ["Tashkent", "タシケント", "塔什干"], 뉴욕: ["New York", "ニューヨーク", "纽约"], 로스앤젤레스: ["Los Angeles", "ロサンゼルス", "洛杉矶"],
+  샌프란시스코: ["San Francisco", "サンフランシスコ", "旧金山"], 하와이: ["Hawaii", "ハワイ", "夏威夷"], 괌: ["Guam", "グアム", "关岛"], 시드니: ["Sydney", "シドニー", "悉尼"],
+  런던: ["London", "ロンドン", "伦敦"], 파리: ["Paris", "パリ", "巴黎"], 프랑크푸르트: ["Frankfurt", "フランクフルト", "法兰克福"], 두바이: ["Dubai", "ドバイ", "迪拜"],
+};
+function fDest(v, L) {
+  v = (v || "").trim(); const c = CITY[v.replace(/\s/g, "")];
+  return c && L !== "ko" ? c[{ en: 0, ja: 1, zh: 2 }[L]] : v;
+}
+function fMvUnit(v, L) {                                 // 이사 세대 (비우면 '한 세대')
+  if (!(v || "").trim()) return { ko: "한", en: "a household in our complex", ja: "ある世帯", zh: "一户住户" }[L];
+  return fPlace(v, L);
+}
+function fSpot(v, L) {                                   // 주차 자제 구역: "103동 앞" → in front of Building 103 / 103棟の前 / 103栋前
+  v = (v || "").trim();
+  if (!v) return { ko: "이삿짐 차량 통로", en: "where the moving truck needs access", ja: "引っ越しトラックが通る場所", zh: "搬家车辆通行区域" }[L];
+  const m = v.match(/^(\d+)\s*동\s*(앞|입구|옆)?$/);
+  if (m) {
+    const b = m[1], w = m[2] || "앞";
+    if (L === "ko") return `${b}동 ${w}`;
+    if (L === "en") return (w === "옆" ? "next to" : w === "입구" ? "at the entrance of" : "in front of") + ` Building ${b}`;
+    if (L === "ja") return `${b}棟の${w === "옆" ? "横" : w === "입구" ? "入口" : "前"}`;
+    return `${b}栋${w === "옆" ? "旁边" : w === "입구" ? "入口" : "前"}`;
+  }
+  return L === "ko" ? v.replace(/에$/, "") : v;            // 그 밖의 글은 외국어 문장에 그대로 (확인 필요)
+}
+function join(a, L) {
+  if (L === "en") return a.length < 3 ? a.join(" and ") : a.slice(0, -1).join(", ") + ", and " + a.at(-1);
+  return a.join(L === "ko" ? ", " : "、");
+}
+// 차량 번호: 한글 글자는 로마자로 (외국어 음성이 읽을 수 있게)
+function roman(s) {
+  const I = ["g", "kk", "n", "d", "tt", "r", "m", "b", "pp", "s", "ss", "", "j", "jj", "ch", "k", "t", "p", "h"];
+  const V = ["a", "ae", "ya", "yae", "eo", "e", "yeo", "ye", "o", "wa", "wae", "oe", "yo", "u", "wo", "we", "wi", "yu", "eu", "ui", "i"];
+  const F = ["", "k", "k", "k", "n", "n", "n", "t", "l", "k", "m", "l", "l", "l", "p", "l", "m", "p", "p", "t", "t", "ng", "t", "t", "k", "t", "p", "t"];
+  return s.replace(/[가-힣]/g, c => { const n = c.charCodeAt(0) - 0xac00; return " " + I[Math.floor(n / 588)] + V[Math.floor(n % 588 / 28)] + F[n % 28] + " "; }).replace(/\s+/g, " ").trim();
+}
+const SURNAME = { 김: "Kim", 이: "Lee", 박: "Park", 최: "Choi", 정: "Jung", 강: "Kang", 조: "Cho", 윤: "Yoon", 장: "Jang", 임: "Lim", 한: "Han", 오: "Oh", 서: "Seo",
+  신: "Shin", 권: "Kwon", 황: "Hwang", 안: "Ahn", 송: "Song", 류: "Ryu", 유: "Yoo", 홍: "Hong", 전: "Jeon", 고: "Ko", 문: "Moon", 양: "Yang", 손: "Son", 배: "Bae", 백: "Baek", 허: "Heo", 남: "Nam", 노: "Noh", 하: "Ha", 곽: "Kwak", 성: "Sung", 차: "Cha", 주: "Joo", 우: "Woo", 구: "Koo", 민: "Min", 진: "Jin", 나: "Na", 지: "Ji", 엄: "Uhm", 채: "Chae", 원: "Won", 천: "Cheon", 방: "Bang", 공: "Kong", 현: "Hyun", 함: "Ham", 변: "Byun", 염: "Yeom", 여: "Yeo", 추: "Choo", 도: "Do", 소: "So", 석: "Seok", 선: "Sun", 설: "Seol", 마: "Ma", 길: "Gil", 연: "Yeon", 위: "Wi", 표: "Pyo", 명: "Myung", 기: "Ki", 반: "Ban", 라: "Ra", 왕: "Wang", 금: "Keum", 옥: "Ok", 육: "Yook", 인: "In", 맹: "Maeng", 제: "Je", 모: "Mo", 탁: "Tak", 국: "Kook", 어: "Eo", 은: "Eun", 편: "Pyeon", 용: "Yong", 예: "Ye", 경: "Kyung", 봉: "Bong", 사: "Sa", 부: "Boo", 황보: "Hwangbo", 남궁: "Namgung", 제갈: "Jegal", 선우: "Sunwoo", 독고: "Dokgo" };
+function romanName(v) {                                   // 한글 이름 → 로마자 (외국어 방송용): 김민준 → Kim Minjun
+  v = (v || "").trim(); if (!/[가-힣]/.test(v)) return v;
+  const ws = v.split(/\s+/);
+  if (ws.length === 2 && SURNAME[ws[0]] && /^[가-힣]+$/.test(ws[1])) { const r = roman(ws[1]).replace(/\s+/g, ""); return `${SURNAME[ws[0]]} ${r.charAt(0).toUpperCase()}${r.slice(1)}`; }   // '최 유나' 처럼 띄어 쓴 경우
+  return ws.map(w => {
+    if (!/^[가-힣]+$/.test(w)) return w;
+    const two = w.length >= 3 && SURNAME[w.slice(0, 2)] ? 2 : 1, sn = w.length >= 2 ? SURNAME[w.slice(0, two)] : null;
+    const rest = (sn ? w.slice(two) : w), r = roman(rest).replace(/\s+/g, "");
+    const given = r.charAt(0).toUpperCase() + r.slice(1);
+    return sn ? `${sn} ${given}` : given;
+  }).join(" ");
+}
+function fCar(v, L) { v = (v || "").trim(); return L === "ko" ? v : roman(v); }
+
+// 한국어 자유 문장 다듬기: 14:00 → 오후 2시, 10:00~12:00 → 오전 10시부터 낮 12시까지, 전화번호는 한 자리씩
+function koNormalize(t) {
+  const NUM = "공일이삼사오육칠팔구";
+  t = t.replace(/(\d{1,2}):(\d{2})\s*[~\-–]\s*(\d{1,2}):(\d{2})/g, (_, a, b, c, d) => fRange(`${pad2(a)}:${b}`, `${pad2(c)}:${d}`, "ko"));
+  t = t.replace(/\b(\d{1,2}):(\d{2})\b/g, (_, a, b) => fTime(`${pad2(a)}:${b}`, "ko"));
+  t = t.replace(/\b(0\d{1,2})-(\d{3,4})-(\d{4})\b/g, (...g) => g.slice(1, 4).map(x => [...x].map(c => NUM[c]).join("")).join(", "));
+  return t;
+}
+
+// ================= 템플릿 (4개 국어 — 직접 작성) =================
+const F = {
+  date: { label: "날짜", type: "date" }, date2: { label: "끝나는 날짜", type: "date" },
+  start: { label: "시작 시각", type: "time" }, end: { label: "끝 시각", type: "time" },
+  place: { label: "대상 동 (예: 101동, 102동 / 비우면 전 세대)", type: "text" },
+  unit: { label: "동·호수 (예: 101동 1203호)", type: "text" },
+  car: { label: "차량 번호 (예: 12가 3456)", type: "text" },
+  child: { label: "찾는 사람 (예: 다섯 살 남자아이, 파란 티셔츠)", type: "text", free: true, wide: true },
+  item: { label: "습득한 물건 (예: 검은색 지갑)", type: "text", free: true },
+  groom: { label: "신랑 이름 (예: 김민준)", type: "text", free: true },
+  bride: { label: "신부 이름 (예: 이서연)", type: "text", free: true },
+  hall: { label: "홀 이름 (예: 그랜드홀 / 비우면 '본식장')", type: "text", free: true },
+  flight: { label: "편명 (예: KE703)", type: "text" },
+  dest: { label: "목적지·행선지 (예: 도쿄 / 부산)", type: "text", free: true },
+  gate: { label: "탑승구 번호 (예: 23)", type: "text" },
+  pax: { label: "승객 이름 (예: 홍길동)", type: "text", free: true },
+  mins: { label: "늦어지는 시간 (분)", type: "number" },
+  firepos: { label: "화재 위치 (예: 103동 5층 / 비우면 '단지 내')", type: "text", wide: true },
+  mvunit: { label: "이사하는 동·호수 (예: 103동 1502호)", type: "text" },
+  spot: { label: "주차 자제 구역 (예: 103동 앞 / 비우면 '이삿짐 차량이 드나드는 곳')", type: "text", wide: true },
+  loc: { label: "장소 (예: 커뮤니티센터 2층)", type: "text", free: true },
+  what: { label: "행사 이름 (예: 가을 바자회)", type: "text", free: true },
+  vote: { label: "투표 이름 (예: 동대표 선거 / 비우면 '동대표 선거')", type: "text", free: true },
+  vloc: { label: "투표 장소 (예: 관리사무소 / 비우면 '관리사무소')", type: "text", free: true },
+  note: { label: "덧붙일 말 (선택)", type: "text", free: true, wide: true },
+  body: { label: "안내할 내용", type: "textarea", free: true, wide: true },
+};
+const T = [
+  { id: "water", icon: "🚱", name: "단수", f: ["date", "start", "end", "place", "note"],
+    ko: "{place|는}, {date}, {range}, 물탱크 청소로 단수됩니다. 필요한 물은, 미리 받아 두시기 바랍니다.",
+    en: "Due to water tank cleaning, the water supply to {place} will be suspended on {date}, {range}. Please store the water you need in advance.",
+    ja: "{date}、{range}、貯水槽清掃のため、{place}は断水となります。必要なお水は、事前にご用意ください。",
+    zh: "因清洗水箱，{date}{range}，{place}将暂停供水。请提前储备好所需用水。" },
+  { id: "power", icon: "⚡", name: "정전", f: ["date", "start", "end", "place", "note"],
+    ko: "{place|는}, {date}, {range}, 전기 설비 점검으로 정전됩니다. 이 시간에는 엘리베이터와 급수 펌프도 멈추니, 이용에 유의해 주시기 바랍니다.",
+    en: "Due to electrical maintenance, there will be a power outage for {place} on {date}, {range}. Elevators and water pumps will also stop during this time, so please plan accordingly.",
+    ja: "{date}、{range}、電気設備点検のため、{place}は停電となります。この時間はエレベーターと給水ポンプも停止しますので、ご注意ください。",
+    zh: "因电力设备检修，{date}{range}，{place}将停电。届时电梯和供水泵也将停止运行，请大家提前做好准备。" },
+  { id: "elev", icon: "🛗", name: "엘리베이터 점검", f: ["date", "start", "end", "place", "note"], kind: "elev",
+    ko: "{place} 엘리베이터는, {date}, {range}, 정기 점검으로 운행이 중지됩니다. 이용에 불편을 드려, 죄송합니다.",
+    en: "The elevators in {place} will be out of service on {date}, {range}, for regular inspection. We apologize for the inconvenience.",
+    ja: "{date}、{range}、定期点検のため、{place}のエレベーターは運転を停止いたします。ご不便をおかけし、申し訳ございません。",
+    zh: "{date}{range}，{place}的电梯将进行定期检修，暂停运行。给您带来不便，敬请谅解。" },
+  { id: "disinfect", icon: "🧴", name: "소독", f: ["date", "start", "end", "place", "note"],
+    ko: "{date}, {range}, {place|를} 대상으로, 정기 소독을 실시합니다. 소독 직원이 방문하면, 문을 열어 주시기 바랍니다.",
+    en: "Regular disinfection will be carried out for {place} on {date}, {range}. Please open your door when the staff visits.",
+    ja: "{date}、{range}、{place}を対象に定期消毒を実施いたします。担当者が伺いましたら、ドアを開けていただきますようお願いいたします。",
+    zh: "{date}{range}，将对{place}进行定期消毒。工作人员上门时，请您开门配合。" },
+  { id: "move", icon: "🚚", name: "이사 안내", f: ["mvunit", "date", "start", "end", "spot", "note"],
+    ko: "{date}, {mvunit} 세대의 이사가 예정되어 있습니다. 차량은, {between}에는, {spot} 주차를 자제 부탁드립니다. 이웃 주민 여러분의, 너른 양해 부탁드립니다.",
+    en: "A move is scheduled for {mvunit} on {date}, {range}. During this time, please refrain from parking {spot}. Thank you for your understanding.",
+    ja: "{date}、{range}、{mvunit}の引っ越しが予定されております。この時間帯は、{spot}への駐車をお控えください。ご理解のほど、よろしくお願いいたします。",
+    zh: "{date}{range}，{mvunit}将进行搬家。在此期间，请勿在{spot}停车。敬请各位邻居谅解。" },
+  { id: "car", icon: "🚗", name: "차량 이동", f: ["car", "note"],
+    ko: "차량 번호, {car}, 차주분께서는, 지금 바로 차량을 이동해 주시기 바랍니다. 다시 한번 말씀드립니다. 차량 번호, {car}, 차주분께서는, 차량을 이동해 주십시오.",
+    en: "Will the owner of the vehicle with license plate {car} please move it immediately. Once again, the owner of vehicle {car}, please move your car.",
+    ja: "ナンバー {car} のお車の所有者様、至急お車の移動をお願いいたします。繰り返します。ナンバー {car} のお車を移動してください。",
+    zh: "车牌号为{car}的车主，请立即挪车。再说一遍，车牌号{car}的车主，请您挪车。" },
+  { id: "recycle", icon: "♻️", name: "분리수거", f: ["date", "start", "end", "note"],
+    ko: "{date}은, 분리수거 날입니다. 재활용품은, {range}, 분리수거장에 종류별로 나누어 배출해 주시기 바랍니다.",
+    en: "{date} is recycling day. Please sort your recyclables by type and bring them to the recycling area {range}.",
+    ja: "{date}は資源ごみの日です。資源ごみは種類ごとに分けて、{range}の間に回収場所へお出しください。",
+    zh: "{date}是垃圾分类回收日。请将可回收物分类后，于{range}投放到回收点。" },
+  { id: "paper", icon: "📦", name: "종이 배출 (일요일)", f: ["note"],
+    ko: "종이류는, 매주 일요일에만 분리 배출이 가능합니다. 다른 요일에는 종이류를 내놓지 마시고, 일요일에 배출해 주시기 바랍니다.",
+    en: "Paper recyclables can only be put out on Sundays. Please do not put out paper on other days.",
+    ja: "紙類の分別排出は、毎週日曜日のみ可能です。ほかの曜日には紙類を出さず、日曜日にお出しください。",
+    zh: "纸类垃圾仅限每周日分类投放。其他日子请不要投放纸类，请在周日投放。" },
+  { id: "fireinsp", icon: "🧑‍🚒", name: "소방 점검", f: ["date", "start", "end", "place", "note"],
+    ko: "{date}, {range}, {place|를} 대상으로, 소방 시설 정기 점검을 실시합니다. 점검 중에는 화재 경보가 울릴 수 있으니 놀라지 마시고, 점검원이 세대를 방문하면, 협조해 주시기 바랍니다.",
+    en: "A regular inspection of fire safety equipment will be carried out for {place} on {date}, {range}. The fire alarm may sound during the inspection, so please do not be alarmed, and kindly cooperate when the inspector visits your home.",
+    ja: "{date}、{range}、{place}を対象に、消防設備の定期点検を実施いたします。点検中に火災警報が鳴る場合がございますが、慌てずに、点検員がご訪問の際はご協力をお願いいたします。",
+    zh: "{date}{range}，将对{place}的消防设施进行定期检查。检查期间火灾警报可能会响起，请不要惊慌；检查人员上门时，请予以配合。" },
+  { id: "fire", icon: "🧯", name: "소방 훈련", f: ["date", "start", "end", "note"],
+    ko: "{date}, {range}, 소방 훈련을 실시합니다. 훈련 중 화재 경보가 울리더라도, 놀라지 마시고, 안내 방송에 따라 주시기 바랍니다.",
+    en: "A fire drill will be held on {date}, {range}. If you hear the fire alarm during the drill, please do not be alarmed and follow the announcements.",
+    ja: "{date}、{range}、消防訓練を実施いたします。訓練中に火災警報が鳴りましても、慌てずに案内放送に従ってください。",
+    zh: "{date}{range}将进行消防演习。演习期间如听到火灾警报，请不要惊慌，按照广播指示行动。" },
+  { id: "fee", icon: "💳", name: "관리비 납부", f: ["date", "note"],
+    ko: "이번 달 관리비 납부 마감일은, {date}입니다. 기한 내에, 납부해 주시기 바랍니다.",
+    en: "The deadline for this month's maintenance fee is {date}. Please make your payment on time.",
+    ja: "今月の管理費のお支払い期限は{date}です。期限内のお支払いをお願いいたします。",
+    zh: "本月物业费缴纳截止日期为{date}。请按时缴纳。" },
+  { id: "works", icon: "🔨", name: "공사 소음", f: ["unit", "date", "date2", "note"],
+    ko: "{unit} 세대 내부 공사로, {daterange}, 소음이 발생할 수 있습니다. 이웃 주민 여러분의, 너른 양해 부탁드립니다.",
+    en: "Due to interior renovation at {unit}, there may be construction noise {daterange}. We kindly ask for your understanding.",
+    ja: "{unit}の室内工事のため、{daterange}、騒音が発生する場合がございます。ご理解のほど、よろしくお願いいたします。",
+    zh: "因{unit}进行室内装修，{daterange}可能会产生噪音，敬请各位邻居谅解。" },
+  { id: "quiet", icon: "🤫", name: "층간소음 배려", f: ["note"],
+    ko: "늦은 시간, 뛰거나 큰 소리를 내는 행동, 가구를 끄는 소리는, 이웃에게 큰 불편이 됩니다. 서로 배려하는 마음으로, 조용한 생활을 부탁드립니다.",
+    en: "Running, loud noises, and dragging furniture late at night can greatly disturb your neighbors. Please be considerate and keep noise to a minimum.",
+    ja: "夜遅くに走ったり、大きな音を出したり、家具を引きずったりすると、ご近所の大きな迷惑になります。お互いを思いやり、静かな生活をお願いいたします。",
+    zh: "深夜跑跳、大声喧哗或拖动家具，都会给邻居带来很大困扰。请大家互相体谅，保持安静。" },
+  { id: "event", icon: "🎉", name: "행사 안내", f: ["what", "date", "start", "loc", "note"],
+    ko: "{date}, {range}, {loc}에서, {what} 행사가 열립니다. {aud}의, 많은 참여 바랍니다.",
+    en: "{what} will be held at {loc} on {date}, {range}. We look forward to seeing many of you there.",
+    ja: "{date}、{range}、{loc}にて{what}を開催いたします。皆様のご参加をお待ちしております。",
+    zh: "{date}{range}，将在{loc}举办{what}。欢迎{aud}踊跃参加。" },
+  { id: "gas", icon: "🔥", name: "가스 안전 점검", f: ["date", "start", "end", "place", "note"],
+    ko: "{date}, {range}, {place|를} 대상으로, 도시가스 안전 점검을 실시합니다. 점검원이 세대를 방문하면, 가스레인지와 보일러를 확인할 수 있도록, 협조해 주시기 바랍니다. 부재 시에는, 관리사무소로 연락해 주십시오.",
+    en: "A city gas safety inspection will be carried out for {place} on {date}, {range}. When the inspector visits, please allow them to check your gas stove and boiler. If you will be away, please contact the management office.",
+    ja: "{date}、{range}、{place}を対象に、都市ガスの安全点検を実施いたします。点検員がご訪問の際は、ガスコンロとボイラーの点検にご協力ください。ご不在の場合は、管理事務所までご連絡ください。",
+    zh: "{date}{range}，将对{place}进行城市燃气安全检查。检查人员上门时，请配合检查燃气灶和锅炉。如家中无人，请联系物业管理处。" },
+  { id: "smoke", icon: "🚭", name: "흡연 자제", f: ["note"],
+    ko: "최근, 베란다와 계단, 화장실에서의 흡연으로, 담배 연기가 이웃 세대로 들어온다는 민원이 늘고 있습니다. 공동 주택에서는, 흡연을 자제해 주시고, 지정된 장소를 이용해 주시기 바랍니다.",
+    en: "We have been receiving more complaints about cigarette smoke entering neighboring homes from balconies, stairways, and bathrooms. Please refrain from smoking inside the building, and use the designated smoking area.",
+    ja: "最近、ベランダや階段、トイレでの喫煙により、たばこの煙が隣の世帯に入ってくるという苦情が増えております。共同住宅内での喫煙はお控えいただき、指定の場所をご利用ください。",
+    zh: "最近，因在阳台、楼梯间和卫生间吸烟，烟味飘进邻居家中的投诉有所增加。请勿在楼内吸烟，请到指定吸烟区吸烟。" },
+  { id: "freeze", icon: "❄️", name: "동파 예방", f: ["note"],
+    ko: "한파로, 수도 계량기와 배관이 얼어 터질 수 있습니다. 계량기함은, 헌 옷이나 보온재로 감싸 주시고, 오래 집을 비울 때는, 수돗물을 조금씩 흐르게 틀어 두시기 바랍니다. 보일러도, 외출 모드로 켜 두시기 바랍니다.",
+    en: "Due to the cold wave, water meters and pipes may freeze and burst. Please wrap your water meter box with old clothes or insulation, and leave the tap running slightly if you will be away for a long time. Please also keep your boiler on in away mode.",
+    ja: "寒波により、水道メーターや配管が凍結し、破裂するおそれがあります。メーターボックスは古着や保温材で覆い、長時間お留守にされる際は、水道を少し出したままにしてください。ボイラーも外出モードでつけておいてください。",
+    zh: "受寒潮影响，水表和水管可能会冻裂。请用旧衣服或保温材料包好水表箱；长时间外出时，请把水龙头开小，让水保持细流。锅炉也请设置为外出模式，保持开启。" },
+  { id: "typhoon", icon: "🌀", name: "태풍·호우 대비", f: ["note"],
+    ko: "태풍과 많은 비가 예보되어 있습니다. 창문은 단단히 닫아 주시고, 베란다나 창가의 화분과 물건은, 안으로 옮겨 주시기 바랍니다. 지하 주차장에 주차된 차량은, 침수에 대비해, 지상으로 옮겨 주시기 바랍니다.",
+    en: "A typhoon and heavy rain are forecast. Please close your windows securely, and bring in flower pots and other items from balconies and windowsills. Vehicles parked in the underground parking lot should be moved above ground in case of flooding.",
+    ja: "台風と大雨が予報されています。窓はしっかり閉め、ベランダや窓際の植木鉢や物は、室内に移してください。地下駐車場のお車は、浸水に備えて、地上へ移動してください。",
+    zh: "天气预报将有台风和强降雨。请关紧门窗，将阳台和窗边的花盆等物品移到室内。停在地下停车场的车辆，请移至地面，以防被淹。" },
+  { id: "pet", icon: "🐕", name: "반려동물 예절", f: ["note"],
+    ko: "반려동물과 함께 외출할 때는, 반드시 목줄을 해 주시고, 배설물은 꼭 치워 주시기 바랍니다. 엘리베이터에서는, 반려동물을 안거나 가까이 붙잡아, 다른 입주민이 놀라지 않도록 배려해 주십시오.",
+    en: "When going out with your pet, please always use a leash and clean up after it. In the elevator, please hold your pet or keep it close so that other residents are not startled.",
+    ja: "ペットと外出される際は、必ずリードをつけ、ふんは必ず片付けてください。エレベーターでは、ペットを抱くか近くで押さえて、ほかの居住者が驚かないようご配慮ください。",
+    zh: "带宠物外出时，请务必系好牵引绳，并及时清理宠物粪便。乘坐电梯时，请抱好宠物或将其拉在身边，以免惊吓其他居民。" },
+  { id: "vote", icon: "🗳", name: "동대표 선거·투표", f: ["vote", "date", "start", "end", "vloc", "note"],
+    ko: "{date}, {range}, {vloc}에서, {vote} 투표가 진행됩니다. 우리 아파트의 일을 함께 결정하는 소중한 자리이니, 입주민 여러분의 많은 참여 바랍니다. 신분증을 꼭 지참해 주십시오.",
+    en: "Voting for {vote} will take place at {vloc} on {date}, {range}. This is an important opportunity to decide our community's matters together, so we hope many of you will participate. Please be sure to bring your ID.",
+    ja: "{date}、{range}、{vloc}にて、{vote}の投票を行います。私たちのマンションのことを一緒に決める大切な機会ですので、皆様のご参加をお願いいたします。身分証明書を必ずお持ちください。",
+    zh: "{date}{range}，将在{vloc}进行{vote}投票。这是共同决定小区事务的重要机会，欢迎各位居民踊跃参与。请务必携带身份证件。" },
+  { id: "stuck", icon: "🆘", name: "엘리베이터 갇힘 대처", f: ["note"],
+    ko: "엘리베이터에 갇혔을 때는, 당황하지 마시고, 내부의 비상 호출 버튼을 눌러, {sender}에 알려 주십시오. 문을 억지로 열거나, 밖으로 나오려고 하지 마시고, 구조를 기다려 주십시오. 엘리베이터 안은, 공기가 충분하니, 안심하셔도 됩니다.",
+    en: "If you are ever trapped in an elevator, please stay calm and press the emergency call button inside to notify the {senderEn}. Do not try to force the doors open or climb out. Please wait for rescue. There is plenty of air inside the elevator, so there is no need to worry.",
+    ja: "エレベーターに閉じ込められた際は、慌てずに、内部の非常呼出ボタンを押して、{sender}にお知らせください。無理にドアを開けたり、外に出ようとしたりせず、救助をお待ちください。エレベーターの中は空気が十分にありますので、ご安心ください。",
+    zh: "如果被困在电梯里，请不要惊慌，按下电梯内的紧急呼叫按钮，通知{sender}。不要强行扒门或试图爬出，请耐心等待救援。电梯内空气充足，请放心。" },
+  // ---- 아파트 외 공통: 건물 점검
+  { id: "g_power", icon: "⚡", name: "정전 (건물)", f: ["date", "start", "end", "note"],
+    ko: "{date}, {range}, 전기 설비 점검으로, 건물 전체가 정전됩니다. 이 시간에는 엘리베이터와 컴퓨터를 사용할 수 없으니, 미리 저장하고 준비해 주시기 바랍니다.",
+    en: "Due to electrical maintenance, there will be a power outage throughout the building on {date}, {range}. Elevators and computers cannot be used during this time, so please save your work and prepare in advance.",
+    ja: "{date}、{range}、電気設備点検のため、建物全体が停電となります。この時間はエレベーターとパソコンが使えませんので、事前に保存とご準備をお願いいたします。",
+    zh: "因电力设备检修，{date}{range}，整栋建筑将停电。届时电梯和电脑都无法使用，请提前保存资料并做好准备。" },
+  { id: "g_water", icon: "🚱", name: "단수 (건물)", f: ["date", "start", "end", "note"],
+    ko: "{date}, {range}, 배관 공사로, 건물 전체가 단수됩니다. 이 시간에는 화장실과 수도를 이용할 수 없으니, 양해 부탁드립니다.",
+    en: "Due to plumbing work, the water supply to the entire building will be suspended on {date}, {range}. Restrooms and taps cannot be used during this time. Thank you for your understanding.",
+    ja: "{date}、{range}、配管工事のため、建物全体が断水となります。この時間はトイレと水道がご利用いただけません。ご理解をお願いいたします。",
+    zh: "因管道施工，{date}{range}，整栋建筑将停水。届时卫生间和水龙头都无法使用，敬请谅解。" },
+  { id: "g_elev", icon: "🛗", name: "엘리베이터 점검 (건물)", f: ["date", "start", "end", "note"],
+    ko: "{date}, {range}, 엘리베이터 정기 점검으로, 운행이 중지됩니다. 이 시간에는 계단을 이용해 주시기 바랍니다. 불편을 드려, 죄송합니다.",
+    en: "The elevators will be out of service on {date}, {range}, for regular inspection. Please use the stairs during this time. We apologize for the inconvenience.",
+    ja: "{date}、{range}、エレベーターの定期点検のため、運転を停止いたします。この時間は階段をご利用ください。ご不便をおかけし、申し訳ございません。",
+    zh: "{date}{range}，电梯将进行定期检修，暂停运行。届时请走楼梯。给您带来不便，敬请谅解。" },
+  { id: "lost", icon: "🔎", name: "분실물 습득", f: ["item", "loc", "note"],
+    ko: "{loc}에서, {item|을} 습득했습니다. 잃어버리신 분은, {sender|으로} 오셔서 찾아가시기 바랍니다.",
+    en: "We have found {item} at {loc}. If it is yours, please come to the {senderEn} to collect it.",
+    ja: "{loc}にて、{item}をお預かりしております。お心当たりの方は、{sender}までお越しください。",
+    zh: "在{loc}拾到{item}。失主请到{sender}认领。" },
+  // ---- 학교
+  { id: "s_early", icon: "🎒", name: "조기 하교", f: ["date", "start", "note"], labels: { start: "하교 시각" }, places: ["school"],
+    ko: "{date}, 학교 사정으로, {time}에 조기 하교합니다. 학부모님께서는, 자녀의 귀가 지도에 참고해 주시기 바랍니다.",
+    en: "On {date}, students will be dismissed early at {time} due to school circumstances. Parents, please plan your child's way home accordingly.",
+    ja: "{date}、学校の都合により、{time}に早めの下校となります。保護者の皆様は、お子様の帰宅指導にご配慮ください。",
+    zh: "{date}因学校安排，将于{time}提前放学。请各位家长做好孩子回家的安排。" },
+  { id: "s_dust", icon: "😷", name: "미세먼지 실외 활동", f: ["note"], places: ["school"],
+    ko: "오늘은, 미세먼지 농도가 높아, 체육 수업과 운동장 활동을, 실내 활동으로 대신합니다. 바깥에 나갈 때는, 마스크를 꼭 써 주시기 바랍니다.",
+    en: "Today, fine dust levels are high, so physical education classes and playground activities will be replaced with indoor activities. Please wear a mask when you go outside.",
+    ja: "本日は微小粒子状物質の濃度が高いため、体育の授業と運動場での活動を、室内活動に変更いたします。外に出るときは、必ずマスクをつけてください。",
+    zh: "今天细颗粒物浓度较高，体育课和操场活动将改为室内活动。外出时请务必佩戴口罩。" },
+  // ---- 회사·공장
+  { id: "f_safety", icon: "⛑", name: "안전 수칙", f: ["note"], places: ["office"],
+    ko: "작업장에서는, 안전모와 안전화를 반드시 착용해 주시고, 지게차가 다니는 통로에서는, 좌우를 잘 살피며 이동해 주시기 바랍니다. 오늘도 안전한 하루 되십시오.",
+    en: "In the work area, please always wear your safety helmet and safety shoes, and look both ways carefully in forklift passages. Have a safe day.",
+    ja: "作業場では、安全帽と安全靴を必ず着用し、フォークリフトが通る通路では、左右をよく確認して移動してください。本日も安全な一日をお過ごしください。",
+    zh: "在作业区，请务必佩戴安全帽、穿好安全鞋；在叉车通道请注意左右观察。祝大家今天平安顺利。" },
+  { id: "f_lunch", icon: "🍱", name: "점심시간", f: ["note"], places: ["office"],
+    ko: "지금부터, 점심시간입니다. 사용 중인 기계는, 안전하게 정지한 뒤, 식사해 주시기 바랍니다. 맛있게 드십시오.",
+    en: "It is now lunchtime. Please safely stop any machines you are using before going to eat. Enjoy your meal.",
+    ja: "ただいまから、昼休みです。使用中の機械は、安全に停止してから、お食事をどうぞ。",
+    zh: "现在是午餐时间。请先安全关停正在使用的机器，再去用餐。祝大家用餐愉快。" },
+  { id: "f_end", icon: "🌇", name: "업무 종료", f: ["note"], places: ["office"],
+    ko: "오늘 업무를, 마칠 시간입니다. 퇴근하시기 전에, 기계와 전원, 창문을 다시 한번 확인해 주시고, 안전하게 귀가하시기 바랍니다. 오늘도 수고하셨습니다.",
+    en: "It is time to finish today's work. Before you leave, please check the machines, power, and windows once more, and get home safely. Thank you for your hard work today.",
+    ja: "本日の業務を終える時間です。お帰りの前に、機械と電源、窓をもう一度ご確認のうえ、お気をつけてお帰りください。本日もお疲れさまでした。",
+    zh: "今天的工作时间到了。下班前，请再次检查机器、电源和门窗，注意安全回家。大家今天辛苦了。" },
+  // ---- 상가·마트
+  { id: "m_close", icon: "🕙", name: "영업 종료", f: ["start", "note"], labels: { start: "영업 종료 시각" }, places: ["store"],
+    ko: "잠시 후, {time}에 영업을 종료합니다. 쇼핑 중이신 고객님께서는, 계산대로 이동해 주시기 바랍니다. 오늘도 찾아 주셔서, 감사합니다.",
+    en: "We will be closing shortly, at {time}. Customers who are still shopping, please proceed to the checkout. Thank you for visiting us today.",
+    ja: "まもなく、{time}に閉店いたします。お買い物中のお客様は、レジへお進みください。本日もご来店いただき、ありがとうございました。",
+    zh: "本店将于{time}结束营业。正在购物的顾客，请到收银台结账。感谢您今天的光临。" },
+  { id: "m_child", icon: "🧒", name: "미아 찾기", f: ["child", "loc", "note"], places: ["store", "church", "gov", "hospital", "airport", "wedding", "show"],
+    ko: "보호자를 찾고 있는 어린이가 있습니다. {child}입니다. 보호자께서는, {loc|으로} 와 주시기 바랍니다.",
+    en: "We have a child looking for their guardian: {child}. Guardians, please come to {loc}.",
+    ja: "保護者の方をお探しのお子様がいらっしゃいます。{child}です。保護者の方は、{loc}までお越しください。",
+    zh: "这里有一位正在寻找家长的小朋友：{child}。请家长到{loc}来接孩子。" },
+  { id: "m_park", icon: "🅿️", name: "주차 혼잡", f: ["loc", "note"], places: ["store", "hospital", "gov", "church", "airport", "wedding", "show"],
+    ko: "현재, 주차장이 매우 혼잡합니다. 가능하시면, {loc|을} 이용해 주시고, 주차 안내 요원의 안내에 따라 주시기 바랍니다.",
+    en: "The parking lot is currently very crowded. If possible, please use {loc}, and follow the directions of the parking staff.",
+    ja: "ただいま、駐車場が大変混雑しております。できるだけ{loc}をご利用いただき、係員の案内に従ってください。",
+    zh: "目前停车场非常拥挤。请尽量使用{loc}，并听从停车引导员的指挥。" },
+  // ---- 병원
+  { id: "h_quiet", icon: "🤫", name: "병원 정숙", f: ["note"], places: ["hospital"],
+    ko: "병원 안에서는, 환자분들의 안정을 위해, 휴대전화는 진동으로 바꿔 주시고, 대화는 작은 목소리로 부탁드립니다.",
+    en: "For the comfort of our patients, please set your phone to vibrate and speak quietly inside the hospital.",
+    ja: "院内では、患者様の安静のため、携帯電話はマナーモードにし、会話は小さな声でお願いいたします。",
+    zh: "为了让患者安心休养，在医院内请将手机调为振动，并小声交谈。" },
+  { id: "h_visit", icon: "🕒", name: "면회 시간", f: ["start", "end", "note"], places: ["hospital"],
+    ko: "병동 면회 시간은, {range}입니다. 감염 예방을 위해, 면회 전후에는, 손을 깨끗이 씻어 주시기 바랍니다.",
+    en: "Ward visiting hours are {range}. To prevent infection, please wash your hands thoroughly before and after your visit.",
+    ja: "病棟の面会時間は、{range}です。感染予防のため、面会の前後には、手をよく洗ってください。",
+    zh: "病房探视时间为{range}。为预防感染，探视前后请认真洗手。" },
+  // ---- 교회·복지관
+  { id: "c_start", icon: "🕊", name: "모임 시작 안내", f: ["what", "start", "note"], labels: { start: "시작 시각", what: "모임 이름 (예: 주일 예배 / 경로 잔치)" }, places: ["church"],
+    ko: "잠시 후, {time}부터, {what|이} 시작됩니다. 참석하실 분들은, 자리에 앉아 주시기 바랍니다.",
+    en: "{what} will begin shortly, at {time}. Those attending, please take your seats.",
+    ja: "まもなく、{time}から、{what}が始まります。ご参加の方は、お席にお着きください。",
+    zh: "{what}将于{time}开始。参加的朋友请入座。" },
+  { id: "c_meal", icon: "🍚", name: "식사 안내", f: ["loc", "note"], places: ["church"],
+    ko: "{loc}에, 식사가 준비되었습니다. 한 줄로 차례차례 이동해 주시고, 어르신들께 먼저 자리를 양보해 주시기 바랍니다.",
+    en: "A meal has been prepared at {loc}. Please line up and move in order, and kindly let our elders go first.",
+    ja: "{loc}に、お食事をご用意しております。一列に並んで順番にお進みいただき、ご年配の方に先をお譲りください。",
+    zh: "{loc}已经准备好了餐食。请大家排好队依次前往，并请先让长辈入座。" },
+  // ---- 관공서
+  { id: "o_close", icon: "🏛", name: "민원 업무 마감", f: ["start", "note"], labels: { start: "마감 시각" }, places: ["gov"],
+    ko: "잠시 후, {time}에 민원 업무를 마감합니다. 아직 번호표를 받지 않으신 분은, 서둘러 받아 주시기 바랍니다. 오늘도 방문해 주셔서, 감사합니다.",
+    en: "Civil service counters will close shortly, at {time}. If you have not yet taken a number ticket, please do so now. Thank you for visiting us today.",
+    ja: "まもなく、{time}に窓口業務を終了いたします。まだ番号札をお取りでない方は、お早めにお取りください。本日もご来庁いただき、ありがとうございました。",
+    zh: "政务窗口将于{time}结束办理。尚未取号的市民，请尽快取号。感谢您今天的到访。" },
+  // ---- 공항·역
+  { id: "a_board", icon: "🛫", name: "탑승 안내", f: ["flight", "dest", "gate", "note"], places: ["airport"],
+    ko: "{dest}행, {flight}편을 이용하실 승객 여러분께서는, {gate}번 탑승구에서, 지금 탑승을 시작합니다. 탑승권과 신분증을 준비해 주시기 바랍니다.",
+    en: "Passengers on flight {flight} to {dest}, boarding is now beginning at gate {gate}. Please have your boarding pass and ID ready.",
+    ja: "{dest}行き、{flight}便にご搭乗のお客様は、{gate}番搭乗口より、ただいまご搭乗を開始いたします。搭乗券と身分証明書をご用意ください。",
+    zh: "乘坐{flight}航班前往{dest}的旅客请注意，现在开始在{gate}号登机口登机。请准备好登机牌和身份证件。" },
+  { id: "a_gate", icon: "🔀", name: "탑승구 변경", f: ["flight", "dest", "gate", "note"], labels: { gate: "바뀐 탑승구 번호 (예: 31)" }, places: ["airport"],
+    ko: "{dest}행, {flight}편의 탑승구가, {gate}번으로 변경되었습니다. 이용에 착오 없으시기 바랍니다.",
+    en: "The boarding gate for flight {flight} to {dest} has been changed to gate {gate}. Please proceed to the new gate.",
+    ja: "{dest}行き、{flight}便の搭乗口は、{gate}番に変更となりました。お間違えのないようご注意ください。",
+    zh: "前往{dest}的{flight}航班登机口已变更为{gate}号。请前往新的登机口。" },
+  { id: "a_delay", icon: "⏳", name: "출발 지연", f: ["flight", "dest", "start", "note"], labels: { start: "바뀐 출발 시각" }, places: ["airport"],
+    ko: "{dest}행, {flight}편은, 기상 및 운항 사정으로, 출발이 {time|으로} 지연되었습니다. 이용에 불편을 드려, 죄송합니다.",
+    en: "Flight {flight} to {dest} has been delayed to {time} due to weather and operational reasons. We apologize for the inconvenience.",
+    ja: "{dest}行き、{flight}便は、天候および運航上の都合により、出発が{time}に遅れております。ご迷惑をおかけし、申し訳ございません。",
+    zh: "因天气和运营原因，前往{dest}的{flight}航班起飞时间推迟至{time}。给您带来不便，敬请谅解。" },
+  { id: "a_cancel", icon: "🚫", name: "결항 안내", f: ["flight", "dest", "note"], places: ["airport"],
+    ko: "{dest}행, {flight}편은, 기상 악화로 결항되었습니다. 해당 항공편 승객께서는, 항공사 카운터에서 안내를 받으시기 바랍니다.",
+    en: "Flight {flight} to {dest} has been cancelled due to bad weather. Passengers on this flight, please contact the airline counter for assistance.",
+    ja: "{dest}行き、{flight}便は、悪天候のため欠航となりました。該当便のお客様は、航空会社カウンターでご案内をお受けください。",
+    zh: "前往{dest}的{flight}航班因天气恶劣已取消。该航班的旅客请到航空公司柜台咨询。" },
+  { id: "a_call", icon: "📢", name: "승객 호출 (마지막 탑승)", f: ["pax", "flight", "dest", "gate", "note"], places: ["airport"],
+    ko: "{flight}편으로, {dest}에 가시는, {pax} 승객께서는, 지금 바로, {gate}번 탑승구로 와 주시기 바랍니다. 곧 탑승이 마감됩니다.",
+    en: "Final call for passenger {pax} on flight {flight} to {dest}. Please proceed immediately to gate {gate}. Boarding is closing soon.",
+    ja: "{dest}行き、{flight}便にご搭乗予定の{pax}様、至急、{gate}番搭乗口までお越しください。まもなく搭乗を締め切ります。",
+    zh: "乘坐{flight}航班前往{dest}的旅客{pax}，请立即前往{gate}号登机口。登机即将结束。" },
+  { id: "a_sec", icon: "🛂", name: "보안 검색 안내", f: ["note"], places: ["airport"],
+    ko: "보안 검색을 빠르게 받으시려면, 액체류는 100밀리리터 이하 용기에 담아 투명 봉투에 넣어 주시고, 노트북은 가방에서 꺼내 주시기 바랍니다.",
+    en: "For a faster security check, please put liquids in containers of 100 milliliters or less in a clear plastic bag, and take your laptop out of your bag.",
+    ja: "保安検査をスムーズに受けていただくため、液体物は100ミリリットル以下の容器に入れて透明な袋にまとめ、ノートパソコンはかばんから出してください。",
+    zh: "为加快安检速度，请将液体装入100毫升以下的容器并放入透明袋中，并将笔记本电脑从包中取出。" },
+  { id: "a_bag", icon: "🧳", name: "수하물 방치 금지", f: ["note"], places: ["airport"],
+    ko: "짐을 두고 자리를 비우지 마시기 바랍니다. 주인 없는 짐은, 보안을 위해 처리될 수 있습니다. 수상한 물건을 보시면, 가까운 직원에게 알려 주십시오.",
+    en: "Please do not leave your baggage unattended. Unattended baggage may be removed for security reasons. If you see a suspicious item, please inform the nearest staff member.",
+    ja: "お荷物から目を離さないようお願いいたします。持ち主のわからないお荷物は、保安上、処分される場合がございます。不審な物を見かけた際は、お近くの係員までお知らせください。",
+    zh: "请不要让您的行李无人看管。无人看管的行李可能会出于安全原因被移走。如发现可疑物品，请告知附近的工作人员。" },
+  { id: "t_arrive", icon: "🚆", name: "열차 도착 (역)", f: ["dest", "gate", "note"], labels: { dest: "행선지 (예: 부산)", gate: "타는 곳 번호 (예: 3)" }, places: ["airport"],
+    ko: "{dest}행 열차가, {gate}번 타는 곳으로 들어오고 있습니다. 안전선 안쪽으로, 한 걸음 물러서 주시기 바랍니다.",
+    en: "The train bound for {dest} is now arriving at platform {gate}. Please step back behind the safety line.",
+    ja: "{dest}行きの列車が、{gate}番線に到着いたします。安全線の内側まで、お下がりください。",
+    zh: "开往{dest}的列车即将进入{gate}号站台。请退到安全线以内。" },
+  { id: "t_delay", icon: "🕓", name: "열차 지연 (역)", f: ["dest", "mins", "note"], labels: { dest: "행선지 (예: 부산)" }, places: ["airport"],
+    ko: "{dest}행 열차가, 선로 사정으로, 약 {mins}분 늦게 도착할 예정입니다. 이용에 불편을 드려, 죄송합니다.",
+    en: "The train bound for {dest} will arrive about {mins} minutes late due to track conditions. We apologize for the inconvenience.",
+    ja: "{dest}行きの列車は、線路の都合により、約{mins}分遅れて到着する見込みです。ご迷惑をおかけし、申し訳ございません。",
+    zh: "开往{dest}的列车因线路原因，预计晚点约{mins}分钟到达。给您带来不便，敬请谅解。" },
+  // ---- 예식장
+  { id: "w_start", icon: "💍", name: "예식 시작 안내", f: ["groom", "bride", "hall", "start", "note"], labels: { start: "예식 시각" }, places: ["wedding"],
+    ko: "잠시 후, {time}부터, {hall}에서, 신랑 {groom}, 신부 {bride}의 결혼식이 시작됩니다. 하객 여러분께서는, 식장 안으로 들어오셔서, 자리에 앉아 주시기 바랍니다.",
+    en: "The wedding ceremony of {groom} and {bride} will begin shortly, at {time}, in {hall}. Guests, please come in and take your seats.",
+    ja: "まもなく、{time}より、{hall}にて、新郎{groom}様と新婦{bride}様の結婚式が始まります。ご列席の皆様は、式場内にお入りいただき、お席にお着きください。",
+    zh: "{groom}先生和{bride}女士的婚礼将于{time}在{hall}开始。请各位来宾入场就座。" },
+  { id: "w_phone", icon: "📵", name: "휴대전화 무음", f: ["note"], places: ["wedding"],
+    ko: "예식이 곧 시작됩니다. 휴대전화는, 무음이나 진동으로 바꿔 주시고, 예식 중에는, 큰 소리의 대화를 삼가 주시기 바랍니다.",
+    en: "The ceremony will begin shortly. Please switch your phone to silent or vibrate, and refrain from loud conversations during the ceremony.",
+    ja: "まもなく挙式が始まります。携帯電話はマナーモードに切り替え、挙式中は大きな声での会話をお控えください。",
+    zh: "婚礼即将开始。请将手机调为静音或振动，婚礼期间请勿大声交谈。" },
+  { id: "w_photo", icon: "📸", name: "단체 사진 촬영", f: ["note"], places: ["wedding"],
+    ko: "지금부터, 단체 사진 촬영이 있겠습니다. 신랑 신부의 가족과 친지, 친구분들께서는, 앞쪽으로 나와 주시기 바랍니다.",
+    en: "We will now take group photos. Family, relatives, and friends of the bride and groom, please come to the front.",
+    ja: "ただいまより、集合写真の撮影を行います。新郎新婦のご家族、ご親族、ご友人の皆様は、前の方へお進みください。",
+    zh: "现在开始拍摄合影。请新郎新娘的家人、亲友到前面来。" },
+  { id: "w_meal", icon: "🍽", name: "식사 안내", f: ["loc", "note"], labels: { loc: "식사 장소 (예: 2층 연회장 / 비우면 '연회장')" }, places: ["wedding"],
+    ko: "식사는, {loc}에 준비되어 있습니다. 식권을 지참하시고, 이동해 주시기 바랍니다. 오늘 귀한 걸음 해 주셔서, 감사합니다.",
+    en: "A meal has been prepared at {loc}. Please bring your meal ticket and proceed there. Thank you for joining us today.",
+    ja: "お食事は、{loc}にご用意しております。お食事券をお持ちのうえ、お進みください。本日はご列席いただき、ありがとうございます。",
+    zh: "餐食已在{loc}准备好。请携带餐券前往用餐。感谢您今天的光临。" },
+  { id: "w_next", icon: "🔄", name: "다음 예식 준비", f: ["note"], places: ["wedding"],
+    ko: "다음 예식 준비를 위해, 식장 안의 하객 여러분께서는, 잠시 밖으로 나가 주시기 바랍니다. 협조에 감사드립니다.",
+    en: "To prepare for the next ceremony, guests inside the hall, please step outside for a moment. Thank you for your cooperation.",
+    ja: "次の挙式の準備のため、式場内の皆様は、いったん外へお出になってください。ご協力ありがとうございます。",
+    zh: "为准备下一场婚礼，请厅内的来宾暂时到外面等候。感谢您的配合。" },
+  { id: "w_park", icon: "🅿️", name: "주차 등록 안내", f: ["note"], places: ["wedding"],
+    ko: "차를 가지고 오신 하객께서는, 안내 데스크에서, 차량 번호를 등록해 주시기 바랍니다. 등록하지 않으시면, 주차 요금이 부과될 수 있습니다.",
+    en: "Guests who came by car, please register your license plate at the information desk. Parking fees may apply if you do not register.",
+    ja: "お車でお越しの方は、案内デスクで車両番号をご登録ください。ご登録がない場合、駐車料金がかかることがございます。",
+    zh: "开车前来的来宾，请到服务台登记车牌号。未登记的车辆可能会被收取停车费。" },
+  // ---- 공연장
+  { id: "p_soon", icon: "🎬", name: "공연 시작 전", f: ["what", "mins", "note"], labels: { what: "공연 이름 (예: 가을 음악회 / 비우면 '공연')", mins: "몇 분 뒤 시작 (비우면 10)" }, places: ["show"],
+    ko: "잠시 후, {mins}분 뒤에, {what|이} 시작됩니다. 관객 여러분께서는, 자리에 앉아 주시기 바랍니다.",
+    en: "{What} will begin in {mins} minutes. Please take your seats.",
+    ja: "まもなく、{mins}分後に、{what}が始まります。お客様は、お席にお着きください。",
+    zh: "{what}将在{mins}分钟后开始。请各位观众就座。" },
+  { id: "p_phone", icon: "🚫", name: "촬영 금지·휴대전화", f: ["note"], places: ["show"],
+    ko: "공연 중, 사진 촬영과 녹음, 녹화는, 금지되어 있습니다. 휴대전화는, 전원을 꺼 주시기 바랍니다. 모두가 즐거운 관람을 위해, 협조 부탁드립니다.",
+    en: "Photography, audio recording, and video recording are prohibited during the performance. Please turn off your mobile phones. Thank you for helping everyone enjoy the show.",
+    ja: "公演中の写真撮影、録音、録画は、禁止されております。携帯電話の電源は、お切りください。皆様が快適にご鑑賞いただけるよう、ご協力をお願いいたします。",
+    zh: "演出期间禁止拍照、录音和录像。请关闭手机。为了让大家都能愉快观看，感谢您的配合。" },
+  { id: "p_door", icon: "🚪", name: "입장 마감", f: ["note"], places: ["show"],
+    ko: "곧 공연장의 문이 닫힙니다. 아직 입장하지 않으신 관객께서는, 서둘러 입장해 주시기 바랍니다. 공연이 시작되면, 중간 입장이 제한될 수 있습니다.",
+    en: "The doors will close shortly. If you have not yet entered, please do so now. Late entry may be restricted once the performance begins.",
+    ja: "まもなく扉が閉まります。まだご入場でないお客様は、お急ぎください。開演後は、途中入場が制限される場合がございます。",
+    zh: "演出厅大门即将关闭。尚未入场的观众请尽快入场。演出开始后可能会限制中途入场。" },
+  { id: "p_inter", icon: "☕", name: "쉬는 시간 (인터미션)", f: ["mins", "note"], labels: { mins: "쉬는 시간 (분, 비우면 15)" }, places: ["show"],
+    ko: "지금부터, {mins}분간, 쉬는 시간입니다. 2부는 정시에 시작하오니, 늦지 않게 자리로 돌아와 주시기 바랍니다.",
+    en: "We will now have a {mins}-minute intermission. The second half will begin on time, so please return to your seats promptly.",
+    ja: "ただいまより、{mins}分間の休憩です。第二部は定刻に始まりますので、遅れずにお席にお戻りください。",
+    zh: "现在开始{mins}分钟的中场休息。下半场将准时开始，请及时回到座位。" },
+  { id: "p_second", icon: "🔔", name: "2부 시작", f: ["note"], places: ["show"],
+    ko: "곧 2부 공연이 시작됩니다. 관객 여러분께서는, 자리로 돌아와 주시기 바랍니다.",
+    en: "The second half will begin shortly. Please return to your seats.",
+    ja: "まもなく第二部が始まります。お客様は、お席にお戻りください。",
+    zh: "下半场演出即将开始。请各位观众回到座位。" },
+  { id: "p_delay", icon: "⏳", name: "공연 지연", f: ["mins", "note"], labels: { mins: "늦어지는 시간 (분, 비우면 10)" }, places: ["show"],
+    ko: "공연 준비 관계로, 시작이 약 {mins}분 늦어지겠습니다. 기다려 주셔서, 감사합니다.",
+    en: "Due to preparations, the start of the performance will be delayed by about {mins} minutes. Thank you for your patience.",
+    ja: "公演準備の都合により、開演が約{mins}分遅れます。お待たせして申し訳ございません。",
+    zh: "由于演出准备原因，开演时间将推迟约{mins}分钟。感谢您的耐心等待。" },
+  { id: "p_end", icon: "👏", name: "공연 종료·퇴장", f: ["note"], places: ["show"],
+    ko: "오늘 공연은, 모두 마쳤습니다. 퇴장하실 때에는, 앞사람을 밀지 마시고, 천천히 이동해 주시기 바랍니다. 주차 정산은, 출구 옆 무인 정산기를 이용해 주십시오. 찾아 주셔서, 감사합니다.",
+    en: "Today's performance has ended. When leaving, please do not push, and move slowly. For parking, please use the automatic pay station next to the exit. Thank you for coming.",
+    ja: "本日の公演は、すべて終了いたしました。ご退場の際は、前の方を押さず、ゆっくりお進みください。駐車料金は、出口横の自動精算機をご利用ください。ご来場ありがとうございました。",
+    zh: "今天的演出到此全部结束。离场时请不要推挤，慢慢移动。停车费请使用出口旁的自助缴费机。感谢您的光临。" },
+  { id: "custom", icon: "✍️", name: "직접 입력", f: ["body"], ko: "{body}", en: "", ja: "", zh: "" },
+  { id: "efire", icon: "🔥", name: "긴급: 화재 발생", f: ["firepos", "note"], urgent: true,
+    ko: "지금, {firepos}에서 화재가 발생했습니다. {aud}께서는, 엘리베이터를 이용하지 마시고, 젖은 수건으로 코와 입을 막은 뒤, 계단을 통해, 침착하게 밖으로 대피해 주십시오. 다시 한번 말씀드립니다. 엘리베이터를 타지 마시고, 계단으로 대피해 주십시오.",
+    en: "A fire has broken out {firepos}. {Aud}, do not use the elevators. Cover your nose and mouth with a wet towel, and evacuate calmly using the stairs. Once again, do not use the elevators. Please evacuate using the stairs.",
+    ja: "ただいま、{firepos}で火災が発生しました。{aud}は、エレベーターを使用せず、濡れたタオルで鼻と口を覆い、階段から落ち着いて屋外へ避難してください。繰り返します。エレベーターは使わず、階段で避難してください。",
+    zh: "现在，{firepos}发生火灾。请{aud}不要乘坐电梯，用湿毛巾捂住口鼻，沿楼梯冷静地撤离到室外。再说一遍，请不要乘坐电梯，请走楼梯撤离。" },
+  { id: "equake", icon: "🌐", name: "긴급: 지진", f: ["note"], urgent: true,
+    ko: "지금, 지진이 발생했습니다. 흔들리는 동안에는, 튼튼한 탁자 아래로 들어가 머리를 보호해 주십시오. 흔들림이 멈추면, 가스와 전기를 차단하고, 문을 열어 출구를 확보한 뒤, 엘리베이터가 아닌 계단을 이용해, 넓은 공터로 대피해 주십시오.",
+    en: "An earthquake is occurring now. While the shaking continues, get under a sturdy table and protect your head. When the shaking stops, turn off the gas and electricity, open your door to secure an exit, and evacuate to an open area using the stairs, not the elevator.",
+    ja: "ただいま、地震が発生しています。揺れている間は、丈夫な机の下に入り、頭を守ってください。揺れが収まったら、ガスと電気を止め、ドアを開けて出口を確保し、エレベーターではなく階段を使って、広い場所へ避難してください。",
+    zh: "现在发生地震。摇晃期间，请躲到结实的桌子下面，保护好头部。摇晃停止后，请关闭燃气和电源，打开房门确保出口畅通，不要乘坐电梯，走楼梯撤离到空旷的地方。" },
+  { id: "falarm", icon: "🔕", name: "화재 경보 오작동", f: ["firepos", "note"],
+    ko: "조금 전, {firepos}에서 울린 화재 경보는, 오작동으로 확인되었습니다. 화재가 아니니, 안심하시기 바랍니다. 놀라게 해 드려, 죄송합니다.",
+    en: "The fire alarm that just sounded {firepos} was confirmed to be a false alarm. There is no fire, so please do not worry. We apologize for the disturbance.",
+    ja: "先ほど、{firepos}で鳴った火災警報は、誤作動であることが確認されました。火災ではありませんので、ご安心ください。お騒がせして、申し訳ございません。",
+    zh: "刚才{firepos}响起的火灾警报，经确认为误报。并未发生火灾，请大家放心。打扰到大家，非常抱歉。" },
+  { id: "urgent", icon: "🚨", name: "긴급 안내", f: ["body"], urgent: true, ko: "{body}", en: "", ja: "", zh: "" },
+];
+const PLACES = {
+  apt:      { icon: "🏢", name: "아파트",      sender: ["관리사무소", "management office", "管理事務所", "物业管理处"], aud: ["입주민 여러분", "residents", "居住者の皆様", "各位居民"] },
+  school:   { icon: "🏫", name: "학교",        sender: ["행정실", "school office", "事務室", "学校办公室"], aud: ["학생 여러분과 교직원 여러분", "students and staff", "生徒の皆さんと教職員の皆様", "各位同学和老师"] },
+  office:   { icon: "🏭", name: "회사·공장",   sender: ["총무팀", "general affairs team", "総務部", "行政部"], aud: ["직원 여러분", "employees", "社員の皆様", "各位员工"] },
+  store:    { icon: "🛒", name: "상가·마트",   sender: ["고객센터", "customer service center", "サービスカウンター", "顾客服务中心"], aud: ["고객 여러분", "customers", "お客様", "各位顾客"] },
+  hospital: { icon: "🏥", name: "병원",        sender: ["원무과", "hospital administration office", "医事課", "医院服务中心"], aud: ["환자와 보호자 여러분", "patients and visitors", "患者様とご家族の皆様", "各位患者和家属"] },
+  church:   { icon: "⛪", name: "교회·복지관", sender: ["사무실", "office", "事務室", "办公室"], aud: ["여러분", "everyone", "皆様", "各位朋友"] },
+  airport:  { icon: "✈️", name: "공항·역",     sender: ["안내 센터", "information center", "インフォメーションセンター", "问询处"], aud: ["승객 여러분", "passengers", "ご利用のお客様", "各位旅客"] },
+  wedding:  { icon: "💒", name: "예식장",      sender: ["안내 데스크", "information desk", "案内デスク", "服务台"], aud: ["하객 여러분", "guests", "ご列席の皆様", "各位来宾"] },
+  show:     { icon: "🎭", name: "공연장",      sender: ["안내실", "front of house", "案内所", "服务台"], aud: ["관객 여러분", "ladies and gentlemen", "ご来場の皆様", "各位观众"] },
+  gov:      { icon: "🏛", name: "관공서",      sender: ["민원실", "civil service office", "窓口", "政务服务中心"], aud: ["방문객 여러분", "visitors", "ご来庁の皆様", "各位来访者"] },
+};
+const LI = { ko: 0, en: 1, ja: 2, zh: 3 };
+const PL = () => PLACES[S.place] || PLACES.apt;
+const OPEN = {
+  ko: a => `안녕하십니까. ${a || ""} ${PL().sender[0]}에서, ${PL().aud[0]}께 안내 말씀 드립니다.`.replace(/\s{2,}/g, " "),
+  en: a => `Hello, ${PL().aud[1]}. This is an announcement from the ${a ? a + " " : ""}${PL().sender[1]}.`,
+  ja: a => `${PL().aud[2]}にお知らせいたします。${a ? a + "、" : ""}${PL().sender[2]}です。`,
+  zh: a => `${PL().aud[3]}，大家好。这里是${a ? a + "的" : ""}${PL().sender[3]}。`,
+};
+const OPEN_URGENT = { ko: "긴급 안내 말씀 드립니다.", en: "This is an emergency announcement.", ja: "緊急のお知らせです。", zh: "现在播报紧急通知。" };
+const CLOSE = { get ko() { return `${PL().aud[0]}의, 협조 부탁드립니다. 감사합니다.`; }, en: "Thank you for your cooperation.", ja: "ご協力のほど、よろしくお願いいたします。", zh: "感谢您的配合。" };
+const AGAIN = { ko: "다시 한번 안내 말씀 드립니다.", en: "Once again.", ja: "繰り返しお知らせいたします。", zh: "再播报一遍。" };
+
+// ================= 상태 =================
+const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+let S = Object.assign({
+  apt: "", aptEn: "", place: "apt", tpl: "water", vals: { date: today(), start: "09:00", end: "15:00" },
+  langs: { ko: true, en: false, ja: false, zh: false }, mood: "calm", rate: 0.95, vol: 1,
+  chime: true, chimeType: "classic", bg: true, bgVol: 0.5, rep: 1, voices: {},
+  texts: { ko: "", en: "", ja: "", zh: "" }, edited: {},
+}, ls.get("state", {}));
+if (S.bgVol === 0.35) S.bgVol = 0.5;
+rebuildLangs();                     // 예전 기본값(너무 작음) → 새 기본값
+const save = () => { ls.set("state", S); clearTimeout(save.t); save.t = setTimeout(() => { try { bkInfo(); } catch (e) {} }, 300); };   // 백업 칸 개수도 갱신
+
+// ================= 문장 만들기 =================
+function build(L) {
+  const t = curT(), v = S.vals;
+  if (!BASE_LANGS.some(x => x.id === L)) return S.texts[L] || "";   // 더한 언어: 자동 번역 결과 그대로
+  let src = t[L];
+  if (t.mine) return (t.mine.texts[L] || "").trim();
+  if (t.id === "m_child" && !(v.child || "").trim() && src) src = src.replace(/ \{child\}입니다\.|: \{child\}|\{child\}です。|：\{child\}/, "");
+  if (!src && L !== "ko") return "";
+  const map = {
+    date: fDate(v.date, L), range: fRange(v.start, v.end, L), daterange: fDateRange(v.date, v.date2, L),
+    place: fPlace(v.place, L, t.kind), unit: fPlace(v.unit, L), car: fCar(v.car, L), firepos: fFirePos(v.firepos, L), mvunit: fMvUnit(v.mvunit, L), spot: fSpot(v.spot, L), between: koBetween(v.start, v.end),
+    aud: PL().aud[LI[L]], Aud: PL().aud[1].replace(/^./, c => c.toUpperCase()), sender: PL().sender[LI[L]], senderEn: PL().sender[1],
+    groom: v.groom ? (L === "ko" ? v.groom : romanName(v.groom)) : { ko: "신랑", en: "the groom", ja: "新郎", zh: "新郎" }[L], bride: v.bride ? (L === "ko" ? v.bride : romanName(v.bride)) : { ko: "신부", en: "the bride", ja: "新婦", zh: "新娘" }[L],
+    hall: v.hall || { ko: "본식장", en: "the main hall", ja: "メインホール", zh: "主厅" }[L],
+    flight: (v.flight || "").trim().toUpperCase(), dest: fDest(v.dest, L), gate: v.gate || "", pax: L === "ko" ? (v.pax || "") : romanName(v.pax), mins: v.mins || ({ p_soon: "10", p_inter: "15", p_delay: "10", t_delay: "10" }[t.id] || ""),
+    time: fTime(v.start, L), child: v.child || "", item: v.item || { ko: "물건", en: "an item", ja: "お忘れ物", zh: "物品" }[L],
+    loc: v.loc || (t.id === "w_meal" ? { ko: "연회장", en: "the banquet hall", ja: "宴会場", zh: "宴会厅" }[L] : ["m_child", "lost"].includes(t.id) ? (L === "en" ? "the " : "") + PL().sender[LI[L]] : t.id === "m_park" ? { ko: "근처 공영 주차장", en: "a nearby public parking lot", ja: "近くの公共駐車場", zh: "附近的公共停车场" }[L] : t.id === "c_meal" ? { ko: "식당", en: "the dining hall", ja: "食堂", zh: "餐厅" }[L] : ""),
+    what: v.what || (t.id === "c_start" ? { ko: "모임", en: "The gathering", ja: "集まり", zh: "聚会" }[L] : t.id === "p_soon" ? { ko: "공연", en: "the performance", ja: "公演", zh: "演出" }[L] : ""),
+    What: (v.what || (t.id === "p_soon" ? "the performance" : "")).replace(/^./, c => c.toUpperCase()),
+    vote: v.vote || { ko: "동대표 선거", en: "the resident representative election", ja: "棟代表選挙", zh: "楼栋代表选举" }[L],
+    vloc: v.vloc || { ko: "관리사무소", en: "the management office", ja: "管理事務所", zh: "物业管理处" }[L], body: L === "ko" ? koNormalize(v.body || "") : "",
+  };
+  let s = src.replace(/\{(\w+)\|(은|는|이|가|을|를|으로|로)\}/g, (_, k, j) => (map[k] ?? "") + josa(map[k] ?? "", j))
+             .replace(/\{(\w+)\}/g, (_, k) => map[k] ?? "");
+  s = s.replace(/\s+([,.、。，])/g, "$1").replace(/,(\s*,)+/g, ",").replace(/,\s*([.])/g, "$1").replace(/^\s*,\s*/, "").replace(/、([、。])/g, "$1").replace(/，([，。])/g, "$1")
+       .replace(/\.\.(?!\.)/g, ".").replace(/\s{2,}/g, " ").trim();   // "3 p.m.." → "3 p.m."
+  if (L === "ko" && v.note) s += " " + koNormalize(v.note.trim().replace(/[^.!?。]$/, m => m + "."));
+  return s;
+}
+let mine = ls.get("mine", []);                            // ⭐ 내 방송 (직접 만들어 고정한 방송)
+function curT() {
+  if (String(S.tpl).startsWith("mine:")) {
+    const m = mine.find(x => "mine:" + x.id === S.tpl);
+    if (m) return { id: S.tpl, icon: m.icon, name: m.name, f: [], mine: m, ko: m.texts.ko || "", en: m.texts.en || "", ja: m.texts.ja || "", zh: m.texts.zh || "" };
+    S.tpl = "custom";
+  }
+  return T.find(x => x.id === S.tpl) || T[0];
+}
+const firstText = (texts, langs) => { const L = LANGS.find(x => (!langs || langs[x.id]) && (texts[x.id] || "").trim()); return L ? texts[L.id].trim() : ""; };
+function josa(w, j) {                                   // 받침에 맞춰 은/는 · 이/가 · 을/를
+  const c = (w || "").trim().slice(-1), code = c.charCodeAt(0) - 0xac00;
+  const has = code >= 0 && code < 11172 ? code % 28 !== 0 : /[013678]$/.test(c);   // 숫자: 일·삼·육·칠·팔·영 은 받침
+  if (j === "으로" || j === "로") return has && !(code >= 0 && code < 11172 && code % 28 === 8) ? "으로" : "로";   // ㄹ 받침·받침 없음은 '로'
+  const P = { 은: ["은", "는"], 는: ["은", "는"], 이: ["이", "가"], 가: ["이", "가"], 을: ["을", "를"], 를: ["을", "를"] }[j];
+  return has ? P[0] : P[1];
+}
+function regen(force) {
+  BASE_LANGS.forEach(({ id }) => {
+    if (force || !S.edited[id]) { S.texts[id] = build(id); S.edited[id] = false; }
+  });
+  if (force && !curT().mine) LANGS.filter(L => L.extra).forEach(L => { S.edited[L.id] = false; });   // 내 방송은 저장한 번역 유지
+  renderLangs(); save(); estimate();
+  autoTranslateSoon();
+}
+const needsCheck = () => {                              // 외국어로 자동 변환이 안 되는 칸 (장소·행사 이름·덧붙일 말)
+  const t = curT();
+  const oddF = S.vals.firepos && t.f.includes("firepos") && !/^(\d+)\s*동(\s*\d+\s*층)?$/.test(S.vals.firepos.trim()) ? ["화재 위치"] : [];
+  const odd = S.vals.spot && t.f.includes("spot") && !/^(\d+)\s*동\s*(앞|입구|옆)?$/.test(S.vals.spot.trim()) ? ["주차 자제 구역"] : [];
+  return [...t.f.filter(k => F[k].free && S.vals[k] && k !== "body" && !(k === "dest" && CITY[(S.vals.dest || "").replace(/\s/g, "")]) && !["groom", "bride", "pax"].includes(k) && !/^[\x00-\u024f\s]+$/.test(S.vals[k])).map(k => F[k].label.split(" (")[0]), ...odd, ...oddF];
+};
+
+// ================= 화면: 템플릿·빈칸 =================
+const GROUPS_APT = [                                     // 아파트 방송 묶음
+  { name: "📢 생활 안내", ids: ["move", "car", "recycle", "paper", "fee", "event", "vote", "lost", "custom"] },
+  { name: "🔧 점검 · 공사", ids: ["water", "power", "elev", "disinfect", "gas", "fireinsp", "works"] },
+  { name: "🤝 생활 예절", ids: ["quiet", "smoke", "pet"] },
+  { name: "🌦 계절 · 날씨", ids: ["freeze", "typhoon"] },
+  { name: "🦺 안전 · 훈련", ids: ["fire", "stuck", "falarm"] },
+  { name: "🚨 긴급", ids: ["efire", "equake", "urgent"], em: true },
+];
+const SHARED_SAFE = ["fire", "stuck", "falarm", "typhoon"], SHARED_EM = ["efire", "equake", "urgent"];
+function groupsFor(pl) {
+  if (pl === "apt") return GROUPS_APT;
+  const own = T.filter(t => (t.places || []).includes(pl)).sort((a, b) => a.places.length - b.places.length).map(t => t.id);   // 이 장소 전용 방송이 먼저
+  return [
+    { name: `${PLACES[pl].icon} ${PLACES[pl].name} 안내`, ids: [...own, "lost", "event", "car", "custom"] },
+    { name: "🔧 건물 점검", ids: ["g_power", "g_water", "g_elev"] },
+    { name: "🦺 안전 · 훈련 · 날씨", ids: SHARED_SAFE },
+    { name: "🚨 긴급", ids: SHARED_EM, em: true },
+  ];
+}
+function renderPlaces() {
+  const box = $("places"); box.innerHTML = "";
+  Object.entries(PLACES).forEach(([id, p]) => {
+    const b = document.createElement("button"); b.textContent = `${p.icon} ${p.name}`; b.className = S.place === id ? "on" : "";
+    b.onclick = () => {
+      S.place = id; S.edited = {};
+      const ids = groupsFor(id).flatMap(g => g.ids);
+      if (!ids.includes(S.tpl)) S.tpl = ids[0];
+      save(); renderPlaces(); renderTpls(); renderFields(); regen(true); aptLabel();
+      toast(`${p.icon} ${p.name}용 방송으로 바꿨습니다 — 첫 인사: "${p.sender[0]}에서, ${p.aud[0]}께…"`);
+    };
+    box.appendChild(b);
+  });
+}
+function pickTpl(id) {                                  // 방송 종류 고르기 (템플릿 · 내 방송 공통)
+  if (id.startsWith("mine:")) {
+    const m = mine.find(x => "mine:" + x.id === id); if (!m) return;
+    S.tpl = id; S.edited = {}; S.langs = { ko: false, en: false, ja: false, zh: false, ...m.langs };
+    Object.keys(m.langs).forEach(k => { if (MORE_LANGS.some(x => x.id === k) && !(S.extra || []).includes(k)) S.extra = [...(S.extra || []), k]; }); rebuildLangs();
+    Object.keys(m.texts).forEach(k => { S.texts[k] = m.texts[k]; S.edited[k] = true; });
+    if (m.mood) { S.mood = m.mood; applyMood(); }
+  } else {
+    const t = T.find(x => x.id === id); if (!t) return;
+    S.tpl = id; S.edited = {};
+    if (t.urgent) { S.mood = "urgent"; applyMood(); } else if (S.mood === "urgent") { S.mood = "calm"; applyMood(); }
+  }
+  renderTpls(); renderFields(); regen(true);
+}
+function tplButton(id, icon, name, cls) {               // 버튼 하나: 왼쪽 위 ☆ 즐겨찾기, (내 방송) 오른쪽 위 ✕
+  const fav = (S.fav || []).includes(id), isMine = id.startsWith("mine:");
+  const b = document.createElement("button");
+  b.className = "tpl" + (S.tpl === id ? " on" : "") + (cls ? " " + cls : "");
+  b.innerHTML = `<span class="fv${fav ? " on" : ""}" title="${fav ? "즐겨찾기에서 빼기" : "즐겨찾기에 넣기"}">${fav ? "★" : "☆"}</span>${isMine ? '<span class="x" title="이 내 방송 지우기">✕</span>' : ""}<span class="ic">${icon}</span><b></b>`;
+  b.querySelector("b").textContent = name;
+  b.onclick = e => {
+    if (e.target.classList.contains("fv")) {
+      S.fav = fav ? S.fav.filter(x => x !== id) : [...(S.fav || []), id]; save(); renderTpls();
+      toast(fav ? `☆ 즐겨찾기에서 뺐습니다: ${name}` : `★ 즐겨찾기에 넣었습니다: ${name}`); return;
+    }
+    if (e.target.classList.contains("x")) {
+      if (!confirm(`'${name}' 내 방송을 지울까요?`)) return;
+      mine = mine.filter(x => "mine:" + x.id !== id); ls.set("mine", mine); S.fav = (S.fav || []).filter(x => x !== id);
+      if (S.tpl === id) S.tpl = groupsFor(S.place || "apt")[0].ids[0];
+      save(); renderTpls(); renderFields(); regen(true); toast("지웠습니다"); return;
+    }
+    pickTpl(id);
+  };
+  return b;
+}
+function renderTpls() {
+  const root = $("tpls"); root.innerHTML = "";
+  const GROUPS = groupsFor(S.place || "apt");
+  const left = S.place && S.place !== "apt" ? [] : T.filter(t => !t.places && !t.id.startsWith("g_") && !["lost"].includes(t.id) && !GROUPS.some(g => g.ids.includes(t.id)));   // 아파트: 묶음에 없는 것은 생활 안내에
+  const here = new Set([...GROUPS.flatMap(g => g.ids), ...left.map(t => t.id)]);
+  const info = id => {
+    if (id.startsWith("mine:")) { const m = mine.find(x => "mine:" + x.id === id); return m && { icon: m.icon, name: m.name, cls: "" }; }
+    const t = T.find(x => x.id === id); return t && here.has(id) && { icon: t.icon, name: t.name, cls: t.urgent ? "urgent" : "" };
+  };
+  const section = (title, cls, ids) => {
+    const items = ids.map(id => [id, info(id)]).filter(([, x]) => x); if (!items.length) return;
+    const sec = document.createElement("div"); sec.className = "grp " + cls;
+    sec.innerHTML = `<h4>${title}</h4><div class="tpls"></div>`; root.appendChild(sec);
+    items.forEach(([id, x]) => sec.querySelector(".tpls").appendChild(tplButton(id, x.icon, x.name, x.cls)));
+  };
+  const q = ($("tplQ")?.value || "").trim().toLowerCase();
+  if (q) {                                                // 🔍 찾기: 이름·문장에 들어 있는 방송만 (모든 장소에서)
+    const all = [...mine.map(m => ["mine:" + m.id, m.icon, m.name, Object.values(m.texts).join(" ")]), ...T.map(t => [t.id, t.icon, t.name, (t.ko || "") + " " + (t.en || "")])];
+    const hit = all.filter(([, , n, txt]) => (n + " " + txt).toLowerCase().includes(q));
+    const sec = document.createElement("div"); sec.className = "grp";
+    sec.innerHTML = `<h4>🔍 '${q.replace(/</g, "&lt;")}' 찾은 방송 ${hit.length}개</h4><div class="tpls"></div>`; root.appendChild(sec);
+    hit.forEach(([id, ic, n]) => sec.querySelector(".tpls").appendChild(tplButton(id, ic, n, T.find(x => x.id === id)?.urgent ? "urgent" : "")));
+    if (!hit.length) sec.insertAdjacentHTML("beforeend", '<div class="muted">찾는 방송이 없습니다. ✍️ 직접 입력으로 만들어 ⭐ 내 방송에 저장해 보세요.</div>');
+    return;
+  }
+  section("★ 즐겨찾기", "fav", S.fav || []);
+  section("⭐ 내 방송", "mine", mine.map(m => "mine:" + m.id));
+  GROUPS.forEach((g, gi) => section(g.name, g.em ? "em" : "", [...g.ids, ...(gi === 0 ? left.map(t => t.id) : [])]));
+  if (!(S.fav || []).length) {
+    const tip = document.createElement("div"); tip.className = "muted"; tip.style.cssText = "font-size:12.5px;margin-top:10px";
+    tip.textContent = "버튼 왼쪽 위 ☆ 를 누르면 자주 쓰는 방송이 맨 위 '★ 즐겨찾기'에 모입니다.";
+    root.prepend(tip);
+  }
+}
+$("tplQ").oninput = () => { $("tplQx").hidden = !$("tplQ").value; renderTpls(); };
+$("tplQx").onclick = () => { $("tplQ").value = ""; $("tplQx").hidden = true; renderTpls(); $("tplQ").focus(); };
+function renderFields() {
+  const t = curT(), box = $("fields"); box.innerHTML = "";
+  if (t.mine) { box.innerHTML = `<div class="fld wide muted" style="font-size:13.5px">⭐ <b>${t.name.replace(/</g, "&lt;")}</b> — 저장해 둔 내 방송입니다. 아래 문장을 고친 뒤 <b>⭐ 내 방송으로 저장</b>을 누르면 같은 이름으로 덮어씁니다.</div>`; return; }
+  t.f.forEach(k => {
+    const f = F[k], d = document.createElement("div"); d.className = "fld" + (f.wide ? " wide" : "");
+    d.innerHTML = `<label></label>`; d.querySelector("label").textContent = (t.labels || {})[k] || f.label;
+    const el = document.createElement(f.type === "textarea" ? "textarea" : "input");
+    if (f.type !== "textarea") el.type = f.type;
+    else { el.rows = 4; el.style.cssText = "width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;line-height:1.6;resize:vertical"; el.placeholder = "예: 오늘 오후 3시부터 지하 주차장 바닥 청소가 있습니다. 차량을 지상으로 옮겨 주세요."; }
+    el.value = S.vals[k] ?? (k === "date2" ? S.vals.date : "");
+    el.oninput = () => { S.vals[k] = el.value; regen(); };
+    d.appendChild(el); box.appendChild(d);
+  });
+}
+
+// ================= 화면: 언어별 문장 =================
+let voices = [];
+function renderLangs() {
+  const box = $("langs"); box.innerHTML = "";
+  const warn = needsCheck();
+  LANGS.forEach(L => {
+    const on = S.langs[L.id], d = document.createElement("div"); d.className = "lang" + (on ? "" : " off");
+    d.innerHTML = `<div class="lh"><label class="switch"><input type="checkbox" ${on ? "checked" : ""}><span></span></label>
+      <span style="display:inline-flex;flex-direction:column;line-height:.9"><button class="mini up" title="방송 순서 앞으로" style="height:16px;padding:0 5px;font-size:10px">▲</button><button class="mini dn" title="방송 순서 뒤로" style="height:16px;padding:0 5px;font-size:10px">▼</button></span>
+      <b>${L.flag} ${L.extra ? L.ko + " · " + L.name : L.name}</b><span class="tags"></span><span class="sp"></span><select title="목소리"></select>
+      <button class="mini lplay" title="이 칸의 문장만 바로 들어 보기 (차임·인사말 없이)" style="border-color:#fed7aa;background:#fff7ed;color:var(--accent2);font-weight:600">▶ 듣기</button>${L.id === "ko" ? '<button class="mini pol" title="쉼표 넣기 · 시간·전화번호 읽기 좋게 · 긴 문장·영어 약자 검사" style="border-color:#bbf7d0;background:#f0fdf4;color:#15803d;font-weight:600">✨ 다듬기</button>' : ""}<button class="mini cmp" title="이 언어의 목소리를 차례로 들어 보기">🔊 비교</button><button class="mini tr" hidden>${L.extra ? "🌐 번역" : "자동 번역"}</button>${L.extra ? '<button class="mini rm" title="이 언어 빼기">✕</button>' : ""}</div><textarea spellcheck="false" data-l="${L.id}"></textarea>`;
+    d.querySelector("input").onchange = e => {
+      if (!e.target.checked && LANGS.filter(x => S.langs[x.id]).length <= 1) { e.target.checked = true; toast("언어를 하나 이상 켜 두어야 합니다"); return; }
+      S.langs[L.id] = e.target.checked; save(); renderLangs(); estimate(); altInfo();
+    };
+    const ta = d.querySelector("textarea"); ta.value = S.texts[L.id] || "";
+    ta.placeholder = L.id === "ko" ? "방송할 문장" : L.extra ? ("Translator" in self && !trFail[L.id] ? "🌐 자동 번역됩니다 (영어·한국어 문장을 번역)" : "이 언어는 자동 번역이 안 됩니다 — 이 칸에 직접 써 주세요 (파파고 등에서 붙여 넣어도 됩니다)") : (curT()[L.id] === "" ? "직접 입력한 내용은 이 언어로 직접 써 주세요 (또는 '자동 번역')" : "");
+    ta.oninput = () => { S.texts[L.id] = ta.value; S.edited[L.id] = true; save(); estimate(); tags(); };
+    const sel = d.querySelector("select"); fillVoices(sel, L);
+    sel.onchange = () => { S.voices[L.id] = sel.value; save(); altInfo(); };
+    const tagBox = d.querySelector(".tags");
+    const tags = () => {
+      tagBox.innerHTML = "";
+      if (S.edited[L.id]) tagBox.innerHTML += '<span class="tag">직접 고침</span> ';
+      else if (L.extra && S.auto?.[L.id] && (S.texts[L.id] || "").trim()) tagBox.innerHTML += '<span class="tag" title="기계 번역입니다. 중요한 방송은 원어민 확인을 권합니다">🌐 자동 번역 · 확인 권장</span> ';
+      if (L.id !== "ko" && on && warn.length && !S.edited[L.id]) tagBox.innerHTML += `<span class="tag" title="이 칸은 한국어 그대로 들어갑니다">확인: ${warn.join("·")}</span>`;
+    };
+    tags();
+    d.querySelector(".cmp").onclick = e => compareVoices(L, sel, e.currentTarget);
+    d.querySelector(".lplay").onclick = e => playLang(L, ta, e.currentTarget);
+    const pol = d.querySelector(".pol"); if (pol) pol.onclick = () => openPolish(ta);
+    d.querySelector(".up").onclick = () => moveLang(L.id, -1); d.querySelector(".dn").onclick = () => moveLang(L.id, 1);
+    const trb = d.querySelector(".tr");
+    if (L.id !== "ko" && "Translator" in self) { trb.hidden = false; trb.onclick = () => (L.extra ? (S.edited[L.id] = false, autoTranslate(true).then(() => renderLangs())) : translate(L.id, ta)); }
+    const rmb = d.querySelector(".rm");
+    if (rmb) rmb.onclick = () => { S.extra = S.extra.filter(x => x !== L.id); delete S.langs[L.id]; rebuildLangs(); save(); renderLangs(); estimate(); altInfo(); toast(`${L.ko}를 뺐습니다`); };
+    box.appendChild(d);
+  });
+}
+const SAMPLE = { ko: "안녕하십니까. 관리사무소에서, 입주민 여러분께 안내 말씀 드립니다.", en: "Hello, residents. This is an announcement from the management office.",
+  ja: "居住者の皆様にお知らせいたします。管理事務所です。", zh: "各位居民，大家好。这里是物业管理处。" };
+async function openLangDlg() {
+  const grid = $("langGrid"); grid.innerHTML = "";
+  for (const L of MORE_LANGS) {
+    const vs = voicesFor(L).filter(v => !isMulti(v, L)), on = (S.extra || []).includes(L.id);
+    const b = document.createElement("button"); b.className = "tpl" + (on ? " on" : ""); b.style.cssText = "text-align:left;padding:10px 12px";
+    b.innerHTML = `<b style="font-size:14px">${L.flag} ${L.ko}</b><br><span class="muted" style="font-size:12px">${L.name} · ${vs.length ? (vs.some(v => score(v) >= 100) ? "★★★" : "★") + " 목소리 " + vs.length : "목소리 없음"} <span class="trb"></span></span>`;
+    if (!vs.length) b.style.opacity = .45;
+    b.onclick = () => {
+      if (!vs.length) { toast("이 기기에는 이 언어 목소리가 없습니다"); return; }
+      S.extra = on ? S.extra.filter(x => x !== L.id) : [...(S.extra || []), L.id];
+      if (!on) S.langs[L.id] = true; else delete S.langs[L.id];
+      rebuildLangs(); save(); renderLangs(); estimate(); altInfo(); openLangDlg();
+      if (!on) { toast(`${L.flag} ${L.ko}를 더했습니다 — 자동 번역 중…`); autoTranslate(); }
+    };
+    grid.appendChild(b);
+    if ("Translator" in self) Translator.availability({ sourceLanguage: "en", targetLanguage: L.tr }).then(a => { b.querySelector(".trb").textContent = a === "unavailable" ? "· 번역 ✕ (직접 입력)" : "· 🌐 번역"; }).catch(() => {});
+  }
+  if (!$("langDlg").open) $("langDlg").showModal();
+}
+$("addLang").onclick = openLangDlg;
+$("langClose").onclick = () => $("langDlg").close();
+// ================= ✨ 문장 다듬기 · 검사 =================
+// 이어지는 말 끝(…하고, …해서, …부터, …께서는 등) 뒤에 쉼표를 넣어 숨 쉴 자리를 만듦
+const KO_PAUSE = ["께서는", "께서", "분들은", "여러분은", "주시고", "시고", "부터", "까지", "에서는", "에게는", "하고", "하며", "하여", "해서", "어서", "아서", "으니", "니까", "므로", "면서", "지만", "는데", "은데", "으면", "하면", "되면", "라면", "이면", "위해", "위하여", "때문에", "대해", "따라", "경우", "뒤에", "후에", "동안", "전에", "때는", "시에는"];
+function polishKo(text) {
+  const notes = [];
+  let t = (text || "").replace(/\s+/g, " ").trim();
+  const t0 = t;
+  t = koNormalize(t);                                     // 14:00 → 오후 2시, 전화번호 한 자리씩
+  if (t !== t0) notes.push("🕑 시간·전화번호를 <b>읽기 좋게</b> 바꿨습니다");
+  let commas = 0;
+  const sents = (t.match(/[^.!?]+[.!?]*/g) || []).map(x => x.trim()).filter(Boolean).map(sn => {
+    if (!/[.!?]$/.test(sn)) { sn += "."; notes.dot = true; }
+    const ws = sn.split(" "); if (sn.replace(/\s/g, "").length < 16) return sn;
+    let since = 0;
+    for (let k = 0; k < ws.length - 1; k++) {
+      since += ws[k].length;
+      const w = ws[k], rest = ws.slice(k + 1).join("").length;
+      if (/[,.]$/.test(w)) { since = 0; continue; }
+      if (since >= 6 && rest >= 5 && KO_PAUSE.some(e => w.endsWith(e) && (w.length > e.length || ["동안", "경우", "뒤에", "후에", "전에", "때는"].includes(w)))) { ws[k] = w + ","; commas++; since = 0; }
+    }
+    return ws.join(" ");
+  });
+  t = sents.join(" ");
+  if (commas) notes.unshift(`✏️ 끊어 읽을 자리에 <b>쉼표 ${commas}곳</b>을 넣었습니다`);
+  if (notes.dot) notes.push("🔚 문장 끝에 <b>마침표</b>를 넣었습니다 (문장 사이를 쉬어 읽음)");
+  const long = sents.filter(x => x.replace(/\s/g, "").length > 60);
+  if (long.length) notes.push(`⚠️ <b>긴 문장 ${long.length}개</b> (60자 넘음) — 둘로 나누면 더 또렷하게 들립니다: “${long[0].slice(0, 28)}…”`);
+  const eng = [...new Set((t.match(/[A-Z]{2,}(?=\d|\b)/g) || []))];
+  if (eng.length) notes.push(`🔤 영어 약자 <b>${eng.join(", ")}</b> — 원하는 대로 읽히지 않으면 <b>📖 발음 사전</b>에 넣으세요 (예: KE → 대한항공)`);
+  const nums = t.match(/\d{5,}/g);
+  if (nums) notes.push(`🔢 긴 숫자 <b>${nums.slice(0, 3).join(", ")}</b> — 한 자리씩 읽어야 하면 띄어 쓰거나 발음 사전을 쓰세요`);
+  if (!notes.length) notes.push("👍 고칠 곳이 없습니다. 그대로 방송해도 좋습니다");
+  return { text: t, notes };
+}
+let polTa = null;
+function openPolish(ta) {
+  const src = (ta.value || "").trim(); if (!src) { toast("다듬을 문장이 없습니다"); return; }
+  const r = polishKo(src); polTa = ta;
+  $("polReport").innerHTML = r.notes.map(n => `<div>${n}</div>`).join("");
+  $("polText").value = r.text; $("polDlg").showModal();
+}
+$("polNo").onclick = () => { speechSynthesis.cancel(); $("polDlg").close(); };
+$("polOk").onclick = () => {
+  speechSynthesis.cancel();
+  const v = $("polText").value.trim(); $("polDlg").close(); if (!polTa) return;
+  polTa.value = v; S.texts.ko = v; S.edited.ko = true; save(); renderLangs(); estimate(); autoTranslateSoon();
+  toast("✨ 다듬은 문장을 적용했습니다");
+};
+$("polPlay").onclick = () => { if (running) return; speechSynthesis.cancel(); (async () => { for (const p of sentences($("polText").value)) { await say(p, LANGS.find(x => x.id === "ko")); await sleep(300); } })(); };
+
+let lpOn = false, lpStop = false;
+async function playLang(L, ta, btn) {                   // 이 언어 칸의 문장만 바로 듣기 (다시 누르면 멈춤)
+  if (lpOn) { lpStop = true; speechSynthesis.cancel(); return; }
+  if (running) { toast("방송·비교가 끝난 뒤에 눌러 주세요"); return; }
+  const parts = sentences((ta.value || "").trim());
+  if (!parts.length) { toast("읽을 문장이 없습니다"); return; }
+  const v = pickVoice(L); if (!v) { toast("이 언어 목소리가 없습니다"); return; }
+  lpOn = true; lpStop = false; running = true; speechSynthesis.cancel(); audio();
+  const keep = btn.textContent; btn.textContent = "■ 멈추기"; btn.style.background = "var(--accent)"; btn.style.color = "#fff";
+  for (let i = 0; i < parts.length && !lpStop; i++) {
+    $("now").innerHTML = `<b>▶ ${L.flag} ${shortName(v)}</b> 문장 듣기 (${i + 1}/${parts.length}) — ${parts[i].replace(/</g, "&lt;")}`;
+    await say(parts[i], L);
+    if (!lpStop) await sleep(/[.!?。！？]$/.test(parts[i]) ? 380 : 200);
+  }
+  btn.textContent = keep; btn.style.background = "#fff7ed"; btn.style.color = "var(--accent2)";
+  lpOn = false; running = false;
+  $("now").textContent = lpStop ? "문장 듣기를 멈췄습니다." : "문장 듣기를 마쳤습니다. 괜찮으면 ③에서 방송 시작을 누르세요.";
+}
+let cmpStop = false, cmpOn = false;
+async function compareVoices(L, sel, btn) {             // 목록의 모든 목소리로 같은 문장을 차례로 (속도는 그대로, 사람만 바뀜) · 다시 누르면 멈춤
+  if (cmpOn) { cmpStop = true; speechSynthesis.cancel(); return; }
+  if (running) return;
+  const list = voicesFor(L);
+  cmpOn = true; cmpStop = false;
+  const keepSel = sel.value, keepTxt = btn.textContent;
+  running = true; speechSynthesis.cancel();
+  for (let i = 0; i < list.length && !cmpStop; i++) {
+    const v = list[i], g = gender(v) === "m" ? "남" : gender(v) === "f" ? "여" : "";
+    btn.textContent = `🔊 ${shortName(v)}${isMulti(v, L) ? "·다국어" : ""}${g ? " (" + g + ")" : ""} ${i + 1}/${list.length}`; btn.style.cssText = "background:#fff7ed;border-color:var(--accent);color:var(--accent2);font-weight:700";
+    sel.value = v.voiceURI;                               // 목록에도 지금 읽는 목소리를 잠깐 표시
+    $("now").innerHTML = `<b>🔊 ${L.flag} ${shortName(v)}${g ? " (" + g + "성)" : ""}</b>${/\(([^)]+)\)\s*$/.test(v.name) ? " · " + v.name.match(/\(([^)]+)\)\s*$/)[1] : ""} 목소리로 읽는 중 (${i + 1}/${list.length}) — 멈추려면 비교 버튼을 다시 누르세요`;
+    const keep = S.voices[L.id]; S.voices[L.id] = v.voiceURI;
+    await say(SAMPLE[L.id] || (S.texts[L.id] || "").slice(0, 90) || "Hello.", L); S.voices[L.id] = keep;
+    await sleep(500);
+  }
+  sel.value = keepSel; btn.textContent = keepTxt; btn.style.cssText = "";
+  running = false; cmpOn = false;
+  $("now").textContent = cmpStop ? "비교를 멈췄습니다. 마음에 드는 목소리를 목록에서 고르세요." : `비교를 마쳤습니다 (${list.length}개). 마음에 드는 목소리를 목록에서 고르세요.`;
+}
+// ================= 자동 번역 =================
+const TRC = ls.get("trcache", {});                        // 번역 결과 저장 (같은 문장은 다시 번역하지 않음 · 인터넷 없이도)
+const trs = {}, trFail = {};                              // trFail: 자동 번역이 안 되는 언어
+async function trText(text, src, tgt) {
+  text = (text || "").trim(); if (!text) return "";
+  const key = `${src}>${tgt}:${text}`;
+  if (TRC[key]) return TRC[key];
+  if (!("Translator" in self)) throw new Error("no-translator");
+  const k = src + ">" + tgt;
+  if (!trs[k]) trs[k] = Translator.create({ sourceLanguage: src, targetLanguage: tgt, monitor(m) { m.addEventListener("downloadprogress", e => { $("now").textContent = `🌐 번역 파일 받는 중… ${Math.round(e.loaded * 100)}% (처음 한 번만)`; }); } });
+  const tr = await trs[k].catch(e => { delete trs[k]; throw e; });
+  const out = (await tr.translate(text)).trim();
+  TRC[key] = out;
+  const keys = Object.keys(TRC); if (keys.length > 400) keys.slice(0, keys.length - 400).forEach(x => delete TRC[x]);
+  ls.set("trcache", TRC);
+  return out;
+}
+function trSource() {                                   // 번역 원본: 직접 쓴 영어 문장이 있으면 영어(더 정확), 없으면 한국어
+  const en = (S.texts.en || "").trim(), ko = (S.texts.ko || "").trim();
+  if (en && !(S.edited.ko && !S.edited.en)) return { lang: "en", text: en };
+  return { lang: "ko", text: ko };
+}
+let trTimer = null;
+function autoTranslateSoon() { clearTimeout(trTimer); trTimer = setTimeout(autoTranslate, 700); }
+async function autoTranslate(force) {
+  const src = trSource(); if (!src.text) return;
+  for (const L of LANGS.filter(x => x.extra && S.langs[x.id] && (force || !S.edited[x.id]))) {
+    if (!force && S.trFrom?.[L.id] === src.text && (S.texts[L.id] || "").trim()) continue;
+    const ta = document.querySelector(`#langs textarea[data-l="${L.id}"]`);
+    try {
+      if (ta) ta.placeholder = "🌐 자동 번역 중…";
+      const out = await trText(src.text, src.lang, L.tr);
+      delete trFail[L.id];
+      S.texts[L.id] = out; S.edited[L.id] = false; S.auto = { ...(S.auto || {}), [L.id]: true }; S.trFrom = { ...(S.trFrom || {}), [L.id]: src.text };
+      if (ta && document.activeElement !== ta) ta.value = out;
+      save(); estimate();
+    } catch (e) {
+      trFail[L.id] = true;
+      if (ta) ta.placeholder = "이 언어는 자동 번역이 안 됩니다 — 이 칸에 직접 써 주세요 (파파고 등에서 붙여 넣어도 됩니다)";
+    }
+  }
+  const nw = $("now"); if (nw && /번역 파일 받는 중/.test(nw.textContent)) nw.textContent = "🌐 번역 준비가 끝났습니다.";
+  if (!(document.activeElement && document.activeElement.tagName === "TEXTAREA")) renderLangs();   // '자동 번역' 표시 갱신
+}
+// 더한 언어의 인사말·끝인사 (영어 문장을 번역해 둠)
+const HEADS = {};
+async function prepareExtras() {
+  for (const L of LANGS.filter(x => x.extra && S.langs[x.id])) {
+    const src = { open: OPEN.en(S.aptEn), urgent: OPEN_URGENT.en, close: CLOSE.en, again: AGAIN.en };
+    const h = {};
+    for (const [k, t] of Object.entries(src)) { try { h[k] = await trText(t, "en", L.tr); } catch (e) { h[k] = ""; } }
+    HEADS[L.id] = h;
+    if (!S.edited[L.id] && !(S.texts[L.id] || "").trim()) await autoTranslate();
+  }
+}
+async function translate(L, ta) {                       // 기본 언어 칸의 '자동 번역' 버튼 (한국어 → 이 언어)
+  try {
+    toast("번역 중… (처음엔 언어 파일을 받느라 조금 걸립니다)");
+    ta.value = await trText(S.texts.ko, "ko", L === "zh" ? "zh" : L);
+    S.texts[L] = ta.value; S.edited[L] = true; save(); estimate(); toast("번역했습니다 — 내용을 한 번 확인해 주세요");
+  } catch (e) { toast("이 브라우저에서는 자동 번역을 쓸 수 없습니다"); }
+}
+
+// ================= 목소리 고르기 =================
+const FEMALE = /선히|七海|晓晓|晓伊|sunhi|seoyeon|yuna|jimin|seohyun|nanami|aoi|mayu|kyoko|xiaoxiao|xiaoyi|xiaohan|tingting|meijia|jenny|aria|ava|emma|michelle|samantha|zira|female|여성|女/i;
+const MALE = /인준|현수|injoon|hyunsu|bongjin|gookmin|andrew|brian|guy|christopher|eric|roger|steffan|davis|tony|jason|ryan|daniel|david|mark|alex|圭太|keita|ichiro|daichi|naoki|云希|云健|云扬|云夏|yunxi|yunjian|yunyang|kangkang|male|남성|男/i;
+const gender = v => (FEMALE.test(v.name) ? "f" : MALE.test(v.name) ? "m" : "?");
+function altVoice(L) {                                  // 반복 두 번째: 같은 언어의 반대 성별 중 가장 좋은 목소리
+  const base = pickVoice(L); if (!base) return null;
+  const g = gender(base), pre = L.bcp.split("-")[0].toLowerCase();
+  const list = voicesFor(L).filter(v => v.voiceURI !== base.voiceURI && (v.lang.toLowerCase().startsWith(pre) || isMulti(v, L)) && (L.id !== "zh" || /cn/i.test(v.lang) || isMulti(v, L)));
+  const same = isMulti(base, L) ? list.filter(v => !isMulti(v, L)) : list.filter(v => v.lang === base.lang), opp = v => gender(v) === (g === "f" ? "m" : "f");
+  const pref = { ko: /hyunsu|현수/i }[L.id];                // 한국어 남성 짝은 현수 (사용자 선택)
+  if (pref && g !== "m") { const v = list.find(x => pref.test(x.name)); if (v) return v; }
+  return same.find(opp) || list.find(opp) || same.find(v => gender(v) !== g) || list.find(v => gender(v) !== g) || list[0] || null;
+}
+const dispName = n => n.replace(/선히/g, "선희").replace(/Hyunsu( Multilingual)?/g, "현수");                        // 화면에 보이는 이름 (Microsoft 표기 '선히' → '선희')
+const shortName = v => v ? dispName(v.name.replace(/Microsoft |Online |\(Natural\)| - .*$/g, "").replace(/Multilingual/, "").trim()) : "없음";
+const PITCH = [[0.84, "낮게"], [0.92, "조금 낮게"], [1, "보통"], [1.08, "조금 높게"]];
+const PITCH0 = { hyunsu: 0.92 };                           // 기본: 현수는 조금 낮게 (사용자: '너무 어린 것 같다')
+function vPitch(v) {
+  if (!v) return 1;
+  const k = (S.vpitch || {})[v.voiceURI];
+  if (k != null) return k;
+  const d = Object.entries(PITCH0).find(([n]) => new RegExp(n, "i").test(v.name));
+  return d ? d[1] : 1;
+}
+function renderPitch() {                                // 이번 방송에 쓰는 목소리마다 높이 고르기
+  const box = $("pitchBox"); if (!box) return; box.innerHTML = "";
+  const used = [];
+  LANGS.filter(L => S.langs[L.id]).forEach(L => {
+    const a = pickVoice(L), b = S.alt && S.rep > 1 ? altVoice(L) : null;
+    [a, b].forEach(v => { if (v && !used.some(u => u.voiceURI === v.voiceURI)) used.push(v); });
+  });
+  used.forEach(v => {
+    const w = document.createElement("label"); w.style.cssText = "display:inline-flex;align-items:center;gap:4px;font-size:13px";
+    w.innerHTML = `<b style="font-weight:600"></b><select class="mini" style="height:30px"></select>`;
+    w.querySelector("b").textContent = shortName(v);
+    const sel = w.querySelector("select"), cur = vPitch(v);
+    PITCH.forEach(([x, t]) => { const o = document.createElement("option"); o.value = x; o.textContent = t; if (Math.abs(x - cur) < 0.001) o.selected = true; sel.appendChild(o); });
+    sel.onchange = () => { S.vpitch = { ...(S.vpitch || {}), [v.voiceURI]: +sel.value }; save(); toast(`${shortName(v)}: ${sel.selectedOptions[0].textContent}`); };
+    box.appendChild(w);
+  });
+  if (!used.length) box.innerHTML = '<span class="muted">목소리를 찾는 중…</span>';
+}
+function altInfo() {
+  renderPitch();
+  $("altRow").style.display = S.rep > 1 ? "" : "none";
+  $("altOn").checked = !!S.alt;
+  const langs = LANGS.filter(L => S.langs[L.id]);
+  $("altInfo").textContent = S.alt ? langs.map(L => `${L.flag} ${shortName(pickVoice(L))} → ${shortName(altVoice(L))}`).join("  ") : "켜면 두 번째 방송은 다른 성별 목소리로 읽습니다";
+}
+function score(v) {
+  const n = v.name;
+  return (/natural/i.test(n) ? 100 : 0) + (/neural/i.test(n) ? 60 : 0) + (/online/i.test(n) ? 30 : 0) + (/premium/i.test(n) ? 50 : 0)
+       + (/enhanced|고품질/i.test(n) ? 40 : 0) + (/siri/i.test(n) ? 25 : 0) + (/google/i.test(n) ? 20 : 0) + (FEMALE.test(n) ? 3 : 0) + (v.localService ? 1 : 0);
+}
+const stars = v => { const s = score(v); return s >= 100 ? "★★★" : s >= 40 ? "★★" : "★"; };
+const isMulti = (v, L) => /multilingual/i.test(v.name) && v.lang.toLowerCase().split("-")[0] !== L.bcp.split("-")[0].toLowerCase();   // 다른 나라 다국어 목소리
+function voicesFor(L) {
+  const pre = L.bcp.split("-")[0].toLowerCase(), list = voices.filter(v => v.lang.replace("_", "-").toLowerCase().split("-")[0] === pre);
+  const exact = v => v.lang.replace("_", "-").toLowerCase() === L.bcp.toLowerCase();
+  list.sort((a, b) => (exact(b) - exact(a)) || score(b) - score(a));
+  // 다국어(Multilingual) 목소리도 이 언어로 읽을 수 있음 → 목록 뒤에 붙임 (미국 영어 목소리가 한국어를 읽는 식)
+  const HIDE = { ko: /Andrew|Emma/ };                      // 사용자 선택: 한국어 목록에서 뺀 다국어 목소리
+  const multi = voices.filter(v => isMulti(v, L) && /en-US/i.test(v.lang) && !(HIDE[L.id] && HIDE[L.id].test(v.name))).sort((a, b) => score(b) - score(a));
+  return [...list, ...multi];
+}
+const DEFAULT_VOICE = { ko: /Brian Multilingual/ };       // 사용자 지정 기본 목소리
+function pickVoice(L) {
+  const list = voicesFor(L);
+  return list.find(v => v.voiceURI === S.voices[L.id]) || (DEFAULT_VOICE[L.id] && list.find(v => DEFAULT_VOICE[L.id].test(v.name))) || list[0] || null;
+}
+function fillVoices(sel, L) {
+  sel.innerHTML = "";
+  const list = voicesFor(L);
+  if (!list.length) { sel.innerHTML = "<option>이 기기에 목소리 없음</option>"; sel.disabled = true; return; }
+  const cur = pickVoice(L);
+  list.forEach(v => {
+    const o = document.createElement("option"); o.value = v.voiceURI;
+    const reg = (v.name.match(/\(([^()]+)\)\s*$/) || [])[1];
+    o.textContent = `${stars(v)} ${dispName(v.name.replace(/Microsoft |Online |\(Natural\)| - .*$/g, "").trim())}${isMulti(v, L) ? " · 다국어" : ""}${reg && L.id === "en" ? " · " + reg.replace("United States", "미국").replace("United Kingdom", "영국").replace("Australia", "호주").replace("Canada", "캐나다").replace("India", "인도").replace("Ireland", "아일랜드").replace("New Zealand", "뉴질랜드").replace("Philippines", "필리핀").replace("Singapore", "싱가포르").replace("South Africa", "남아공").replace("Hong Kong SAR", "홍콩").replace("Kenya", "케냐").replace("Nigeria", "나이지리아").replace("Tanzania", "탄자니아") : ""}`;
+    if (cur && v.voiceURI === cur.voiceURI) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+  if (!S.koBrian && voices.length) {
+    const b = voices.find(v => /Brian Multilingual/.test(v.name));
+    if (b) { S.voices.ko = b.voiceURI; S.koBrian = true; save(); }
+  }
+  renderLangs(); altInfo();
+  const info = LANGS.map(L => { const b = voicesFor(L)[0]; return `<b>${L.flag} ${L.name}</b> ${b ? `${stars(b)} ${dispName(b.name)}` : "— 없음"} (${voicesFor(L).length}개)`; }).join("<br>");
+  $("voiceInfo").innerHTML = voices.length ? info : "목소리를 찾지 못했습니다.";
+  const best = LANGS.every(L => voicesFor(L).some(v => score(v) >= 100));
+  const tip = $("voiceTip");
+  if (!best) {
+    tip.hidden = false;
+    tip.innerHTML = /Edg\//.test(navigator.userAgent) ? "일부 언어의 고급 목소리가 없습니다. 인터넷 연결을 확인해 주세요."
+      : /iPhone|iPad|Mac/.test(navigator.userAgent) ? "더 좋은 목소리: <b>설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성</b>에서 한국어·영어·일본어·중국어의 <b>고품질(향상됨)</b> 음성을 내려받으세요."
+      : "가장 자연스러운 목소리(★★★)는 <b>PC의 Microsoft Edge</b>에서 이 파일을 열면 무료로 쓸 수 있습니다.";
+  } else tip.hidden = true;
+}
+speechSynthesis.onvoiceschanged = loadVoices;
+
+// ================= 오디오: 차임 · 배경 음악 =================
+let ctx = null, master, bgG, bgNodes = [];
+function audio() {
+  if (!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination); }
+  if (ctx.state !== "running") ctx.resume();
+  return ctx;
+}
+function bell(f, t0, dur = 1.6, a = 0.32) {               // 실로폰·차임 같은 맑은 소리
+  [[1, 1], [2.0, 0.18], [3.01, 0.08], [4.2, 0.04]].forEach(([m, k]) => {
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = f * m;
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(a * k, t0 + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur / Math.sqrt(m));
+    o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + dur + 0.1);
+  });
+}
+const CHIMES = {                                          // [주파수, 시작 시각(초)]
+  classic: { open: [[523.25, 0], [659.25, .42], [783.99, .84], [1046.5, 1.26]], close: [[1046.5, 0], [783.99, .42], [659.25, .84], [523.25, 1.26]], len: 2.6 },
+  soft: { open: [[587.33, 0], [739.99, .3], [880, .6], [1174.66, .9]], close: [[1174.66, 0], [880, .3], [739.99, .6], [587.33, .9]], len: 2.2 },
+  westminster: { open: [[659.25, 0], [523.25, .6], [587.33, 1.2], [392, 1.8]], close: [[392, 0], [587.33, .6], [659.25, 1.2], [523.25, 1.8]], len: 3.4 },
+};
+async function chime(which) {
+  audio();
+  if (S.mood === "urgent") {                              // 긴급: 또렷한 경고음 3번
+    const t0 = ctx.currentTime + 0.05;
+    for (let k = 0; k < 3; k++) { bell(880, t0 + k * 0.55, 0.5, 0.35); bell(659.25, t0 + k * 0.55 + 0.25, 0.5, 0.35); }
+    await sleep(1900); return;
+  }
+  const c = CHIMES[S.chimeType] || CHIMES.classic, t0 = ctx.currentTime + 0.05;
+  c[which].forEach(([f, t]) => bell(f, t0 + t));
+  await sleep(c.len * 1000);
+}
+function bgStart() {                                      // 따뜻한 화음이 천천히 바뀌는 배경 음악
+  audio(); bgStop(true);
+  bgG = ctx.createGain(); bgG.gain.value = 0; bgG.connect(master);
+  const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1400; lp.connect(bgG);
+  const CH = [[261.63, 329.63, 392, 493.88], [220, 261.63, 329.63, 392], [174.61, 220, 261.63, 329.63], [196, 246.94, 293.66, 392]];
+  const voicesN = CH[0].map((_, i) => {
+    const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(); o.type = "triangle"; o2.type = "sine"; o2.detune.value = 7;
+    g.gain.value = 0.12; o.connect(g); o2.connect(g); g.connect(lp); o.start(); o2.start(); return [o, o2];
+  });
+  let k = 0;
+  const step = () => {
+    const t = ctx.currentTime;
+    CH[k % 4].forEach((f, i) => voicesN[i].forEach(o => o.frequency.setTargetAtTime(f, t, 0.6)));
+    k++;
+  };
+  step(); const timer = setInterval(step, 4000);
+  bgNodes = [voicesN.flat(), timer];
+  bgG.gain.setTargetAtTime(S.bgVol * (speechSynthesis.speaking ? 0.32 : 1), ctx.currentTime, 0.8);   // 말하는 중이면 작게 시작
+}
+function bgDuck(speaking) { if (bgG) bgG.gain.setTargetAtTime(S.bgVol * (speaking ? 0.32 : 1), ctx.currentTime, 0.25); }   // 말할 때는 1/3 로
+function bgStop(now) {
+  if (!bgG) return;
+  const g = bgG, [os, timer] = bgNodes; bgG = null;
+  g.gain.setTargetAtTime(0, ctx.currentTime, now ? 0.01 : 0.6);
+  setTimeout(() => { clearInterval(timer); os.forEach(o => { try { o.stop(); } catch (e) {} }); g.disconnect(); }, now ? 50 : 2500);
+}
+
+// ================= 말하기 =================
+const MOODS = { calm: { rate: 0.97, pitch: 1.0 }, bright: { rate: 1.04, pitch: 1.04 }, urgent: { rate: 1.05, pitch: 1.0 } };
+function speakAs(text, L) {                              // 📖 발음 사전: 쓰는 말 → 읽는 말
+  for (const d of S.dict || []) {
+    if (!d.from || !(d.lang === "all" || d.lang === L.id)) continue;
+    const esc = d.from.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    text = text.replace(new RegExp(esc, /[a-z]/i.test(d.from) ? "gi" : "g"), d.to || "");
+  }
+  return text;
+}
+function sentences(t) {                                 // 문장 나누기 ("a.m."·"p.m."·소수점에서는 안 끊음)
+  const P = t.replace(/\b([ap])\.m\./gi, "$1§m§").replace(/(\d)\.(\d)/g, "$1§$2");
+  return (P.match(/[^.!?。！？।؟]+(?:[.!?。！？।؟]+|$)/g) || []).map(x => x.replace(/§/g, ".").trim()).filter(Boolean);
+}
+function say(text, L, voice) {
+  return new Promise(res => {
+    const v = voice || pickVoice(L); if (!v || !text) return res(false);
+    const u = new SpeechSynthesisUtterance(speakAs(text, L));   // 발음 사전 적용 (화면 글자는 그대로)
+    u.voice = v; u.lang = isMulti(v, L) ? L.bcp : v.lang;          // 다국어 목소리는 읽을 언어를 알려 줌
+    u.rate = S.rate * (L.id === "ko" ? 1 : 0.97); u.volume = S.vol;
+    u.pitch = /natural|neural|premium|enhanced/i.test(v.name) ? vPitch(v) : MOODS[S.mood].pitch * vPitch(v);   // AI 음성: 목소리별로 정한 높이만
+    let done = false; const fin = ok => { if (done) return; done = true; clearTimeout(guard); bgDuck(false); res(ok); };
+    const guard = setTimeout(() => fin(false), 8000 + text.length * 260);   // 엔진이 멈췄을 때 대비
+    u.onstart = () => bgDuck(true); u.onend = () => fin(true); u.onerror = () => fin(false);
+    speechSynthesis.speak(u);
+  });
+}
+let running = false, stopFlag = false;
+function plan() {                                       // 방송 순서
+  const langs = LANGS.filter(L => S.langs[L.id] && (S.texts[L.id] || "").trim());
+  const urgent = S.mood === "urgent";
+  const seq = [];
+  for (let r = 0; r < (S.__bare ? 1 : S.rep); r++) {
+    langs.forEach((L, i) => {
+      let body = S.texts[L.id].trim();
+      const own = curT().mine || ["custom", "urgent"].includes(curT().id) || S.edited.ko;   // 직접 쓴 문장만 (템플릿은 쉼표가 이미 들어 있음)
+      if (L.id === "ko" && S.autoPolish && own && !S.__bare) body = polishKo(body).text;   // ✨ 자동 다듬기: 읽을 때만
+      const H = L.extra ? (HEADS[L.id] || {}) : null;
+      const head = L.extra ? (r ? H.again : urgent ? H.urgent : H.open) : r ? AGAIN[L.id] : (urgent ? OPEN_URGENT[L.id] : OPEN[L.id](L.id === "ko" ? S.apt : S.aptEn));
+      const close = L.extra ? H.close : CLOSE[L.id];
+      if (S.__bare) { seq.push({ L, alt: false, parts: sentences(body) }); return; }   // 카운트다운: 인사말 없이 본문만
+      seq.push({ L, alt: !!(S.alt && r % 2 === 1), parts: [head, ...sentences(body), urgent ? "" : close].filter(Boolean) });
+    });
+  }
+  return seq;
+}
+async function run(real, rec) {
+  if (running) { stop(); return; }
+  if (!voices.length) { toast("이 기기에서 목소리를 찾지 못했습니다"); return; }
+  if (LANGS.some(x => x.extra && S.langs[x.id])) { $("now").textContent = "🌐 더한 언어 인사말 준비 중…"; await prepareExtras(); }
+  const seq = plan(); if (!seq.length) { toast("방송할 문장이 없습니다"); return; }
+  running = true; stopFlag = false; setLive(real ? "air" : rec ? "rec" : "pre");
+  audio(); speechSynthesis.cancel();
+  try { navigator.wakeLock?.request("screen").then(l => (run.lock = l)).catch(() => {}); } catch (e) {}
+  if (S.bg) bgStart();
+  if (S.chime) await chime("open");
+  if (S.bg && !S.chime) await sleep(1200);
+  let langPrev = null;
+  for (const blk of seq) {
+    if (stopFlag) break;
+    if (langPrev) await sleep(blk.L.id === langPrev ? 1100 : 900);
+    langPrev = blk.L.id;
+    for (const p of blk.parts) {
+      if (stopFlag) break;
+      if (rec && $("recLine")) $("recLine").innerHTML = `<b>${blk.L.flag}</b> ${p.replace(/</g, "&lt;")}`;
+      $("now").innerHTML = `${rec ? '<span class="recdot"></span>' : ""}<b>${blk.L.flag} ${real ? "방송 중" : rec ? "녹음 중" : "미리 듣기"}</b> — ${p.replace(/</g, "&lt;")}`;
+      await say(p, blk.L, blk.alt ? altVoice(blk.L) : null);
+      await sleep(/[.!?。！？]$/.test(p) ? 380 : 200);    // 문장 사이 숨 고르기
+    }
+  }
+  if (!stopFlag && S.chime) await chime("close");
+  if (S.bg) { await sleep(400); bgStop(); }
+  if (real) addHistory(stopFlag ? "stop" : S.__cd ? "cd" : (S.__sched ? "sched" : "air"), S.__cd || "");
+  running = false; setLive(""); run.lock?.release?.(); run.lock = null;
+  if (!rec) $("now").innerHTML = stopFlag ? "방송을 멈췄습니다." : (real ? "✅ 방송을 마쳤습니다." : "미리 듣기를 마쳤습니다. 괜찮으면 <b>방송 시작</b>을 누르세요.");
+  return !stopFlag;
+}
+function stop() { stopFlag = true; speechSynthesis.cancel(); bgStop(); }
+function setLive(mode) {
+  $("onair").classList.toggle("live", mode === "air");
+  $("preBtn").textContent = mode === "pre" ? "■ 멈추기" : "▶ 미리 듣기";
+  $("airBtn").textContent = mode === "air" ? "■ 방송 멈추기" : "📢 방송 시작";
+  $("airBtn").className = "big " + (mode === "air" ? "stop" : "air");
+  if (mode === "rec") $("preBtn").textContent = "■ 녹음 멈추기";
+  $("preBtn").disabled = mode === "air"; $("airBtn").disabled = mode === "pre" || mode === "rec"; $("recBtn").disabled = !!mode;
+}
+function estimate() {                                    // 대략 걸리는 시간
+  const seq = plan(); let sec = (S.chime ? (CHIMES[S.chimeType]?.len || 2.6) * 2 : 0);
+  seq.forEach(b => b.parts.forEach(p => { sec += p.length / (b.L.id === "en" || /^[\x00-\u024f\s.,!?'"-]+$/.test(p) ? 14 : b.L.id === "ko" ? 6.2 : 6.5) / S.rate + 0.4; }));
+  $("est").textContent = seq.length ? `예상 길이 약 ${Math.round(sec)}초 · ${[...new Set(seq.map(b => b.L.name))].join(" → ")}${S.rep > 1 ? ` · ${S.rep}번 반복` : ""}` : "";
+}
+$("preBtn").onclick = () => (running ? stop() : run(false));
+
+// ================= 음성 파일로 저장 =================
+// 브라우저 음성은 파일로 직접 꺼낼 수 없어서, PC 소리(시스템 오디오)를 녹음 → 앞뒤 빈 소리 자르기 → 크기 맞추기 → MP3/WAV
+$("recFmt").value = ls.get("recFmt", "mp3");
+$("recFmt").onchange = e => ls.set("recFmt", e.target.value);
+$("recBtn").onclick = () => {
+  if (running) return;
+  if (!navigator.mediaDevices?.getDisplayMedia) { toast("이 기기에서는 저장할 수 없습니다 — PC의 Edge나 Chrome에서 해 주세요"); return; }
+  if (!plan().length) { toast("방송할 문장이 없습니다"); return; }
+  $("recDlg").showModal();
+};
+$("recNo").onclick = () => $("recDlg").close();
+$("recGo").onclick = async () => {
+  $("recDlg").close();
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getDisplayMedia({
+      video: { displaySurface: "monitor" }, systemAudio: "include", selfBrowserSurface: "include", surfaceSwitching: "exclude",
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, suppressLocalAudioPlayback: false },
+    });
+  } catch (e) { toast("녹음을 취소했습니다"); return; }
+  const at = stream.getAudioTracks();
+  stream.getVideoTracks().forEach(t => t.stop());                // 화면은 녹화하지 않음
+  if (!at.length) { recBar("err", "소리가 공유되지 않았습니다.<br>화면 공유 창 아래쪽 <b>'시스템 오디오도 공유'</b>를 켜고 다시 해 주세요."); return; }
+  const c = audio(), src = c.createMediaStreamSource(new MediaStream(at)), proc = c.createScriptProcessor(4096, 2, 2), mute = c.createGain();
+  const L = [], R = []; mute.gain.value = 0;                     // 녹음한 소리를 다시 내보내지 않음 (울림 방지)
+  proc.onaudioprocess = e => { L.push(new Float32Array(e.inputBuffer.getChannelData(0))); R.push(new Float32Array(e.inputBuffer.getChannelData(e.inputBuffer.numberOfChannels > 1 ? 1 : 0))); };
+  src.connect(proc); proc.connect(mute); mute.connect(c.destination);
+  recBar("rec"); $("recBtn").textContent = "● 녹음 중…";
+  await sleep(400);
+  const ok = await run(false, true);
+  await sleep(700);
+  proc.disconnect(); src.disconnect(); at.forEach(t => t.stop());
+  $("recBtn").textContent = "💾 음성 파일로 저장";
+  if (!ok) { $("now").textContent = "녹음을 멈췄습니다 — 파일은 저장하지 않았습니다."; recBar("err", "녹음을 멈췄습니다. 파일은 저장하지 않았습니다."); return; }
+  try {
+    $("now").textContent = "파일 만드는 중…"; recBar("save", "앞뒤 빈 소리를 자르고 소리 크기를 맞추고 있습니다…");
+    const cat = a => { const o = new Float32Array(a.reduce((n, x) => n + x.length, 0)); let k = 0; a.forEach(x => { o.set(x, k); k += x.length; }); return o; };
+    const chs = [cat(L), cat(R)];
+    const buf = { sampleRate: c.sampleRate, numberOfChannels: 2, getChannelData: i => chs[i] };
+    const pcm = tidy(buf);
+    if (!pcm) { $("now").innerHTML = "⚠️ 녹음된 소리가 없습니다. 화면 공유 창에서 <b>'시스템 오디오도 공유'</b>를 켜고 다시 해 주세요."; recBar("err", "녹음된 소리가 없습니다.<br>화면 공유 창에서 <b>'시스템 오디오도 공유'</b>를 켜고 다시 해 주세요."); return; }
+    const fmt = $("recFmt").value, blob = fmt === "mp3" ? await toMp3(pcm) : toWav(pcm);
+    const t = curT(), d = new Date();
+    const name = `온에어_${t.name.replace(/[^\w가-힣]+/g, "")}_${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}_${pad2(d.getHours())}${pad2(d.getMinutes())}.${fmt}`;
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    $("now").innerHTML = `✅ 저장했습니다: <b>${name}</b> (${(pcm.ch[0].length / pcm.sr).toFixed(1)}초) — 다운로드 폴더를 확인하세요.`;
+    addHistory("file", name);
+    recBar("done", `<b>${name}</b><br>${(pcm.ch[0].length / pcm.sr).toFixed(1)}초 · ${(blob.size / 1024 / 1024).toFixed(1)}MB<br>Edge <b>다운로드 폴더</b>(내 PC → 다운로드)에 저장했습니다`);
+  } catch (e) { $("now").textContent = "파일을 만들지 못했습니다: " + e.message; recBar("err", "파일을 만들지 못했습니다: " + e.message);
+    console.error(e); }
+};
+let recT = null, recHide = null, recTitle = document.title;
+function recBar(kind, html) {                            // 녹음 · 저장 상태: 화면 가운데 큰 창 + 탭 제목
+  const b = $("recBar"); clearInterval(recT); clearTimeout(recHide);
+  if (!kind) { b.hidden = true; document.title = recTitle; return; }
+  b.hidden = false; b.className = "recbar " + kind;
+  if (kind === "rec") {
+    const t0 = Date.now();
+    b.innerHTML = `<div class="box"><div class="big1"><span class="dot"></span>녹음 중 <span class="tm" id="recTm">0:00</span></div>
+      <div class="sub1">방송이 스피커로 나오는 동안 녹음합니다. 끝나면 <b>자동으로 저장</b>됩니다.<br>다른 소리(음악·유튜브)는 꺼 주세요.</div>
+      <div class="line" id="recLine">시작하는 중…</div>
+      <div class="act"><button id="recStop" style="background:#1f2937;color:#fff">■ 녹음 멈추기</button></div></div>`;
+    $("recStop").onclick = () => stop();
+    const draw = () => { const sec = Math.floor((Date.now() - t0) / 1000), t = `${Math.floor(sec / 60)}:${pad2(sec % 60)}`; const e = $("recTm"); if (e) e.textContent = t; document.title = `● 녹음 중 ${t} — 온에어`; };
+    draw(); recT = setInterval(draw, 500);
+  } else {
+    const head = kind === "save" ? '<span class="spin"></span>파일 만드는 중…' : kind === "done" ? "✅ 저장 완료" : "⚠️ 저장하지 못했습니다";
+    b.innerHTML = `<div class="box"><div class="big1">${head}</div><div class="sub1">${html}</div>${kind === "save" ? "" : '<div class="act"><button id="recOk" style="background:var(--accent);color:#fff">확인</button></div>'}</div>`;
+    document.title = kind === "save" ? "💾 저장 중 — 온에어" : recTitle;
+    if ($("recOk")) $("recOk").onclick = () => recBar();
+  }
+}
+function tidy(buf) {                                     // 앞뒤 빈 소리 자르기 + 최대 -1 dB 로 크기 맞추기
+  const sr = buf.sampleRate, ch = [...Array(Math.min(2, buf.numberOfChannels))].map((_, i) => buf.getChannelData(i));
+  const n = ch[0].length, th = 0.004;
+  let a = 0, b = n - 1;
+  while (a < n && ch.every(c => Math.abs(c[a]) < th)) a++;
+  while (b > a && ch.every(c => Math.abs(c[b]) < th)) b--;
+  if (b - a < sr * 0.5) return null;
+  a = Math.max(0, a - Math.floor(sr * 0.3)); b = Math.min(n - 1, b + Math.floor(sr * 0.5));
+  let peak = 0; ch.forEach(c => { for (let i = a; i <= b; i++) peak = Math.max(peak, Math.abs(c[i])); });
+  const g = Math.min(4, 0.89 / (peak || 1)), fade = Math.floor(sr * 0.02);
+  const out = ch.map(c => { const o = c.slice(a, b + 1); for (let i = 0; i < o.length; i++) o[i] *= g * Math.min(1, i / fade, (o.length - 1 - i) / fade); return o; });
+  return { sr, ch: out };
+}
+function toInt16(f) { const o = new Int16Array(f.length); for (let i = 0; i < f.length; i++) { const v = Math.max(-1, Math.min(1, f[i])); o[i] = v < 0 ? v * 0x8000 : v * 0x7fff; } return o; }
+function toWav({ sr, ch }) {
+  const n = ch[0].length, k = ch.length, buf = new ArrayBuffer(44 + n * k * 2), v = new DataView(buf);
+  const w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  w(0, "RIFF"); v.setUint32(4, 36 + n * k * 2, true); w(8, "WAVEfmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, k, true);
+  v.setUint32(24, sr, true); v.setUint32(28, sr * k * 2, true); v.setUint16(32, k * 2, true); v.setUint16(34, 16, true); w(36, "data"); v.setUint32(40, n * k * 2, true);
+  const I = ch.map(toInt16); let o = 44;
+  for (let i = 0; i < n; i++) for (let c = 0; c < k; c++) { v.setInt16(o, I[c][i], true); o += 2; }
+  return new Blob([buf], { type: "audio/wav" });
+}
+function loadLame() {
+  return window.lamejs ? Promise.resolve() : new Promise((res, rej) => {
+    const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js";
+    sc.onload = res; sc.onerror = () => rej(new Error("MP3 변환기를 불러오지 못했습니다 (인터넷 확인 또는 WAV 선택)")); document.head.appendChild(sc);
+  });
+}
+async function toMp3({ sr, ch }) {
+  await loadLame();
+  const k = ch.length, enc = new lamejs.Mp3Encoder(k, sr, 192), I = ch.map(toInt16), out = [], B = 1152;
+  for (let i = 0; i < I[0].length; i += B) {
+    const m = k === 2 ? enc.encodeBuffer(I[0].subarray(i, i + B), I[1].subarray(i, i + B)) : enc.encodeBuffer(I[0].subarray(i, i + B));
+    if (m.length) out.push(new Uint8Array(m));
+  }
+  const e = enc.flush(); if (e.length) out.push(new Uint8Array(e));
+  return new Blob(out, { type: "audio/mpeg" });
+}
+$("airBtn").onclick = () => {
+  if (running) return stop();
+  if (S.mood === "urgent" || curT().urgent) {             // 🛡 긴급 방송은 한 번 더 확인
+    $("urgSum").textContent = firstText(S.texts, S.langs).slice(0, 120);
+    $("urgDlg").showModal(); return;
+  }
+  run(true);
+};
+$("urgNo").onclick = () => $("urgDlg").close();
+$("urgGo").onclick = () => { $("urgDlg").close(); run(true); };
+
+// ================= 설정 =================
+function applyMood() {
+  [...$("mood").children].forEach(b => b.classList.toggle("on", b.dataset.v === S.mood));
+  S.rate = MOODS[S.mood].rate; $("rate").value = S.rate; $("rateL").textContent = S.rate.toFixed(2); save(); estimate();
+}
+$("mood").onclick = e => { const v = e.target.dataset.v; if (!v) return; S.mood = v; applyMood(); };
+$("rate").oninput = e => { S.rate = +e.target.value; $("rateL").textContent = S.rate.toFixed(2); save(); estimate(); };
+$("vol").oninput = e => { S.vol = +e.target.value; $("volL").textContent = Math.round(S.vol * 100) + "%"; save(); };
+$("chimeOn").onchange = e => { S.chime = e.target.checked; save(); estimate(); };
+$("chimeType").onchange = e => { S.chimeType = e.target.value; save(); estimate(); audio(); chime("open"); };
+$("autoPol").onchange = e => { S.autoPolish = e.target.checked; save(); estimate(); toast(S.autoPolish ? "✨ 자동 다듬기를 켰습니다 — 직접 쓴 한국어 문장에 쉼표를 넣어 읽습니다" : "자동 다듬기를 껐습니다"); };
+$("bgOn").onchange = e => {                               // 방송 도중에 켜고 꺼도 바로 반영
+  S.bg = e.target.checked; save();
+  if (!S.bg) bgStop(); else if (running && !bgG) bgStart();
+};
+$("bgVol").oninput = e => { S.bgVol = +e.target.value; save(); if (bgG) bgDuck(speechSynthesis.speaking); };
+$("rep").onclick = e => { const v = +e.target.dataset.v; if (!v) return; S.rep = v; [...$("rep").children].forEach(b => b.classList.toggle("on", +b.dataset.v === v)); save(); estimate(); altInfo(); };
+$("altOn").onchange = e => { S.alt = e.target.checked; save(); altInfo(); };
+$("regen").onclick = () => regen(true);
+function aptLabel() { $("setBtn").textContent = S.apt ? `${PL().icon} ${S.apt}` : "⚙ 장소 이름"; $("setBtn").title = S.apt ? "장소 이름 바꾸기·지우기" : "장소 이름 넣기"; }
+$("setBtn").onclick = () => { $("aptKo").value = S.apt; $("aptEn").value = S.aptEn; $("aptDlg").showModal(); $("aptKo").focus(); };
+$("aptNo").onclick = () => $("aptDlg").close();
+$("aptOk").onclick = () => { S.apt = $("aptKo").value.trim(); S.aptEn = $("aptEn").value.trim(); save(); estimate(); aptLabel(); $("aptDlg").close(); toast(S.apt ? "장소 이름을 저장했습니다" : "장소 이름을 비웠습니다"); };
+$("aptDel").onclick = () => { S.apt = ""; S.aptEn = ""; save(); estimate(); aptLabel(); $("aptDlg").close(); toast(`장소 이름을 지웠습니다 — 첫 인사는 '${PL().sender[0]}에서…'로 나갑니다`); };
+["aptKo", "aptEn"].forEach(id => $(id).addEventListener("keydown", e => { if (e.key === "Enter") $("aptOk").click(); }));
+
+// ================= ⭐ 내 방송 =================
+const MINE_ICONS = ["⭐", "📣", "🧹", "🚧", "🅿️", "🧺", "🌳", "🎈", "📦", "🔔", "🧯", "💡", "🚿", "🔊", "🙏", "❤️"];
+let mineIcon = "⭐";
+$("mineSave").onclick = () => {
+  if (!LANGS.some(L => S.langs[L.id] && (S.texts[L.id] || "").trim())) { toast("저장할 문장이 없습니다"); return; }
+  const t = curT();
+  $("mineName").value = t.mine ? t.mine.name : (t.id === "custom" || t.id === "urgent" ? (firstText(S.texts, S.langs).slice(0, 14) || "내 방송") : t.name);
+  mineIcon = t.mine ? t.mine.icon : (t.id === "custom" || t.id === "urgent" ? "⭐" : t.icon);
+  const box = $("mineIcons"); box.innerHTML = "";
+  [...new Set([mineIcon, ...MINE_ICONS])].forEach(ic => {
+    const b = document.createElement("button"); b.textContent = ic; b.className = ic === mineIcon ? "on" : "";
+    b.onclick = () => { mineIcon = ic; [...box.children].forEach(x => x.classList.toggle("on", x === b)); };
+    box.appendChild(b);
+  });
+  $("mineDlg").showModal(); $("mineName").select();
+};
+$("mineNo").onclick = () => $("mineDlg").close();
+$("mineName").addEventListener("keydown", e => { if (e.key === "Enter") $("mineOk").click(); });
+$("mineOk").onclick = () => {
+  const name = $("mineName").value.trim(); if (!name) { toast("버튼 이름을 넣어 주세요"); return; }
+  const texts = {}, langs = {};
+  LANGS.forEach(L => { if (S.langs[L.id] && (S.texts[L.id] || "").trim()) { texts[L.id] = S.texts[L.id].trim(); langs[L.id] = true; } });
+  const old = mine.find(x => x.name === name);
+  if (old && !confirm(`'${name}' 내 방송이 이미 있습니다. 덮어쓸까요?`)) return;
+  const m = { id: old ? old.id : Date.now().toString(36), name, icon: mineIcon, texts, langs, mood: S.mood };
+  mine = old ? mine.map(x => (x === old ? m : x)) : [...mine, m];
+  ls.set("mine", mine); S.tpl = "mine:" + m.id; S.edited = {}; save();
+  $("mineDlg").close(); renderTpls(); renderFields(); regen(true);
+  toast(`⭐ '${name}' 버튼을 만들었습니다 — 맨 위 '내 방송'에 있습니다`);
+};
+
+// ================= 📖 발음 사전 =================
+function dictLangs() { const sel = $("dLang"), cur = sel.value || "ko"; sel.innerHTML = `<option value="all">모든 언어</option>` + LANGS.map(L => `<option value="${L.id}">${L.flag} ${L.extra ? L.ko : L.name}</option>`).join(""); sel.value = [...sel.options].some(o => o.value === cur) ? cur : "ko"; }
+function renderDict() {
+  dictLangs();
+  const box = $("dList"); box.innerHTML = "";
+  if (!(S.dict || []).length) { box.innerHTML = '<div class="muted">아직 없습니다. 예: 신랑 이름, 아파트 이름, 영어 약자</div>'; return; }
+  S.dict.forEach((d, i) => {
+    const L = LANGS.find(x => x.id === d.lang), el = document.createElement("div"); el.className = "li";
+    el.innerHTML = `<span class="nm"><b></b> → <span></span></span><span class="d">${d.lang === "all" ? "모든 언어" : L ? L.flag : d.lang}</span><button title="들어 보기" style="color:var(--accent2)">▶</button><button title="지우기">✕</button>`;
+    el.querySelector("b").textContent = d.from; el.querySelector(".nm span").textContent = d.to;
+    const [pl, rm] = el.querySelectorAll("button");
+    pl.onclick = () => { if (!running) say(d.from, LANGS.find(x => x.id === d.lang) || LANGS[0]); };
+    rm.onclick = () => { S.dict.splice(i, 1); save(); renderDict(); };
+    box.appendChild(el);
+  });
+}
+$("dAdd").onclick = () => {
+  const from = $("dFrom").value.trim(), to = $("dTo").value.trim();
+  if (!from || !to) { toast("쓰는 말과 읽는 말을 모두 넣어 주세요"); return; }
+  S.dict = [...(S.dict || []).filter(d => !(d.from === from && d.lang === $("dLang").value)), { from, to, lang: $("dLang").value }];
+  $("dFrom").value = ""; $("dTo").value = ""; save(); renderDict(); toast(`📖 '${from}' → '${to}'로 읽습니다`);
+};
+$("dTest").onclick = () => {
+  const from = $("dFrom").value.trim(), to = $("dTo").value.trim(), L = LANGS.find(x => x.id === $("dLang").value) || LANGS[0];
+  if (!to && !from) return; if (!running) say(to || from, L);
+};
+["dFrom", "dTo"].forEach(id => $(id).addEventListener("keydown", e => { if (e.key === "Enter") $("dAdd").click(); }));
+
+// ================= ⏱ 카운트다운 방송 =================
+const CD_STEPS = [30, 15, 10, 5, 3, 1, 0];
+const CD_MSG = {
+  ko: (w, n) => n ? `${w} 시작 ${n}분 전입니다. ${PL().aud[0]}께서는, 자리에 앉아 주시기 바랍니다.` : `지금, ${w}${josa(w, "을")} 시작합니다.`,
+  en: (w, n) => n ? `${w.replace(/^./, c => c.toUpperCase())} will begin in ${n} minute${n > 1 ? "s" : ""}. Please take your seats.` : `${w.replace(/^./, c => c.toUpperCase())} is now beginning.`,
+  ja: (w, n) => n ? `${w}開始の${n}分前です。お席にお着きください。` : `ただいまより、${w}を開始いたします。`,
+  zh: (w, n) => n ? `距离${w}开始还有${n}分钟。请各位就座。` : `${w}现在开始。`,
+};
+const CD_WHAT = { show: ["공연", "the performance", "公演", "演出"], wedding: ["예식", "the ceremony", "挙式", "婚礼"] };
+function cdWhat(L) { const w = (S.cd?.what || "").trim(); if (w && L === "ko") return w; if (w && !BASE_LANGS.some(x => x.id === L)) return w; if (w) return w; return (CD_WHAT[S.place] || ["행사", "the event", "イベント", "活动"])[LI[L] ?? 1]; }
+S.cd = Object.assign({ time: "19:00", what: "", steps: [10, 5, 1, 0], on: false, done: {} }, S.cd || {}); S.cd.on = false;
+function renderCd() {
+  $("cdTime").value = S.cd.time; $("cdWhat").value = S.cd.what;
+  const box = $("cdSteps"); box.innerHTML = "";
+  CD_STEPS.forEach(n => {
+    const b = document.createElement("button"); b.textContent = n ? `${n}분 전` : "정각"; b.style.cssText = "width:auto;padding:0 10px;border-radius:999px";
+    b.className = S.cd.steps.includes(n) ? "on" : "";
+    b.onclick = () => { S.cd.steps = S.cd.steps.includes(n) ? S.cd.steps.filter(x => x !== n) : [...S.cd.steps, n].sort((a, b) => b - a); save(); renderCd(); };
+    box.appendChild(b);
+  });
+  cdInfo();
+}
+function cdTarget() { const [h, m] = S.cd.time.split(":").map(Number), d = new Date(); d.setHours(h, m, 0, 0); return d; }
+function cdInfo() {
+  const w = $("cdWait"); w.hidden = !$("cdOn").checked; if (w.hidden) return;
+  const t = cdTarget(), now = Date.now(), next = S.cd.steps.map(n => [n, +t - n * 60000]).filter(([n, at]) => at > now - 30000 && !S.cd.done[n]).sort((a, b) => a[1] - b[1])[0];
+  w.textContent = next ? `⏳ 대기 중 — 다음 안내: ${next[0] ? next[0] + "분 전" : "정각"} (${new Date(next[1]).toTimeString().slice(0, 5)}) · 이 창을 닫지 마세요` : "✅ 오늘 카운트다운을 모두 마쳤습니다";
+}
+$("cdTime").onchange = e => { S.cd.time = e.target.value || "19:00"; S.cd.done = {}; save(); cdInfo(); };
+$("cdWhat").oninput = e => { S.cd.what = e.target.value; save(); };
+$("cdOn").onchange = e => { S.cd.on = e.target.checked; S.cd.done = {}; if (S.cd.on) { audio(); try { navigator.wakeLock?.request("screen"); } catch (er) {} } save(); cdInfo(); };
+async function cdFire(n) {
+  const keep = JSON.parse(JSON.stringify({ texts: S.texts, edited: S.edited }));
+  for (const L of LANGS.filter(x => S.langs[x.id])) {
+    const w = cdWhat(L.id);
+    if (CD_MSG[L.id]) S.texts[L.id] = CD_MSG[L.id](w, n);
+    else { try { S.texts[L.id] = await trText(CD_MSG.en(cdWhat("en"), n), "en", L.tr); } catch (e) { S.texts[L.id] = ""; } }
+  }
+  S.__bare = true; S.__cd = n ? `${n}분 전` : "정각";
+  await run(true);
+  S.__bare = false; S.__cd = ""; Object.assign(S, keep); renderLangs(); estimate();
+}
+setInterval(async () => {
+  if (!$("cdOn").checked) return;
+  cdInfo();
+  if (running) return;
+  const t = cdTarget(), now = Date.now();
+  for (const n of S.cd.steps) {
+    const at = +t - n * 60000;
+    if (now >= at && now - at < 60000 && !S.cd.done[n]) { S.cd.done[n] = true; save(); await cdFire(n); break; }
+  }
+}, 1000);
+
+// ================= 💼 백업 · 옮기기 =================
+const BK_KEYS = ["state", "mine", "sched", "hist", "trcache", "recFmt"];
+function bkCounts(d) {
+  const st = d.state || {};
+  return `내 방송 ${(d.mine || []).length} · 즐겨찾기 ${(st.fav || []).length} · 예약 ${(d.sched || []).length} · 발음 사전 ${(st.dict || []).length} · 기록 ${(d.hist || []).length} · 더한 언어 ${(st.extra || []).length}`;
+}
+function bkInfo() { const d = {}; BK_KEYS.forEach(k => (d[k] = ls.get(k, null))); $("bkInfo").textContent = "지금: " + bkCounts(d) + (ls.get("bkLast", "") ? ` · 마지막 백업 ${ls.get("bkLast", "")}` : ""); }
+$("bkSave").onclick = () => {
+  save();
+  const data = { app: "onair", version: 1, saved: new Date().toISOString() };
+  BK_KEYS.forEach(k => (data[k] = ls.get(k, null)));
+  const d = new Date(), name = `온에어_백업_${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}_${pad2(d.getHours())}${pad2(d.getMinutes())}.json`;
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: "application/json" })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+  ls.set("bkLast", d.toLocaleString("ko-KR")); bkInfo();
+  toast(`💾 백업 파일을 저장했습니다 — ${name} (다운로드 폴더)`);
+};
+let bkData = null;
+$("bkLoad").onclick = () => $("bkFile").click();
+$("bkFile").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  try { bkData = JSON.parse(await f.text()); } catch (er) { toast("백업 파일을 읽지 못했습니다"); return; }
+  if (bkData.app !== "onair") { toast("온에어 백업 파일이 아닙니다"); bkData = null; return; }
+  $("bkSum").innerHTML = `<b>${f.name}</b><br>저장한 때: ${new Date(bkData.saved).toLocaleString("ko-KR")}<br>${bkCounts(bkData)}`;
+  $("bkDlg").showModal();
+};
+$("bkNo").onclick = () => { bkData = null; $("bkDlg").close(); };
+$("bkReplace").onclick = () => {
+  if (!bkData || !confirm("지금 저장된 내용을 모두 지우고 백업으로 바꿀까요?")) return;
+  BK_KEYS.forEach(k => { if (bkData[k] != null) ls.set(k, bkData[k]); else try { localStorage.removeItem("onair_" + k); } catch (er) {} });
+  toast("백업으로 모두 바꿨습니다 — 다시 엽니다"); setTimeout(() => location.reload(), 900);
+};
+$("bkMerge").onclick = () => {
+  if (!bkData) return;
+  const byKey = (a, b, key) => { const m = new Map(); [...(a || []), ...(b || [])].forEach(x => m.set(key(x), x)); return [...m.values()]; };
+  ls.set("mine", byKey(ls.get("mine", []), bkData.mine, x => x.name));
+  ls.set("sched", byKey(ls.get("sched", []), bkData.sched, x => x.time + "|" + x.label));
+  ls.set("hist", byKey(ls.get("hist", []), bkData.hist, x => x.at + "|" + x.label).sort((a, b) => (b.at > a.at ? 1 : -1)).slice(0, 200));
+  ls.set("trcache", { ...ls.get("trcache", {}), ...(bkData.trcache || {}) });
+  const st = bkData.state || {};
+  S.dict = byKey(S.dict, st.dict, x => x.from + "|" + x.lang);
+  S.fav = [...new Set([...(S.fav || []), ...(st.fav || [])])];
+  S.extra = [...new Set([...(S.extra || []), ...(st.extra || [])])];
+  S.voices = { ...(st.voices || {}), ...S.voices };
+  if (!S.apt && st.apt) { S.apt = st.apt; S.aptEn = st.aptEn || ""; }
+  save();
+  toast("백업을 합쳤습니다 — 다시 엽니다"); setTimeout(() => location.reload(), 900);
+};
+
+// ================= ❓ 사용법 (처음 열 때 한 번) =================
+$("helpBtn").onclick = () => $("helpDlg").showModal();
+$("helpOk").onclick = () => { $("helpDlg").close(); ls.set("seenHelp", true); };
+setTimeout(() => { if (!ls.get("seenHelp", false)) $("helpDlg").showModal(); }, 600);
+
+// ================= 예약 방송 =================
+const DAYN = ["일", "월", "화", "수", "목", "금", "토"];
+let sched = ls.get("sched", []), sDays = [];
+function renderDays() {
+  const box = $("sDays"); box.innerHTML = "";
+  [1, 2, 3, 4, 5, 6, 0].forEach(d => {
+    const b = document.createElement("button"); b.textContent = DAYN[d]; b.className = sDays.includes(d) ? "on" : "";
+    b.onclick = () => { sDays = sDays.includes(d) ? sDays.filter(x => x !== d) : [...sDays, d]; renderDays(); };
+    box.appendChild(b);
+  });
+}
+function renderSched() {
+  const box = $("sList"); box.innerHTML = "";
+  if (!sched.length) box.innerHTML = '<div class="muted">예약이 없습니다.</div>';
+  sched.sort((a, b) => a.time.localeCompare(b.time)).forEach(it => {
+    const d = document.createElement("div"); d.className = "li";
+    d.innerHTML = `<span class="t">${it.time}</span><span class="nm"></span><span class="d">${it.days.length ? it.days.map(x => DAYN[x]).join("") : "매일"}</span><button title="지우기">✕</button>`;
+    d.querySelector(".nm").textContent = it.label;
+    d.querySelector("button").onclick = () => { sched = sched.filter(x => x !== it); ls.set("sched", sched); renderSched(); };
+    box.appendChild(d);
+  });
+  schedInfo();
+}
+$("sAdd").onclick = () => {
+  const t = curT();
+  sched.push({ id: Date.now(), time: $("sTime").value, days: [...sDays], label: `${t.icon} ${t.name} — ${firstText(S.texts, S.langs).slice(0, 30)}`,
+               snap: JSON.parse(JSON.stringify({ texts: S.texts, langs: S.langs, mood: S.mood, rate: S.rate, rep: S.rep, alt: S.alt, place: S.place, chime: S.chime, chimeType: S.chimeType, bg: S.bg })) });
+  ls.set("sched", sched); renderSched(); toast("예약을 추가했습니다");
+};
+function schedInfo() {
+  const on = $("schedOn").checked, w = $("sWait");
+  w.hidden = !on || !sched.length;
+  if (!w.hidden) w.textContent = "⏳ 예약 방송 대기 중 — 이 창을 닫거나 PC를 끄지 마세요. 정해진 시각에 자동으로 방송합니다.";
+}
+$("schedOn").onchange = e => {
+  if (e.target.checked) { audio(); speechSynthesis.getVoices(); try { navigator.wakeLock?.request("screen").then(l => (schedOn.lock = l)); } catch (er) {} }
+  else schedOn.lock?.release?.();
+  schedInfo();
+};
+const schedOn = {};
+setInterval(async () => {
+  if (!$("schedOn").checked || running) return;
+  const n = new Date(), hm = `${pad2(n.getHours())}:${pad2(n.getMinutes())}`, key = today() + " " + hm;
+  for (const it of sched) {
+    if (it.time !== hm || it.last === key || (it.days.length && !it.days.includes(n.getDay()))) continue;
+    it.last = key; ls.set("sched", sched);
+    const keep = JSON.parse(JSON.stringify(S));
+    Object.assign(S, it.snap); S.__sched = true;
+    await run(true); S.__sched = false;
+    S = Object.assign(keep, { }); renderAll();
+  }
+}, 10000);
+
+// ================= 방송 기록 =================
+let hist = ls.get("hist", []);
+const HK = { cd: ["⏱ 카운트다운", "#7c3aed", "#f5f3ff"], air: ["📢 방송", "#c2410c", "#fff7ed"], sched: ["⏰ 예약 방송", "#15803d", "#f0fdf4"], file: ["💾 파일 저장", "#3730a3", "#eef2ff"], stop: ["■ 중단", "#6b7280", "#f3f4f6"] };
+function addHistory(kind = "air", extra = "") {          // 방송 · 예약 방송 · 파일 저장 · 중단 모두 기록 (최근 200개)
+  const t = curT();
+  hist.unshift({ at: new Date().toLocaleString("ko-KR"), kind, extra, label: `${t.icon} ${t.name}`, texts: { ...S.texts }, langs: { ...S.langs } });
+  hist = hist.slice(0, 200); ls.set("hist", hist); renderHist();
+}
+function renderHist() {
+  const box = $("hList"); box.innerHTML = "";
+  const cnt = k => hist.filter(h => (h.kind || "air") === k).length;
+  $("hCount").textContent = hist.length ? `총 ${hist.length}건 · 방송 ${cnt("air")} · 예약 ${cnt("sched")} · 파일 ${cnt("file")} · 중단 ${cnt("stop")}` : "";
+  if (!hist.length) box.innerHTML = '<div class="muted">아직 기록이 없습니다. 방송 시작 · 예약 방송 · 파일 저장을 하면 여기에 남습니다. (미리 듣기는 기록하지 않습니다)</div>';
+  hist.forEach(h => {
+    const k = HK[h.kind || "air"];
+    const d = document.createElement("div"); d.className = "li"; d.style.cursor = "pointer"; d.title = "누르면 이 문장을 다시 불러옵니다";
+    d.innerHTML = `<span class="d" style="min-width:118px"></span><span class="tag" style="background:${k[2]};color:${k[1]};white-space:nowrap">${k[0]}</span><span class="nm"></span>`;
+    d.querySelector(".d").textContent = h.at; d.querySelector(".nm").textContent = `${h.label} — ${h.extra ? h.extra + " · " : ""}${firstText(h.texts, h.langs)}`;
+    d.onclick = () => { S.texts = { ...h.texts }; S.langs = { ...h.langs }; S.edited = { ko: true, en: true, ja: true, zh: true }; save(); renderLangs(); estimate(); toast("기록의 문장을 불러왔습니다"); };
+    box.appendChild(d);
+  });
+}
+$("hCsv").onclick = () => {
+  if (!hist.length) { toast("내보낼 기록이 없습니다"); return; }
+  const q = v => `"${String(v ?? "").replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
+  const head = ["날짜·시각", "종류", "방송 이름", "덧붙임", "언어", ...LANGS.map(L => L.extra ? L.ko : L.name)];
+  const rows = hist.map(h => [h.at, (HK[h.kind || "air"] || [""])[0].replace(/^\S+\s/, ""), h.label.replace(/^\S+\s/, ""), h.extra || "",
+    LANGS.filter(L => h.langs && h.langs[L.id]).map(L => L.extra ? L.ko : L.name).join("·"), ...LANGS.map(L => (h.langs && h.langs[L.id] ? h.texts[L.id] : "") || "")]);
+  const csv = "\ufeff" + [head, ...rows].map(r => r.map(q).join(",")).join("\r\n");    // BOM: 엑셀에서 한글이 안 깨지게
+  const d = new Date(), a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  a.download = `온에어_방송기록_${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+  toast(`📊 방송 기록 ${hist.length}건을 엑셀 파일로 저장했습니다 (다운로드 폴더)`);
+};
+$("hClear").onclick = () => { if (confirm("방송 기록을 모두 지울까요?")) { hist = []; ls.set("hist", hist); renderHist(); } };
+
+// ================= 시작 =================
+function renderAll() {
+  renderPlaces(); renderTpls(); renderDict(); renderCd(); bkInfo(); renderFields(); renderLangs();
+  [...$("mood").children].forEach(b => b.classList.toggle("on", b.dataset.v === S.mood));
+  $("rate").value = S.rate; $("rateL").textContent = (+S.rate).toFixed(2);
+  $("vol").value = S.vol; $("volL").textContent = Math.round(S.vol * 100) + "%";
+  $("autoPol").checked = !!S.autoPolish;
+  $("chimeOn").checked = S.chime; $("chimeType").value = S.chimeType; $("bgOn").checked = S.bg; $("bgVol").value = S.bgVol;
+  [...$("rep").children].forEach(b => b.classList.toggle("on", +b.dataset.v === S.rep));
+  estimate(); altInfo();
+}
+renderDays(); renderSched(); renderHist();
+regen();                                                 // 직접 고치지 않은 문장은 최신 템플릿으로 다시 만듦
+renderAll(); loadVoices(); aptLabel();
+})();
+</script>
+</body>
+</html>
