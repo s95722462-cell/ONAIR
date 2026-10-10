@@ -18,6 +18,10 @@
     --soft: #fff1e6; --ok: #15803d; --red: #dc2626;
   }
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }      /* 아이폰: 글씨 자동 확대 막기 */
+  button, input, select, textarea { font-family: inherit; }
+  .tpl { min-width: 0; overflow: hidden; } .tpl b { display: block; word-break: keep-all; overflow-wrap: anywhere; line-height: 1.3; }
+  .places button, .hbtn { max-width: 100%; white-space: normal; word-break: keep-all; }
   html, body { margin: 0; }
   body { font-family: "Pretendard Variable", Pretendard, "Malgun Gothic", sans-serif; color: var(--ink); background: var(--bg); }
   input, select, textarea, button { font: inherit; color: inherit; }
@@ -184,6 +188,7 @@
     border-radius: 12px; font-size: 14px; opacity: 0; transition: .25s; pointer-events: none; z-index: 30; max-width: 90vw; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%); }
   @media (max-width: 600px) {
+    .tpls { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tpl b { font-size: 13px; }
     input, select, textarea { font-size: 16px !important; }
     .go { grid-template-columns: 1fr; }
   }
