@@ -1685,8 +1685,9 @@ function altVoice(L) {                                  // 반복 두 번째: �
   if (pref && g !== "m") { const v = list.find(x => pref.test(x.name)); if (v) return v; }
   return same.find(opp) || list.find(opp) || same.find(v => gender(v) !== g) || list.find(v => gender(v) !== g) || list[0] || null;
 }
+const vq = v => /premium/i.test(v.voiceURI || "") ? " (최고음질)" : /enhanced/i.test(v.voiceURI || "") ? " (고음질)" : /compact/i.test(v.voiceURI || "") ? " (기본)" : "";   // 아이폰: 같은 이름 목소리 구분
 const dispName = n => n.replace(/선히/g, "선희").replace(/Hyunsu( Multilingual)?/g, "현수");                        // 화면에 보이는 이름 (Microsoft 표기 '선히' → '선희')
-const shortName = v => v ? dispName(v.name.replace(/Microsoft |Online |\(Natural\)| - .*$/g, "").replace(/Multilingual/, "").trim()) : "없음";
+const shortName = v => v ? dispName(v.name.replace(/Microsoft |Online |\(Natural\)| - .*$/g, "").replace(/Multilingual/, "").trim()) + vq(v) : "없음";
 const PITCH = [[0.84, "낮게"], [0.92, "조금 낮게"], [1, "보통"], [1.08, "조금 높게"]];
 const PITCH0 = { hyunsu: 0.92 };                           // 기본: 현수는 조금 낮게 (사용자: '너무 어린 것 같다')
 function vPitch(v) {
@@ -1723,7 +1724,8 @@ function altInfo() {
 }
 function score(v) {
   const n = v.name;
-  return (/natural/i.test(n) ? 100 : 0) + (/neural/i.test(n) ? 60 : 0) + (/online/i.test(n) ? 30 : 0) + (/premium/i.test(n) ? 50 : 0)
+  const u = v.voiceURI || "";
+  return (/premium/i.test(u) ? 50 : /enhanced/i.test(u) ? 40 : 0) + (/natural/i.test(n) ? 100 : 0) + (/neural/i.test(n) ? 60 : 0) + (/online/i.test(n) ? 30 : 0) + (/premium/i.test(n) ? 50 : 0)
        + (/enhanced|고품질/i.test(n) ? 40 : 0) + (/siri/i.test(n) ? 25 : 0) + (/google/i.test(n) ? 20 : 0) + (FEMALE.test(n) ? 3 : 0) + (v.localService ? 1 : 0);
 }
 const stars = v => { const s = score(v); return s >= 100 ? "★★★" : s >= 40 ? "★★" : "★"; };
@@ -1750,7 +1752,7 @@ function fillVoices(sel, L) {
   list.forEach(v => {
     const o = document.createElement("option"); o.value = v.voiceURI;
     const reg = (v.name.match(/\(([^()]+)\)\s*$/) || [])[1];
-    o.textContent = `${stars(v)} ${dispName(v.name.replace(/Microsoft |Online |\(Natural\)| - .*$/g, "").trim())}${isMulti(v, L) ? " · 다국어" : ""}${reg && L.id === "en" ? " · " + reg.replace("United States", "미국").replace("United Kingdom", "영국").replace("Australia", "호주").replace("Canada", "캐나다").replace("India", "인도").replace("Ireland", "아일랜드").replace("New Zealand", "뉴질랜드").replace("Philippines", "필리핀").replace("Singapore", "싱가포르").replace("South Africa", "남아공").replace("Hong Kong SAR", "홍콩").replace("Kenya", "케냐").replace("Nigeria", "나이지리아").replace("Tanzania", "탄자니아") : ""}`;
+    o.textContent = `${stars(v)} ${dispName(v.name.replace(/Microsoft |Online |\(Natural\)| - .*$/g, "").trim())}${vq(v)}${isMulti(v, L) ? " · 다국어" : ""}${reg && L.id === "en" ? " · " + reg.replace("United States", "미국").replace("United Kingdom", "영국").replace("Australia", "호주").replace("Canada", "캐나다").replace("India", "인도").replace("Ireland", "아일랜드").replace("New Zealand", "뉴질랜드").replace("Philippines", "필리핀").replace("Singapore", "싱가포르").replace("South Africa", "남아공").replace("Hong Kong SAR", "홍콩").replace("Kenya", "케냐").replace("Nigeria", "나이지리아").replace("Tanzania", "탄자니아") : ""}`;
     if (cur && v.voiceURI === cur.voiceURI) o.selected = true;
     sel.appendChild(o);
   });
@@ -1774,6 +1776,13 @@ function loadVoices() {
   } else tip.hidden = true;
 }
 speechSynthesis.onvoiceschanged = loadVoices;
+const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+function primeSpeech() {                                  // 아이폰(Safari·Edge·Chrome 모두 WebKit): 손가락으로 누른 그 순간에 한 번 말을 시켜 두어야 나중 말도 나옴
+  if (!IOS || speechSynthesis.speaking) return;
+  try { const u = new SpeechSynthesisUtterance("."); u.volume = 0; u.rate = 2; if (voices[0]) u.lang = "ko-KR"; speechSynthesis.speak(u); } catch (e) {}
+  try { audio(); } catch (e) {}
+}
+["touchend", "click"].forEach(ev => document.addEventListener(ev, primeSpeech, { capture: true, passive: true }));
 
 // ================= 오디오: 차임 · 배경 음악 =================
 let ctx = null, master, bgG, bgNodes = [];
@@ -1863,6 +1872,7 @@ function say(text, L, voice) {
     let done = false; const fin = ok => { if (done) return; done = true; clearTimeout(guard); bgDuck(false); res(ok); };
     const guard = setTimeout(() => fin(false), 8000 + text.length * 260);   // 엔진이 멈췄을 때 대비
     u.onstart = () => bgDuck(true); u.onend = () => fin(true); u.onerror = () => fin(false);
+    if (IOS) { try { speechSynthesis.resume(); } catch (e) {} }
     speechSynthesis.speak(u);
   });
 }
