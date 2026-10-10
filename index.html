@@ -17,12 +17,17 @@
 <script>document.documentElement.classList.add("boot"); setTimeout(() => document.documentElement.classList.remove("boot"), 800);   // 글꼴이 늦어도 0.8초 뒤에는 보이기</script>
 <style>
   :root {
-    --bg: #fbf7f2; --card: #ffffff; --line: #eee4d8; --ink: #2b2118; --dim: #8a7a6a; --accent: #ea580c; --accent2: #c2410c;
+    --bg: #fbf7f2; --card: #ffffff; --line: #eee4d8; --ink: #2b2118; --dim: #76665a; --accent: #cf4a0c; --accent2: #c2410c;
     --soft: #fff1e6; --ok: #15803d; --red: #dc2626;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }      /* 아이폰: 글씨 자동 확대 막기 */
   button, input, select, textarea { font-family: inherit; }
+  :focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }                  /* 키보드로 옮겨 다닐 때 어디 있는지 보이게 */
+  .fld input:focus-visible, textarea:focus-visible, select:focus-visible, #waitp input:focus-visible { outline: none; }
+  .switch input:focus-visible + span { outline: 3px solid #2563eb; outline-offset: 2px; }
+  #room :focus-visible, #board :focus-visible, #waitp button:focus-visible { outline-color: #fbbf24; }
+  @media (prefers-reduced-motion: reduce) { html body, .tpl, .big, .switch span, .switch span::after, .toast { transition: none !important; } }
   .tpl { min-width: 0; overflow: hidden; } .tpl b { display: block; word-break: keep-all; overflow-wrap: anywhere; line-height: 1.3; }
   .places button, .hbtn { max-width: 100%; white-space: normal; word-break: keep-all; }
   html, body { margin: 0; }
@@ -38,7 +43,7 @@
   .logo small { color: var(--dim); font-size: 13px; }
   .onair {
     display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px; font-weight: 800; letter-spacing: 2px; font-size: 13px;
-    background: #f3ebe2; color: #b8a796; border: 1px solid var(--line); transition: .3s;
+    background: #f3ebe2; color: #8f7d6b; border: 1px solid var(--line); transition: .3s;
   }
   .onair i { width: 10px; height: 10px; border-radius: 50%; background: #d6c8b9; }
   .onair.live { background: #dc2626; color: #fff; border-color: #dc2626; box-shadow: 0 0 0 4px #dc262633, 0 0 24px #dc262688; }
@@ -87,7 +92,7 @@
   .grp.mine h4 { color: #a16207; }
   .grp.fav h4 { color: #b45309; }
   .tpl { position: relative; }
-  .tpl .fv { position: absolute; left: 6px; top: 3px; font-size: 15px; color: #d6c8b9; padding: 0 3px; border-radius: 6px; line-height: 1.3; }
+  .tpl .fv { position: absolute; left: 6px; top: 3px; font-size: 15px; color: #b3a08c; padding: 0 3px; border-radius: 6px; line-height: 1.3; }
   .tpl .fv:hover { color: #f59e0b; background: #fef3c7; }
   .tpl .fv.on { color: #f59e0b; }
   .grp.mine .tpl { position: relative; background: #fefce8; border-color: #fde68a; }
@@ -247,11 +252,27 @@
   .rtile .st { position: absolute; right: 10px; top: 8px; font-size: 22px; color: #fbbf24; }
   .rtile { position: relative; } #roomGrid .rhint { grid-column: 1 / -1; padding: 30px; text-align: center; opacity: .8; font-size: 18px; line-height: 1.7; border: 2px dashed #ffffff33; border-radius: 18px; }
   #roomPre { min-height: 60px; border-radius: 16px; border: 1px solid #ffffff33; background: #ffffff10; color: #fff; font-size: 18px; cursor: pointer; }
+  #manDlg { width: min(780px, 96vw); padding: 0; max-height: 90vh; overflow: auto; }
+  #manDlg .mhead { position: sticky; top: 0; z-index: 2; background: #fff; display: flex; align-items: center; gap: 8px; padding: 14px 16px 10px 20px; border-bottom: 1px solid var(--line); }
+  #manDlg .mhead h3 { margin: 0; flex: 1; min-width: 0; }
+  #manDlg .mclose { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-size: 18px; cursor: pointer; flex: none; }
+  #manDlg .mtoc { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 20px; border-bottom: 1px solid var(--line); background: #fffaf5; }
+  #manDlg .mtoc button { font-size: 13px; padding: 6px 10px; border-radius: 999px; border: 1px solid #fed7aa; background: #fff; color: var(--accent2); cursor: pointer; }
+  #manDlg .mbody { padding: 4px 20px 20px; font-size: 14.5px; line-height: 1.75; }
+  #manDlg section { padding-top: 14px; scroll-margin-top: 72px; } #manDlg h4 { margin: 0 0 4px; font-size: 16px; color: var(--accent2); }
+  #manDlg ul { margin: 0; padding-left: 20px; } #manDlg li + li { margin-top: 3px; } #manDlg dt { font-weight: 700; margin-top: 10px; } #manDlg dd { margin: 2px 0 0 0; padding-left: 12px; border-left: 3px solid var(--line); }
+  #manDlg a { color: var(--accent2); } #manTitle:focus { outline: none; }
+  #tplQ { -webkit-appearance: none; appearance: none; } #tplQ::-webkit-search-cancel-button { display: none; }
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(16px); background: #2b2118; color: #fff; padding: 11px 18px;
     border-radius: 12px; font-size: 14px; opacity: 0; transition: .25s; pointer-events: none; z-index: 30; max-width: 90vw; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%); }
-  @media (max-width: 359px) { .tpls { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+  @media (max-width: 359px) { .tpls { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } .logo b { font-size: 16px !important; letter-spacing: -.6px; } header .hbtn { padding: 0 7px !important; } }
+  @media (max-width: 340px) { .logo b em { display: none; } }
   #oaBar { display: none; }
+  .warnbar { margin: -6px 0 14px; padding: 12px 14px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; font-size: 14.5px; line-height: 1.6; }
+  .warnbar[hidden] { display: none; } .warnbar small { color: #7f1d1d; font-size: 13px; }
+  dialog:not([open]) { display: none; }
+  html.nodlg dialog[open] { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 200; max-height: 90vh; overflow: auto; background: #fff; }
   @media (max-width: 600px) {
     /* 📱 휴대폰: 간결하게 */
     header { flex-wrap: nowrap; gap: 8px; margin-bottom: 10px; } .logo { gap: 8px; min-width: 0; flex: 1; } .logo .mark { width: 36px; height: 36px; border-radius: 11px; } .logo .mark svg { width: 22px; height: 22px; }
@@ -271,6 +292,8 @@
     .tpls { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .tpl { padding: 9px 4px 8px; border-radius: 12px; } .tpl .ic { font-size: 20px; } .tpl b { font-size: 12.5px; }
     .tpl .fv { font-size: 12px; left: 3px; top: 1px; }
     input, select, textarea { font-size: 16px !important; }
+    #roomNumIn { font-size: 56px !important; } #waitp input { font-size: 32px !important; } #f_num { font-size: 22px !important; }   /* 번호 칸은 크게 (16px 이상이라 아이폰 확대도 안 됨) */
+    #manDlg .mhead h3 { font-size: 17px; } #manPrint { display: none; }
     .go { grid-template-columns: 1fr; }
   }
 </style>
@@ -284,19 +307,20 @@
     </div>
     <span class="onair" id="onair"><i></i>ON AIR</span>
     <button class="hbtn" id="roomBtn" title="큰 버튼만 있는 전체 화면">🖥 방송실 모드</button>
-    <button class="hbtn" id="helpBtn" title="사용법">❓</button>
+    <button class="hbtn" id="helpBtn" title="사용법" aria-label="사용법">❓</button>
   </header>
   <nav class="tabs" id="tabs">
     <button data-tab="air">📢 방송</button><button data-tab="auto">📅 예약·자동</button><button data-tab="file">💾 파일·인쇄</button><button data-tab="log">📊 기록</button><button data-tab="set">⚙ 설정</button>
   </nav>
 
+  <div class="warnbar" id="ttsWarn" role="alert" hidden></div>
   <div class="pane" data-pane="air"><div class="grid">
     <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
       <section class="card">
         <h2>① 어떤 방송인가요?</h2>
         <div class="places" id="places"></div>
-        <div style="position:relative;margin-bottom:12px"><input id="tplQ" placeholder="🔍 방송 찾기 (예: 주차, 단수, 엘리베이터, 화재)" style="width:100%;height:42px;border:1px solid var(--line);border-radius:12px;padding:0 40px 0 14px;font-size:15px;background:#fffaf5">
-          <button id="tplQx" class="mini" style="position:absolute;right:6px;top:6px;height:30px" hidden>✕</button></div>
+        <div style="position:relative;margin-bottom:12px"><input id="tplQ" type="search" aria-label="방송 찾기" placeholder="🔍 방송 찾기 (예: 주차, 단수, 엘리베이터, 화재)" style="width:100%;height:42px;border:1px solid var(--line);border-radius:12px;padding:0 40px 0 14px;font-size:15px;background:#fffaf5">
+          <button id="tplQx" class="mini" style="position:absolute;right:6px;top:6px;height:30px" aria-label="찾기 지우기" hidden>✕</button></div>
         <div id="tpls"></div>
         <div class="fields" id="fields"></div>
       </section>
@@ -313,17 +337,17 @@
       </section>
       <section class="card">
         <h2>③ 방송하기</h2>
-        <div class="row"><label>말 빠르기</label><input type="range" id="rate" min="0.75" max="1.25" step="0.01"><span id="rateL" style="width:46px">1.00</span></div>
-        <div class="row"><label>목소리 크기</label><input type="range" id="vol" min="0.3" max="1" step="0.05"><span id="volL" style="width:46px"></span></div>
-        <div class="row"><label>차임 (딩동댕동)</label><label class="switch"><input type="checkbox" id="chimeOn"><span></span></label>
-          <select id="chimeType" class="mini" style="height:32px"><option value="classic">딩동댕동 (기본)</option><option value="soft">부드러운 실로폰</option><option value="westminster">웨스트민스터</option></select></div>
+        <div class="row"><label>말 빠르기</label><input type="range" id="rate" aria-label="말 빠르기" min="0.75" max="1.25" step="0.01"><span id="rateL" style="width:46px">1.00</span></div>
+        <div class="row"><label>목소리 크기</label><input type="range" id="vol" aria-label="목소리 크기" min="0.3" max="1" step="0.05"><span id="volL" style="width:46px"></span></div>
+        <div class="row"><label>차임 (딩동댕동)</label><label class="switch"><input type="checkbox" id="chimeOn" aria-label="차임 켜기"><span></span></label>
+          <select id="chimeType" aria-label="차임 종류" class="mini" style="height:32px"><option value="classic">딩동댕동 (기본)</option><option value="soft">부드러운 실로폰</option><option value="westminster">웨스트민스터</option></select></div>
         <details class="adv" id="advSet"><summary>⚙ 자세히 설정 <span class="muted">말투 · 반복 · 남·여 번갈아 · 목소리 높이 · 자동 다듬기</span></summary>
         <div class="row"><label>말투</label>
           <div class="seg" id="mood"><button data-v="calm">차분하게</button><button data-v="bright">밝게</button><button data-v="urgent">긴급</button></div></div>
-        <div class="row"><label>자동 다듬기</label><label class="switch" title="방송·미리 듣기·파일 저장 때 직접 쓴 한국어 문장에 쉼표를 알아서 넣음"><input type="checkbox" id="autoPol"><span></span></label>
+        <div class="row"><label>자동 다듬기</label><label class="switch" title="방송·미리 듣기·파일 저장 때 직접 쓴 한국어 문장에 쉼표를 알아서 넣음"><input type="checkbox" id="autoPol" aria-label="자동 다듬기"><span></span></label>
           <span class="muted" style="font-size:12.5px">직접 쓰거나 고친 한국어 문장을, 방송할 때 쉼표를 넣어 읽음 (화면 글자는 그대로)</span></div>
         <div class="row"><label>반복</label><div class="seg" id="rep"><button data-v="1">1번</button><button data-v="2">2번</button><button data-v="3">3번</button></div></div>
-        <div class="row" id="altRow"><label>남·여 번갈아</label><label class="switch" title="반복할 때 두 번째는 반대 성별 목소리로"><input type="checkbox" id="altOn"><span></span></label>
+        <div class="row" id="altRow"><label>남·여 번갈아</label><label class="switch" title="반복할 때 두 번째는 반대 성별 목소리로"><input type="checkbox" id="altOn" aria-label="남·여 번갈아"><span></span></label>
           <span class="muted" id="altInfo"></span></div>
         <div class="row" style="align-items:flex-start"><label style="padding-top:6px">목소리 높이</label><div id="pitchBox" style="display:flex;flex-wrap:wrap;gap:6px 10px;flex:1"></div></div>
         </details>
@@ -339,16 +363,16 @@
 
   <div class="pane cards" data-pane="auto">
       <section class="card">
-        <h2>⏰ 예약 방송 <span class="sp"></span><label class="switch" title="예약 방송 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="schedOn"><span></span></label></h2>
-        <div class="row"><input type="time" id="sTime" value="09:00" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"><div class="days" id="sDays"></div></div>
+        <h2>⏰ 예약 방송 <span class="sp"></span><label class="switch" title="예약 방송 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="schedOn" aria-label="예약 방송 켜기"><span></span></label></h2>
+        <div class="row"><input type="time" id="sTime" aria-label="예약 시각" value="09:00" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"><div class="days" id="sDays"></div></div>
         <div class="row"><button class="mini" id="sAdd">＋ 지금 문장으로 예약 추가</button><span class="muted">요일을 안 고르면 매일</span></div>
         <div class="list" id="sList"></div>
         <div class="wait" id="sWait" hidden></div>
       </section>
       <section class="card" id="cdCard">
-        <h2>⏱ 카운트다운 방송 <span class="sp"></span><label class="switch" title="카운트다운 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="cdOn"><span></span></label></h2>
+        <h2>⏱ 카운트다운 방송 <span class="sp"></span><label class="switch" title="카운트다운 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="cdOn" aria-label="카운트다운 켜기"><span></span></label></h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">공연·예식 시작 시각을 정하면, <b>정한 분 전마다 자동으로</b> 안내합니다. (예: 10분 전 → 5분 전 → 1분 전 → 정각)</p>
-        <div class="row"><label>시작 시각</label><input type="time" id="cdTime" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"></div>
+        <div class="row"><label>시작 시각</label><input type="time" id="cdTime" aria-label="시작 시각" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"></div>
         <div class="row"><label>무엇이 시작?</label><input id="cdWhat" placeholder="비우면 장소에 맞게 (공연·예식·행사)" style="flex:1;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px"></div>
         <div class="row" style="align-items:flex-start"><label style="padding-top:6px">알릴 때</label><div class="days" id="cdSteps" style="flex-wrap:wrap"></div></div>
         <div class="wait" id="cdWait" hidden></div>
@@ -394,7 +418,7 @@
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">첫 인사에 들어갈 이름(예: 행복마을 관리사무소)과, 4개 국어 말고 더 방송할 언어를 정합니다.</p>
         <div class="row"><button class="hbtn" id="setBtn">⚙ 장소 이름</button></div>
         <button class="mini" id="addLang" style="margin-top:10px;height:38px;width:100%;border-style:dashed;font-size:14px">＋ 언어 추가 (베트남어 · 태국어 · 러시아어 · 아랍어 … 27개)</button>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:12px"><label class="switch" style="flex:none"><input type="checkbox" id="allView"><span></span></label><span><b>전체 보기</b> <span class="muted">— 탭 없이 모든 기능을 한 화면에 펼쳐 보기</span></span></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:12px"><label class="switch" style="flex:none"><input type="checkbox" id="allView" aria-label="전체 보기"><span></span></label><span><b>전체 보기</b> <span class="muted">— 탭 없이 모든 기능을 한 화면에 펼쳐 보기</span></span></div>
       </section>
       <section class="card">
         <h2>📖 발음 사전</h2>
@@ -406,11 +430,16 @@
       </section>
       <section class="card">
         <h2>💼 백업 · 옮기기</h2>
-        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">내 방송 · 즐겨찾기 · 예약 · 카운트다운 · 발음 사전 · 방송 기록 · 더한 언어 · 목소리·설정을 <b>파일 하나</b>로 저장합니다. 다른 PC나 브라우저에서 불러오면 그대로 옮겨집니다.</p>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">내 방송 · 즐겨찾기 · 고친 문장 · 방송 묶음 · 예약 · 카운트다운 · 발음 사전 · 방송 기록 · 더한 언어 · 목소리 · 방송실 설정 · <b>📱 매장 QR 코드</b>까지 <b>파일 하나</b>로 저장합니다. 다른 PC나 브라우저에서 불러오면 그대로 옮겨집니다 (붙여 둔 QR도 계속 쓸 수 있음).</p>
         <div class="row"><button class="mini" id="bkSave" style="height:40px;flex:1;background:var(--accent);border-color:var(--accent);color:#fff;font-size:14px">⬇ 백업 파일 저장</button>
           <button class="mini" id="bkLoad" style="height:40px;flex:1;font-size:14px">⬆ 백업 불러오기</button></div>
         <div class="muted" id="bkInfo" style="margin-top:8px;font-size:12.5px"></div>
         <input type="file" id="bkFile" accept=".json,application/json" hidden>
+      </section>
+      <section class="card">
+        <h2>📘 사용 설명서 · 🔒 개인정보</h2>
+        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">처음부터 차근차근: 방송 고르기 · 목소리 · 방송실 모드 · 식당 번호판·QR · 예약 · USB 파일 · 백업 · 자주 묻는 질문. 무엇이 어디에 저장되는지도 적어 두었습니다.</p>
+        <div class="row"><button class="mini" id="manBtn" style="height:40px;flex:1;font-size:14px">📘 사용 설명서</button><button class="mini" id="privBtn" style="height:40px;flex:1;font-size:14px">🔒 개인정보 · 저장 위치</button></div>
       </section>
       <section class="card">
         <details><summary style="cursor:pointer;font-weight:700">🎙 이 PC에서 쓸 수 있는 목소리</summary>
@@ -420,11 +449,11 @@
       </section>
   </div>
 </div>
-<div class="foot">온에어 (溫 On-Air) · 따뜻한 안내방송 · 문의 : <a href="mailto:ds5yrj@hotmail.com">ds5yrj@hotmail.com</a></div>
+<div class="foot">온에어 (溫 On-Air) · 따뜻한 안내방송 · <a href="#manual" id="footMan">사용 설명서</a> · <a href="#privacy" id="footPriv">개인정보</a> · 문의 : <a href="mailto:ds5yrj@hotmail.com">ds5yrj@hotmail.com</a></div>
 <dialog id="mineDlg">
   <h3>⭐ 내 방송으로 저장</h3>
   <div class="muted" style="font-size:14px;margin-bottom:12px">지금 문장(켜 둔 언어 모두)을 버튼으로 고정합니다. 맨 위 <b>⭐ 내 방송</b> 묶음에 생기고, 장소를 바꿔도 남아 있습니다.</div>
-  <div class="fld"><label>버튼 이름</label><input id="mineName" placeholder="예: 주차장 물청소 / 놀이터 공사"></div>
+  <div class="fld"><label for="mineName">버튼 이름</label><input id="mineName" placeholder="예: 주차장 물청소 / 놀이터 공사"></div>
   <div class="fld" style="margin-top:10px"><label>아이콘</label><div class="icons" id="mineIcons"></div></div>
   <div class="btns" style="margin-top:16px"><button id="mineNo">취소</button><button class="ok" id="mineOk">저장</button></div>
 </dialog>
@@ -438,7 +467,7 @@
   <h3>✨ 방송용으로 다듬기</h3>
   <div class="muted" style="font-size:13px;margin-bottom:8px">아나운서처럼 끊어 읽도록 <b>쉼표</b>를 넣고, 시간·전화번호를 읽기 좋게 바꿉니다. 고칠 점도 알려 드립니다.</div>
   <div id="polReport" style="font-size:14px;line-height:1.8;margin-bottom:10px"></div>
-  <div class="fld"><label>다듬은 문장 (여기서 더 고쳐도 됩니다)</label>
+  <div class="fld"><label for="polText">다듬은 문장 (여기서 더 고쳐도 됩니다)</label>
     <textarea id="polText" rows="6" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;line-height:1.7;resize:vertical"></textarea></div>
   <div class="btns" style="justify-content:space-between;margin-top:12px">
     <button id="polPlay">▶ 다듬은 문장 듣기</button>
@@ -467,18 +496,126 @@
     <li>게시판용 공지는 <b>📄 공지문</b>, 카톡은 <b>💬 카톡 복사</b>, USB에 담을 방송 파일은 모두 <b>💾 파일·인쇄</b> 탭에 있습니다. 지난 방송은 <b>📊 기록</b>, 장소 이름·언어 추가·백업은 <b>⚙ 설정</b> 탭에 있어요.</li>
   </ol>
   <div class="muted" style="font-size:13px;line-height:1.6">💡 가장 자연스러운 목소리는 <b>PC의 Microsoft Edge</b>에서 나옵니다. 모든 내용은 이 PC 브라우저에 저장되니, 가끔 <b>💼 백업</b>을 해 두세요.</div>
-  <div class="btns" style="margin-top:12px"><button class="ok" id="helpOk">시작하기</button></div>
+  <div class="btns" style="margin-top:12px"><button id="helpMan">📘 자세한 설명서</button><button class="ok" id="helpOk" autofocus>시작하기</button></div>
+</dialog>
+<dialog id="manDlg" aria-labelledby="manTitle">
+  <div class="mhead"><h3 id="manTitle" tabindex="-1" autofocus>📘 온에어 사용 설명서</h3><button class="mini" id="manPrint" title="설명서 인쇄">🖨 인쇄</button><button class="mclose" id="manClose" aria-label="설명서 닫기">✕</button></div>
+  <nav class="mtoc" id="manToc" aria-label="설명서 차례">
+    <button data-to="m-start">처음 시작</button><button data-to="m-pick">장소·방송 고르기</button><button data-to="m-edit">문장 고치기</button><button data-to="m-voice">목소리</button><button data-to="m-air">미리 듣기·방송</button><button data-to="m-room">방송실 모드</button><button data-to="m-shop">식당·카페 번호</button><button data-to="m-auto">예약·카운트다운·묶음</button><button data-to="m-file">USB 파일</button><button data-to="m-paper">공지문·카톡</button><button data-to="m-log">기록</button><button data-to="m-bk">백업</button><button data-to="m-faq">자주 묻는 질문</button><button data-to="m-priv">개인정보</button>
+  </nav>
+  <div class="mbody">
+    <section id="m-start"><h4>🚀 처음 시작하기</h4>
+      <ul>
+        <li>가장 좋은 환경: <b>PC + Microsoft Edge</b>. 아나운서 같은 자연스러운 목소리(★★★)가 무료로 나옵니다.</li>
+        <li>PC 스피커 단자(또는 USB 오디오)를 <b>방송 앰프</b>에 연결하면 그대로 안내방송이 됩니다.</li>
+        <li>인터넷 주소로 열었다면 주소창 오른쪽 <b>⊕ 앱 설치</b>를 누르세요. 바탕화면 아이콘이 생기고, 인터넷이 잠깐 끊겨도 열립니다.</li>
+        <li>맨 위 탭: <b>📢 방송</b> · <b>📅 예약·자동</b> · <b>💾 파일·인쇄</b> · <b>📊 기록</b> · <b>⚙ 설정</b>. 모두 한 화면에 보고 싶으면 ⚙ 설정 → <b>전체 보기</b>를 켭니다.</li>
+      </ul></section>
+    <section id="m-pick"><h4>① 장소·방송 고르기</h4>
+      <ul>
+        <li>위쪽 장소(🏢 아파트 · 🏫 학교 · 🍽 식당·카페 …)를 누르면 그 장소에 맞는 <b>첫 인사</b>와 <b>방송 목록</b>으로 바뀝니다.</li>
+        <li>방송 버튼을 누르면 고릅니다. <b>🔍 방송 찾기</b>에 "주차", "단수"처럼 쓰면 모든 장소에서 찾아 줍니다.</li>
+        <li>버튼 왼쪽 위 <b>☆</b>를 누르면 맨 위 <b>★ 즐겨찾기</b>에 모입니다. 휴대폰에서는 묶음 제목을 눌러 펼치고 접습니다.</li>
+        <li>첫 인사에 들어갈 이름(예: 행복마을 3단지)은 ⚙ 설정 → <b>장소 이름</b>에서 넣습니다.</li>
+      </ul></section>
+    <section id="m-edit"><h4>② 빈칸 채우기 · 문장 고치기 (자동 저장)</h4>
+      <ul>
+        <li>날짜·시간·동 같은 <b>빈칸</b>을 채우면 한국어·영어·일본어·중국어 문장이 자동으로 만들어집니다.</li>
+        <li>문장 칸을 <b>직접 고쳐도</b> 됩니다. 고친 문장은 <b>자동으로 저장</b>되어, 다음에 같은 방송을 고르거나 방송실 모드에서도 그 문장으로 나갑니다. 원래 문장으로 되돌리려면 <b>↻ 다시 만들기</b>.</li>
+        <li>언어 이름 옆 스위치로 켜고 끕니다. ▲▼ 로 방송 순서를 바꿉니다. 다른 언어(베트남어·러시아어 등 27개)는 <b>⋯ 더 보기 → 🌐 언어 추가</b> — 자동 번역됩니다.</li>
+        <li>한국어 칸의 <b>✨ 다듬기</b>는 끊어 읽을 곳에 쉼표를 넣고, 너무 긴 문장을 알려 줍니다.</li>
+        <li>자주 쓰는 문장은 <b>⋯ 더 보기 → ⭐ 내 방송으로 저장</b>. 맨 위 '⭐ 내 방송'에 버튼이 생깁니다.</li>
+      </ul></section>
+    <section id="m-voice"><h4>🎙 목소리</h4>
+      <ul>
+        <li><b>PC의 Microsoft Edge 를 권장합니다.</b> 언어마다 목록에서 목소리를 고르고, <b>🔊 비교</b>로 차례로 들어 볼 수 있습니다. (한국어 기본: Brian 다국어)</li>
+        <li><b>아이폰·아이패드</b>는 어떤 브라우저든 애플 목소리만 씁니다. 한국어는 <b>유나</b>가 정상입니다. 더 좋은 소리: 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어 → <b>유나(고음질)</b> 내려받기.</li>
+        <li>안드로이드 휴대폰은 Google 목소리를 씁니다.</li>
+        <li>이름·약자를 엉뚱하게 읽으면 ⚙ 설정 → <b>📖 발음 사전</b>에 "쓰는 말 → 읽는 말"을 넣으세요. 화면 글자는 그대로이고 읽을 때만 바뀝니다.</li>
+      </ul></section>
+    <section id="m-air"><h4>▶ 미리 듣기 · 📢 방송</h4>
+      <ul>
+        <li><b>▶ 미리 듣기</b>로 먼저 확인하세요 (기록에 남지 않음). 괜찮으면 <b>📢 방송 시작</b>.</li>
+        <li>방송 순서: 차임(딩동댕동) → 첫 인사 → 본문 → 끝인사 → 차임. 방송 중에 같은 버튼(■)을 누르면 바로 멈춥니다.</li>
+        <li>말 빠르기·목소리 크기·차임은 ③에서, 말투·반복·남·여 번갈아·목소리 높이는 <b>⚙ 자세히 설정</b>에서 바꿉니다.</li>
+        <li>🚨 긴급 방송은 실수로 나가지 않도록 <b>한 번 더 확인</b>합니다.</li>
+      </ul></section>
+    <section id="m-room"><h4>🖥 방송실 모드</h4>
+      <ul>
+        <li>맨 위 <b>🖥 방송실 모드</b>: 큰 버튼만 있는 전체 화면입니다. 방송실 PC·터치 모니터에 알맞습니다.</li>
+        <li><b>☆ 즐겨찾기 고르기</b>를 누르고 쓸 방송을 눌러 ★로 만든 뒤 <b>✓ 다 골랐어요</b>. 방송 묶음과 긴급 버튼은 기본으로 붙어 있고, 고르기 화면에서 뺄 수 있습니다.</li>
+        <li>주문 번호 방송이면 오른쪽에 <b>번호 패드</b>가 나옵니다. 숫자를 누르고 <b>Enter</b> 또는 큰 <b>📢 N번 호출</b> 버튼.</li>
+        <li><b>다음에도 방송실로 시작</b>을 체크하면 온에어를 열 때 바로 방송실 모드가 됩니다. 나가기: <b>나가기 ✕</b> 또는 Esc.</li>
+      </ul></section>
+    <section id="m-shop"><h4>🍽 식당·카페 — 번호판 · 📱 QR 휴대폰 알림 · 🪧 카운터 안내판</h4>
+      <ul>
+        <li>장소 <b>🍽 식당·카페</b> → <b>☕ 메뉴 준비 완료</b>(또는 대기 번호 입장 · 포장 주문)을 고르면 번호 칸이 나옵니다. <b>−1 / +1</b>, <b>📢 바로 호출</b>.</li>
+        <li><b>🖥 번호판</b>: 새 창이 열립니다. TV·두 번째 모니터로 끌어다 놓고 화면을 한 번 누르면 전체 화면이 됩니다. 방송할 때마다 번호가 크게 뜨고, 최근 호출 번호가 아래에 남습니다.</li>
+        <li><b>📱 QR</b>: 손님이 휴대폰 카메라로 찍으면 대기 화면이 열립니다. <b>매장 공용 QR</b>을 체크하면 한 장을 카운터에 붙여 두고 손님이 자기 번호를 넣습니다. 그 번호를 방송하면 손님 휴대폰이 <b>소리·진동·화면 번쩍</b>으로 알립니다.</li>
+        <li>손님이 <b>확인했어요</b>를 누르면 매장 화면에 ✅가 뜨고, 그 번호 방송 중이면 자동으로 멈춥니다. 번호판에도 ✓ 표시가 붙습니다.</li>
+        <li><b>🪧 카운터 안내판</b>: QR 창의 버튼 → A5 안내판(QR + 3단계 설명)을 인쇄합니다.</li>
+        <li>⚠️ 손님은 <b>대기 화면을 켜 둔 채</b> 기다려야 합니다 (화면이 꺼지면 아이폰은 소리가 안 날 수 있음). 매장 코드는 이 브라우저에 저장되므로, 다른 PC로 옮길 때는 <b>💼 백업</b>으로 옮겨야 붙여 둔 QR을 계속 쓸 수 있습니다.</li>
+      </ul></section>
+    <section id="m-auto"><h4>📅 예약 · ⏱ 카운트다운 · 📚 방송 묶음</h4>
+      <ul>
+        <li><b>예약</b>: 방송 문장을 만든 뒤 시각·요일을 고르고 <b>＋ 지금 문장으로 예약 추가</b> → 오른쪽 위 <b>스위치를 켭니다</b>. 요일을 안 고르면 매일.</li>
+        <li>예약·카운트다운은 <b>이 창이 열려 있어야</b> 나갑니다. 창을 새로 열면 스위치를 다시 켜 주세요. PC 절전 모드는 꺼 두고, Edge 설정 → 시스템 및 성능 → <b>탭 절전(절전 탭)</b>에 이 사이트를 예외로 넣어 두면 안전합니다. 다른 방송 때문에 늦어지면 5분 안에 따라 내보냅니다.</li>
+        <li><b>카운트다운</b>: 공연·예식 시작 시각과 알릴 때(10분 전·5분 전·정각 …)를 고르고 스위치를 켜면 자동으로 안내합니다.</li>
+        <li><b>방송 묶음</b>: 방송을 고른 뒤 <b>＋ 지금 방송 담기</b> → 묶음 이름. <b>📢 방송</b>을 누르면 차례로 이어서 나갑니다 (차임은 처음과 끝에만).</li>
+      </ul></section>
+    <section id="m-file"><h4>💾 USB에 담을 음성 파일</h4>
+      <ul>
+        <li>PC의 Edge·Chrome 에서 됩니다. <b>💾 파일·인쇄</b> 탭 → <b>💾 음성 파일로 저장</b> → 녹음 시작.</li>
+        <li>화면 공유 창에서 <b>전체 화면</b>을 고르고 아래쪽 <b>"시스템 오디오도 공유"</b>를 꼭 켠 뒤 공유. 방송이 스피커로 한 번 나오면서 녹음되고, 끝나면 MP3(또는 WAV)가 <b>다운로드 폴더</b>에 저장됩니다.</li>
+        <li>녹음하는 동안 음악·유튜브·알림 소리는 꺼 주세요. 화면은 녹화하지 않습니다.</li>
+      </ul></section>
+    <section id="m-paper"><h4>📄 공지문 · 💬 카톡</h4>
+      <ul>
+        <li><b>📄 공지문 인쇄</b>: 지금 문장을 게시판·엘리베이터용 A4 공지로 만듭니다. 인쇄 창에서 'PDF로 저장'도 됩니다.</li>
+        <li><b>💬 카톡 복사</b>: 카톡·문자로 보낼 글을 복사합니다. 대화창에 붙여 넣기 하세요.</li>
+      </ul></section>
+    <section id="m-log"><h4>📊 방송 기록</h4>
+      <ul>
+        <li>방송 · 예약 · 카운트다운 · 파일 저장 · 중단이 최근 200건까지 남습니다 (미리 듣기는 빼고).</li>
+        <li>줄을 누르면 그 문장을 다시 불러옵니다. <b>📊 엑셀</b>로 업무일지용 파일을 저장합니다.</li>
+        <li><b>☆ 즐겨찾기</b>를 누르면 방송실 모드에 '📊 최근 방송' 버튼이 생깁니다.</li>
+      </ul></section>
+    <section id="m-bk"><h4>💼 백업 · 다른 PC로 옮기기</h4>
+      <ul>
+        <li>모든 내용은 <b>이 PC의 이 브라우저 안에만</b> 저장됩니다. 브라우저 기록(쿠키·사이트 데이터)을 지우면 함께 지워질 수 있으니 가끔 백업하세요.</li>
+        <li>⚙ 설정 → <b>⬇ 백업 파일 저장</b>: 내 방송 · 즐겨찾기 · 고친 문장 · 묶음 · 예약 · 사전 · 기록 · 목소리 · 방송실 설정 · 매장 QR 코드가 파일 하나에 담깁니다.</li>
+        <li>다른 PC에서 <b>⬆ 백업 불러오기</b> → <b>합치기</b>(지금 것에 더하기) 또는 <b>모두 바꾸기</b>(백업 그대로).</li>
+      </ul></section>
+    <section id="m-faq"><h4>❓ 자주 묻는 질문</h4>
+      <dl>
+        <dt>아이폰에서 소리가 안 나요</dt><dd>옆면 <b>무음 스위치</b>를 끄고 볼륨을 올리세요. 아이폰은 버튼을 <b>누른 그 순간</b>에만 말을 시작할 수 있어서, 차임만 나오고 말이 안 나오면 한 번 더 눌러 주세요. 예약·카운트다운처럼 저절로 나가는 방송은 화면이 꺼지면 멈추므로 PC를 권합니다.</dd>
+        <dt>번호판·공지문 창이 안 열려요</dt><dd>팝업이 막힌 것입니다. 주소창 오른쪽의 팝업 차단 표시를 누르고 <b>'항상 허용'</b>을 고른 뒤 다시 누르세요.</dd>
+        <dt>번호판을 두 번째 모니터·TV에 띄우려면</dt><dd>Windows 키 + P → <b>확장</b>을 고릅니다. 번호판 창을 그 화면으로 끌어다 놓고 한 번 누르면 전체 화면이 됩니다. 모니터 연결이 끊기면 창이 주 화면으로 돌아오니 다시 끌어다 놓으세요.</dd>
+        <dt>"이 브라우저는 음성 읽기를 지원하지 않습니다"가 떠요</dt><dd>카카오톡·밴드 같은 앱 안에서 열린 경우가 많습니다. 오른쪽 위 ⋮ → <b>다른 브라우저로 열기</b>를 누르세요. PC는 Microsoft Edge 를 권합니다. 이때도 번호판·QR·공지문·기록·백업은 쓸 수 있습니다.</dd>
+        <dt>목소리가 기계 같아요</dt><dd>PC의 Edge 에서 ★★★ 목소리를 고르세요. 이 목소리는 인터넷이 연결되어 있어야 나옵니다.</dd>
+        <dt>방송하는 동안 다른 창을 써도 되나요</dt><dd>됩니다. 다만 온에어 창(탭)을 닫으면 방송·예약이 멈춥니다.</dd>
+        <dt>인터넷이 끊기면</dt><dd>한 번 열어 둔 뒤에는 열립니다. 휴대폰 알림(QR), 자동 번역 파일 받기, Edge 의 ★★★ 목소리는 인터넷이 필요합니다.</dd>
+      </dl></section>
+    <section id="m-priv"><h4>🔒 개인정보 · 저장 위치</h4>
+      <ul>
+        <li>회원 가입·로그인이 없습니다. 방송 문장 · 설정 · 기록은 <b>이 기기의 브라우저 저장소에만</b> 저장되고, 온에어 서버로 보내지 않습니다.</li>
+        <li>목소리는 브라우저가 읽어 줍니다. Edge 의 온라인(★★★) 목소리는 읽을 문장을 Microsoft 음성 서비스로 보내 소리로 바꿉니다. 자동 번역은 Edge 기기 안에서 합니다 (번역 파일만 처음 한 번 받음).</li>
+        <li>📱 QR 휴대폰 알림은 무료 중계 서비스 <b>ntfy.sh</b> 를 거칩니다. 보내는 것은 <b>매장 코드와 주문 번호(와 시각)</b>뿐이며, 이름·전화번호 같은 개인정보는 보내지 않습니다. 손님 휴대폰도 번호만 받습니다.</li>
+        <li>글꼴·QR 그리기·MP3 변환 도구는 처음 쓸 때 공개 CDN(jsDelivr·cdnjs)에서 받습니다.</li>
+        <li>문의: <a href="mailto:ds5yrj@hotmail.com">ds5yrj@hotmail.com</a></li>
+      </ul></section>
+  </div>
 </dialog>
 <div id="room" hidden>
-  <div class="rbar"><span class="onair" id="roomLive"><i></i>ON AIR</span><b style="font-size:20px">🖥 방송실</b><span class="sp"></span><span id="roomClock" style="font-size:28px;font-weight:300;font-variant-numeric:tabular-nums"></span><button id="roomFav">☆ 즐겨찾기 고르기</button><label class="rstart" title="온에어를 열 때 바로 방송실 모드로"><input type="checkbox" id="roomStart"> 다음에도 방송실로 시작</label><button id="roomExit">나가기 ✕</button></div>
+  <div class="rbar"><span class="onair" id="roomLive" aria-hidden="true"><i></i>ON AIR</span><b style="font-size:20px">🖥 방송실</b><span class="sp"></span><span id="roomClock" style="font-size:28px;font-weight:300;font-variant-numeric:tabular-nums"></span><button id="roomFav">☆ 즐겨찾기 고르기</button><label class="rstart" title="온에어를 열 때 바로 방송실 모드로"><input type="checkbox" id="roomStart"> 다음에도 방송실로 시작</label><button id="roomExit">나가기 ✕</button></div>
   <div class="rbody">
     <div class="rleft"><div id="roomGrid"></div><div id="roomHist"></div></div>
     <div class="rside">
       <div id="roomNum" hidden>
         <div class="rnl" id="roomNumL">주문 번호</div>
-        <input id="roomNumIn" inputmode="numeric" maxlength="6" autocomplete="off">
+        <input id="roomNumIn" aria-label="호출할 번호" inputmode="numeric" maxlength="6" autocomplete="off">
         <div class="rkeys" id="roomKeys"></div>
-        <div class="rtools"><button data-d="-1">−1</button><button data-d="1">+1</button><button id="roomBoard">🖥 번호판</button><button id="roomQR">📱 QR</button></div>
+        <div class="rtools"><button data-d="-1" aria-label="번호 하나 빼기">−1</button><button data-d="1" aria-label="번호 하나 더하기">+1</button><button id="roomBoard">🖥 번호판</button><button id="roomQR">📱 QR</button></div>
       </div>
       <div id="roomNow"></div>
       <button id="roomAir">📢 방송 시작</button>
@@ -489,8 +626,8 @@
 <dialog id="aptDlg">
   <h3>⚙ 장소 이름</h3>
   <div class="muted" style="font-size:14px;margin-bottom:12px">방송 첫 인사에 들어갑니다. 예: "안녕하십니까. <b>행복마을 3단지</b> 관리사무소에서…", "<b>겐시스템 구미공장</b> 총무팀에서…"</div>
-  <div class="fld" style="margin-bottom:10px"><label>한국어 방송용</label><input id="aptKo" placeholder="예: 행복마을 3단지 / 겐시스템 구미공장"></div>
-  <div class="fld"><label>영어·일본어·중국어 방송용 (비워도 됩니다)</label><input id="aptEn" placeholder="예: Haengbok Village Complex 3"></div>
+  <div class="fld" style="margin-bottom:10px"><label for="aptKo">한국어 방송용</label><input id="aptKo" placeholder="예: 행복마을 3단지 / 겐시스템 구미공장"></div>
+  <div class="fld"><label for="aptEn">영어·일본어·중국어 방송용 (비워도 됩니다)</label><input id="aptEn" placeholder="예: Haengbok Village Complex 3"></div>
   <div class="btns" style="justify-content:space-between;margin-top:16px">
     <button id="aptDel" style="color:var(--red)">🗑 이름 지우기</button>
     <span style="display:flex;gap:8px"><button id="aptNo">취소</button><button class="ok" id="aptOk">저장</button></span>
@@ -516,7 +653,7 @@
 <div id="waitp" hidden>
   <div class="wt" id="wTitle">🔔 주문 번호 알림</div>
   <div id="wAsk"><div class="wm">영수증의 <b>주문 번호</b>를 넣어 주세요<br><span style="font-size:13px">Enter your order number</span></div>
-    <input id="wNum" inputmode="numeric" maxlength="6" placeholder="24"></div>
+    <input id="wNum" aria-label="주문 번호" inputmode="numeric" maxlength="6" placeholder="24"></div>
   <div class="wn" id="wBig" hidden></div>
   <div class="wm" id="wMsg">버튼을 누르면 준비됐을 때 <b>소리·진동</b>으로 알려 드립니다.</div>
   <button class="wb" id="wGo">🔔 알림 받기</button>
@@ -532,7 +669,7 @@
 </dialog>
 <div id="oaBar"><div class="nm"><b id="oaName"></b><span id="oaEst"></span></div><button id="oaPre">▶ 듣기</button><button id="oaAir">📢 방송</button></div>
 <div class="recbar" id="recBar" hidden></div>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (() => {
@@ -540,10 +677,38 @@ const $ = id => document.getElementById(id);
 const BOARD = /[?&]board\b/.test(location.search);       // 🖥 번호판 전용 창
 const WAIT = new URLSearchParams(location.search).get("wait");   // 📱 손님 대기 화면 (QR로 연 휴대폰)
 const ls = { get(k, d) { try { const v = localStorage.getItem("onair_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-             set(k, v) { try { localStorage.setItem("onair_" + k, JSON.stringify(v)); } catch (e) {} } };
+             set(k, v) {
+               if (ls.lock) return;                                    // 백업 복원 중: 다시 열 때까지 덮어쓰지 않음
+               const j = JSON.stringify(v);
+               try { localStorage.setItem("onair_" + k, j); return; } catch (e) {}
+               try { if (k !== "trcache") { localStorage.removeItem("onair_trcache"); localStorage.setItem("onair_" + k, j); return; } } catch (e) {}   // 공간 부족: 번역 저장본부터 비움
+               if (!ls.warned) { ls.warned = true; setTimeout(() => toast("⚠️ 이 브라우저에 저장하지 못했습니다 (저장 공간 부족 또는 사생활 보호 창) — ⚙ 설정 → 💼 백업을 해 두세요"), 0); }
+             } };
 function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2200); }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const pad2 = n => String(n).padStart(2, "0");
+// ================= 🛡 브라우저 기능 확인 (없는 기능이 있어도 앱이 멈추지 않게) =================
+const HAS_TTS = !!(window.speechSynthesis && typeof window.SpeechSynthesisUtterance === "function");   // 음성 읽기 (일부 앱 안 브라우저·WebKit 에는 없음)
+const speechSynthesis = HAS_TTS ? window.speechSynthesis : { speaking: false, pending: false, paused: false, onvoiceschanged: null, getVoices: () => [], speak() {}, cancel() {}, pause() {}, resume() {} };
+const NO_TTS_MSG = "이 브라우저는 음성 읽기를 지원하지 않습니다 — PC의 Microsoft Edge 또는 휴대폰 기본 브라우저로 열어 주세요";
+const POPUP_MSG = "새 창이 막혔습니다 — 주소창 오른쪽의 팝업 차단 표시를 눌러 '항상 허용'을 고른 뒤 다시 눌러 주세요";
+const noVoiceMsg = () => (HAS_TTS ? "이 기기에서 목소리를 찾지 못했습니다 — PC의 Microsoft Edge 를 권장합니다" : NO_TTS_MSG);
+if (typeof HTMLDialogElement !== "function") {            // 아주 오래된 브라우저: <dialog> 흉내
+  document.documentElement.classList.add("nodlg");
+  document.querySelectorAll("dialog").forEach(d => {
+    d.showModal = d.show = () => d.setAttribute("open", ""); d.close = () => { d.removeAttribute("open"); d.dispatchEvent(new Event("close")); };
+    try { Object.defineProperty(d, "open", { get: () => d.hasAttribute("open"), set: v => (v ? d.setAttribute("open", "") : d.removeAttribute("open")) }); } catch (e) {}
+  });
+}
+function keepAwake() {                                    // 예약·카운트다운 대기: 화면 꺼짐·탭 잠자기 막기 (지원하는 브라우저만)
+  try { navigator.wakeLock?.request("screen").then(l => { keepAwake.l = l; }).catch(() => {}); } catch (e) {}
+  if (!keepAwake.req && navigator.locks?.request) { keepAwake.req = true; try { navigator.locks.request("onair_keep", () => new Promise(r => { keepAwake.hold = r; })).catch(() => {}); } catch (e) {} }
+}
+function releaseAwake() {
+  if ($("schedOn").checked || $("cdOn").checked) return;
+  try { keepAwake.l?.release?.()?.catch?.(() => {}); } catch (e) {} keepAwake.l = null;
+  if (keepAwake.hold) { keepAwake.hold(); keepAwake.hold = null; } keepAwake.req = false;
+}
 
 // ================= 언어별 표기 =================
 const BASE_LANGS = [
@@ -686,7 +851,7 @@ function fSpot(v, L) {                                   // 주차 자제 구역
   return L === "ko" ? v.replace(/에$/, "") : v;            // 그 밖의 글은 외국어 문장에 그대로 (확인 필요)
 }
 function join(a, L) {
-  if (L === "en") return a.length < 3 ? a.join(" and ") : a.slice(0, -1).join(", ") + ", and " + a.at(-1);
+  if (L === "en") return a.length < 3 ? a.join(" and ") : a.slice(0, -1).join(", ") + ", and " + a[a.length - 1];
   return a.join(L === "ko" ? ", " : "、");
 }
 // 차량 번호: 한글 글자는 로마자로 (외국어 음성이 읽을 수 있게)
@@ -1439,6 +1604,7 @@ function tplButton(id, icon, name, cls) {               // 버튼 하나: 왼쪽
   b.className = "tpl" + (S.tpl === id ? " on" : "") + (cls ? " " + cls : "");
   b.innerHTML = `<span class="fv${fav ? " on" : ""}" title="${fav ? "즐겨찾기에서 빼기" : "즐겨찾기에 넣기"}">${fav ? "★" : "☆"}</span>${isMine ? '<span class="x" title="이 내 방송 지우기">✕</span>' : ""}<span class="ic">${icon}</span><b></b>`;
   b.querySelector("b").textContent = name;
+  b.setAttribute("aria-pressed", S.tpl === id ? "true" : "false"); if (fav) b.setAttribute("aria-label", name + " (즐겨찾기)");
   b.onclick = e => {
     if (e.target.classList.contains("fv")) {
       S.fav = fav ? S.fav.filter(x => x !== id) : [...(S.fav || []), id]; save(); renderTpls(); if (id === "hist") hFavSync();
@@ -1513,6 +1679,7 @@ function renderFields() {
     if (f.type !== "textarea") el.type = f.type;
     else { el.rows = 4; el.style.cssText = "width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;line-height:1.6;resize:vertical"; el.placeholder = "예: 오늘 오후 3시부터 지하 주차장 바닥 청소가 있습니다. 차량을 지상으로 옮겨 주세요."; }
     el.value = S.vals[k] ?? (k === "date2" ? S.vals.date : "");
+    el.id = "f_" + k; d.querySelector("label").htmlFor = el.id;            // 칸 이름을 읽어 주는 프로그램용
     el.oninput = () => { if (k === "num") return setNum(el.value); S.vals[k] = el.value; regen(); };
     d.appendChild(el); box.appendChild(d);
     if (k === "num") {                                    // ☕ 번호 빠르게: −1 / +1 / 바로 호출
@@ -1535,10 +1702,11 @@ function renderLangs() {
   const warn = needsCheck();
   LANGS.forEach(L => {
     const on = S.langs[L.id], d = document.createElement("div"); d.className = "lang" + (on ? "" : " off");
-    d.innerHTML = `<div class="lh"><label class="switch"><input type="checkbox" ${on ? "checked" : ""}><span></span></label>
-      <span style="display:inline-flex;flex-direction:column;line-height:.9"><button class="mini up" title="방송 순서 앞으로" style="height:16px;padding:0 5px;font-size:10px">▲</button><button class="mini dn" title="방송 순서 뒤로" style="height:16px;padding:0 5px;font-size:10px">▼</button></span>
-      <b>${L.flag} ${L.extra ? L.ko + " · " + L.name : L.name}</b><span class="tags"></span><span class="sp"></span><select title="목소리"></select>
-      <button class="mini lplay" title="이 칸의 문장만 바로 들어 보기 (차임·인사말 없이)" style="border-color:#fed7aa;background:#fff7ed;color:var(--accent2);font-weight:600">▶ 듣기</button>${L.id === "ko" ? '<button class="mini pol" title="쉼표 넣기 · 시간·전화번호 읽기 좋게 · 긴 문장·영어 약자 검사" style="border-color:#bbf7d0;background:#f0fdf4;color:#15803d;font-weight:600">✨ 다듬기</button>' : ""}<button class="mini cmp" title="이 언어의 목소리를 차례로 들어 보기">🔊 비교</button><button class="mini tr" hidden>${L.extra ? "🌐 번역" : "자동 번역"}</button>${L.extra ? '<button class="mini rm" title="이 언어 빼기">✕</button>' : ""}</div><textarea spellcheck="false" data-l="${L.id}"></textarea>`;
+    const lnm = L.extra ? L.ko : L.name;
+    d.innerHTML = `<div class="lh"><label class="switch"><input type="checkbox" aria-label="${lnm} 방송 켜기" ${on ? "checked" : ""}><span></span></label>
+      <span style="display:inline-flex;flex-direction:column;line-height:.9"><button class="mini up" title="방송 순서 앞으로" aria-label="${lnm} 순서 앞으로" style="height:16px;padding:0 5px;font-size:10px">▲</button><button class="mini dn" title="방송 순서 뒤로" aria-label="${lnm} 순서 뒤로" style="height:16px;padding:0 5px;font-size:10px">▼</button></span>
+      <b>${L.flag} ${L.extra ? L.ko + " · " + L.name : L.name}</b><span class="tags"></span><span class="sp"></span><select title="목소리" aria-label="${lnm} 목소리"></select>
+      <button class="mini lplay" title="이 칸의 문장만 바로 들어 보기 (차임·인사말 없이)" style="border-color:#fed7aa;background:#fff7ed;color:var(--accent2);font-weight:600">▶ 듣기</button>${L.id === "ko" ? '<button class="mini pol" title="쉼표 넣기 · 시간·전화번호 읽기 좋게 · 긴 문장·영어 약자 검사" style="border-color:#bbf7d0;background:#f0fdf4;color:#15803d;font-weight:600">✨ 다듬기</button>' : ""}<button class="mini cmp" title="이 언어의 목소리를 차례로 들어 보기">🔊 비교</button><button class="mini tr" hidden>${L.extra ? "🌐 번역" : "자동 번역"}</button>${L.extra ? '<button class="mini rm" title="이 언어 빼기">✕</button>' : ""}</div><textarea spellcheck="false" data-l="${L.id}" lang="${L.bcp}" aria-label="${lnm} 방송 문장"></textarea>`;
     d.querySelector("input").onchange = e => {
       if (!e.target.checked && LANGS.filter(x => S.langs[x.id]).length <= 1) { e.target.checked = true; toast("언어를 하나 이상 켜 두어야 합니다"); return; }
       S.langs[L.id] = e.target.checked; save(); renderLangs(); estimate(); altInfo();
@@ -1641,11 +1809,12 @@ $("polOk").onclick = () => {
   polTa.value = v; S.texts.ko = v; S.edited.ko = true; keepEdit("ko", v); save(); renderLangs(); estimate(); autoTranslateSoon();
   toast("✨ 다듬은 문장을 적용했습니다");
 };
-$("polPlay").onclick = () => { if (running) return; speechSynthesis.cancel(); (async () => { for (const p of sentences($("polText").value)) { await say(p, LANGS.find(x => x.id === "ko")); await sleep(300); } })(); };
+$("polPlay").onclick = () => { if (!voices.length) { toast(noVoiceMsg()); return; } if (running) return; speechSynthesis.cancel(); (async () => { for (const p of sentences($("polText").value)) { await say(p, LANGS.find(x => x.id === "ko")); await sleep(300); } })(); };
 
 let lpOn = false, lpStop = false;
 async function playLang(L, ta, btn) {                   // 이 언어 칸의 문장만 바로 듣기 (다시 누르면 멈춤)
   if (lpOn) { lpStop = true; speechSynthesis.cancel(); return; }
+  if (!voices.length) { toast(noVoiceMsg()); return; }
   if (running) { toast("방송·비교가 끝난 뒤에 눌러 주세요"); return; }
   const parts = sentences((ta.value || "").trim());
   if (!parts.length) { toast("읽을 문장이 없습니다"); return; }
@@ -1664,6 +1833,7 @@ async function playLang(L, ta, btn) {                   // 이 언어 칸의 문
 let cmpStop = false, cmpOn = false;
 async function compareVoices(L, sel, btn) {             // 목록의 모든 목소리로 같은 문장을 차례로 (속도는 그대로, 사람만 바뀜) · 다시 누르면 멈춤
   if (cmpOn) { cmpStop = true; speechSynthesis.cancel(); return; }
+  if (!voices.length) { toast(noVoiceMsg()); return; }
   if (running) return;
   const list = voicesFor(L);
   cmpOn = true; cmpStop = false;
@@ -1838,7 +2008,8 @@ function loadVoices() {
   }
   renderLangs(); altInfo();
   const info = LANGS.map(L => { const b = voicesFor(L)[0]; return `<b>${L.flag} ${L.name}</b> ${b ? `${stars(b)} ${dispName(b.name)}` : "— 없음"} (${voicesFor(L).length}개)`; }).join("<br>");
-  $("voiceInfo").innerHTML = voices.length ? info : "목소리를 찾지 못했습니다.";
+  $("voiceInfo").innerHTML = voices.length ? info : HAS_TTS ? "목소리를 찾지 못했습니다." : NO_TTS_MSG;
+  ttsWarn();
   const best = LANGS.every(L => voicesFor(L).some(v => score(v) >= 100));
   const tip = $("voiceTip");
   if (!best) {
@@ -1849,9 +2020,16 @@ function loadVoices() {
   } else tip.hidden = true;
 }
 speechSynthesis.onvoiceschanged = loadVoices;
+function ttsWarn(final) {                                 // 음성 읽기가 없거나 목소리가 하나도 없으면 맨 위에 안내 (번호판·QR·공지문·기록·백업은 그대로 씀)
+  const w = $("ttsWarn"); if (!w || BOARD || WAIT) return;
+  if (voices.length) { w.hidden = true; return; }
+  if (HAS_TTS && !final) return;                          // 목소리는 조금 늦게 올 수 있음 → 몇 초 기다린 뒤에만
+  w.hidden = false;
+  w.innerHTML = `⚠️ <b>${HAS_TTS ? "이 브라우저에서 목소리를 찾지 못했습니다 — PC의 Microsoft Edge 또는 휴대폰 기본 브라우저로 열어 주세요" : NO_TTS_MSG}</b><br><small>카카오톡·밴드 같은 앱 안에서 열었다면 오른쪽 위 ⋮ → '다른 브라우저로 열기'를 눌러 주세요. 번호판 · QR · 공지문 · 카톡 복사 · 기록 · 백업은 그대로 쓸 수 있습니다.</small>`;
+}
 const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 function primeSpeech() {                                  // 아이폰(Safari·Edge·Chrome 모두 WebKit): 손가락으로 누른 그 순간에 한 번 말을 시켜 두어야 나중 말도 나옴
-  if (!IOS || speechSynthesis.speaking) return;
+  if (!IOS || !HAS_TTS || speechSynthesis.speaking) return;
   try { const u = new SpeechSynthesisUtterance("."); u.volume = 0; u.rate = 2; if (voices[0]) u.lang = "ko-KR"; speechSynthesis.speak(u); } catch (e) {}
   try { audio(); } catch (e) {}
 }
@@ -1859,12 +2037,16 @@ function primeSpeech() {                                  // 아이폰(Safari·E
 
 // ================= 오디오: 차임 =================
 let ctx = null, master;
-function audio() {
-  if (!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination); }
-  if (ctx.state !== "running") ctx.resume();
+function audio() {                                        // 차임·삐 소리 (소리 기능이 없는 브라우저면 null → 소리만 건너뜀)
+  if (!ctx) {
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+    try { ctx = new AC(); master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination); } catch (e) { ctx = null; return null; }
+  }
+  if (ctx.state !== "running") { try { const p = ctx.resume(); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
   return ctx;
 }
 function bell(f, t0, dur = 1.6, a = 0.32) {               // 실로폰·차임 같은 맑은 소리
+  if (!ctx) return;
   [[1, 1], [2.0, 0.18], [3.01, 0.08], [4.2, 0.04]].forEach(([m, k]) => {
     const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = f * m;
     g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(a * k, t0 + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur / Math.sqrt(m));
@@ -1878,7 +2060,7 @@ const CHIMES = {                                          // [주파수, 시작 
 };
 const sleepS = ms => new Promise(r => { const t0 = Date.now(), iv = setInterval(() => { if (stopFlag || Date.now() - t0 >= ms) { clearInterval(iv); r(); } }, 40); });   // 멈추기를 누르면 바로 끝나는 기다림
 async function chime(which) {
-  audio();
+  if (!audio()) return;
   if (S.mood === "urgent") {                              // 긴급: 또렷한 경고음 3번
     const t0 = ctx.currentTime + 0.05;
     for (let k = 0; k < 3; k++) { bell(880, t0 + k * 0.55, 0.5, 0.35); bell(659.25, t0 + k * 0.55 + 0.25, 0.5, 0.35); }
@@ -1944,7 +2126,13 @@ function plan() {                                       // 방송 순서
 }
 async function run(real, rec) {
   if (running) { stop(); return; }
-  if (!voices.length) { toast("이 기기에서 목소리를 찾지 못했습니다"); return; }
+  if (!voices.length) {
+    if (real && curT().f.includes("num")) {               // 🔇 목소리가 없어도 번호 호출은 번호판·손님 휴대폰으로 보냄
+      const n = (S.vals.num || "").trim() || "1"; boardPush(n, curT().id); phonePush(n, curT().id); addHistory("air", "🔇 음성 없이 번호판·휴대폰만");
+      toast(`🔇 소리 없이 ${n}번을 번호판·손님 휴대폰에 알렸습니다 — ${HAS_TTS ? "목소리를 찾지 못했습니다" : "이 브라우저는 음성 읽기를 지원하지 않습니다"}`); $("now").textContent = `🔇 ${n}번을 번호판·휴대폰에만 알렸습니다. ${noVoiceMsg()}`; return;
+    }
+    toast(noVoiceMsg()); $("now").textContent = noVoiceMsg(); return;
+  }
   if (LANGS.some(x => x.extra && S.langs[x.id])) { $("now").textContent = "🌐 더한 언어 인사말 준비 중…"; await prepareExtras(); }
   const seq = plan(); if (!seq.length) { toast("방송할 문장이 없습니다"); return; }
   running = true; stopFlag = false; setLive(real ? "air" : rec ? "rec" : "pre");
@@ -2012,7 +2200,8 @@ $("recGo").onclick = async () => {
   const at = stream.getAudioTracks();
   stream.getVideoTracks().forEach(t => t.stop());                // 화면은 녹화하지 않음
   if (!at.length) { recBar("err", "소리가 공유되지 않았습니다.<br>화면 공유 창 아래쪽 <b>'시스템 오디오도 공유'</b>를 켜고 다시 해 주세요."); return; }
-  const c = audio(), src = c.createMediaStreamSource(new MediaStream(at)), proc = c.createScriptProcessor(4096, 2, 2), mute = c.createGain();
+  const c = audio(); if (!c) { at.forEach(t => t.stop()); recBar("err", "이 브라우저에서는 소리를 녹음할 수 없습니다 — PC의 Microsoft Edge 에서 해 주세요."); return; }
+  const src = c.createMediaStreamSource(new MediaStream(at)), proc = c.createScriptProcessor(4096, 2, 2), mute = c.createGain();
   const L = [], R = []; mute.gain.value = 0;                     // 녹음한 소리를 다시 내보내지 않음 (울림 방지)
   proc.onaudioprocess = e => { L.push(new Float32Array(e.inputBuffer.getChannelData(0))); R.push(new Float32Array(e.inputBuffer.getChannelData(e.inputBuffer.numberOfChannels > 1 ? 1 : 0))); };
   src.connect(proc); proc.connect(mute); mute.connect(c.destination);
@@ -2191,7 +2380,7 @@ $("dAdd").onclick = () => {
 };
 $("dTest").onclick = () => {
   const from = $("dFrom").value.trim(), to = $("dTo").value.trim(), L = LANGS.find(x => x.id === $("dLang").value) || LANGS[0];
-  if (!to && !from) return; if (!running) say(to || from, L);
+  if (!to && !from) return; if (!voices.length) { toast(noVoiceMsg()); return; } if (!running) say(to || from, L);
 };
 ["dFrom", "dTo"].forEach(id => $(id).addEventListener("keydown", e => { if (e.key === "Enter") $("dAdd").click(); }));
 
@@ -2225,7 +2414,7 @@ function cdInfo() {
 }
 $("cdTime").onchange = e => { S.cd.time = e.target.value || "19:00"; S.cd.done = {}; save(); cdInfo(); };
 $("cdWhat").oninput = e => { S.cd.what = e.target.value; save(); };
-$("cdOn").onchange = e => { S.cd.on = e.target.checked; S.cd.done = {}; if (S.cd.on) { audio(); try { navigator.wakeLock?.request("screen").catch(() => {}); } catch (er) {} } save(); cdInfo(); };
+$("cdOn").onchange = e => { S.cd.on = e.target.checked; S.cd.done = {}; if (S.cd.on) { audio(); keepAwake(); } else releaseAwake(); save(); cdInfo(); };
 async function cdFire(n) {
   const keep = JSON.parse(JSON.stringify({ texts: S.texts, edited: S.edited }));
   for (const L of LANGS.filter(x => S.langs[x.id])) {
@@ -2249,16 +2438,23 @@ setInterval(async () => {
 }, 1000);
 
 // ================= 💼 백업 · 옮기기 =================
-const BK_KEYS = ["state", "mine", "sched", "hist", "trcache", "recFmt"];
-function bkCounts(d) {
-  const st = d.state || {};
-  return `내 방송 ${(d.mine || []).length} · 즐겨찾기 ${(st.fav || []).length} · 예약 ${(d.sched || []).length} · 발음 사전 ${(st.dict || []).length} · 기록 ${(d.hist || []).length} · 더한 언어 ${(st.extra || []).length}`;
+const BK_KEYS = ["state", "mine", "sched", "hist", "trcache", "recFmt"];   // state 안: 즐겨찾기·고친 문장·묶음·사전·카운트다운·언어·목소리·방송실 설정…
+const BK_SKIP = ["bkLast"];
+function bkRaw() {                                        // 그 밖의 onair_* 값 전부 (매장 QR 코드·번호판·방송실로 시작·화면 설정 …) — 새 기능이 생겨도 빠짐없이
+  const o = {};
+  try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith("onair_")) { const n = k.slice(6); if (!BK_KEYS.includes(n) && !BK_SKIP.includes(n)) o[n] = localStorage.getItem(k); } } } catch (e) {}
+  return o;
 }
-function bkInfo() { const d = {}; BK_KEYS.forEach(k => (d[k] = ls.get(k, null))); $("bkInfo").textContent = "지금: " + bkCounts(d) + (ls.get("bkLast", "") ? ` · 마지막 백업 ${ls.get("bkLast", "")}` : ""); }
+function bkCounts(d) {
+  const st = d.state || {}, raw = d.raw || {};
+  return `내 방송 ${(d.mine || []).length} · 즐겨찾기 ${(st.fav || []).length} · 고친 문장 ${Object.keys(st.tplEdits || {}).length} · 방송 묶음 ${(st.packs || []).length} · 예약 ${(d.sched || []).length} · 발음 사전 ${(st.dict || []).length} · 기록 ${(d.hist || []).length} · 더한 언어 ${(st.extra || []).length}${raw.shopId ? " · 📱 매장 QR 코드" : ""}`;
+}
+function bkInfo() { const d = { raw: bkRaw() }; BK_KEYS.forEach(k => (d[k] = ls.get(k, null))); $("bkInfo").textContent = "지금: " + bkCounts(d) + (ls.get("bkLast", "") ? ` · 마지막 백업 ${ls.get("bkLast", "")}` : ""); }
 $("bkSave").onclick = () => {
   save();
-  const data = { app: "onair", version: 1, saved: new Date().toISOString() };
+  const data = { app: "onair", version: 2, saved: new Date().toISOString() };
   BK_KEYS.forEach(k => (data[k] = ls.get(k, null)));
+  data.raw = bkRaw();
   const d = new Date(), name = `온에어_백업_${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}_${pad2(d.getHours())}${pad2(d.getMinutes())}.json`;
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: "application/json" })); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
@@ -2271,13 +2467,18 @@ $("bkFile").onchange = async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
   try { bkData = JSON.parse(await f.text()); } catch (er) { toast("백업 파일을 읽지 못했습니다"); return; }
   if (bkData.app !== "onair") { toast("온에어 백업 파일이 아닙니다"); bkData = null; return; }
-  $("bkSum").innerHTML = `<b>${f.name}</b><br>저장한 때: ${new Date(bkData.saved).toLocaleString("ko-KR")}<br>${bkCounts(bkData)}`;
+  $("bkSum").innerHTML = `<b>${f.name.replace(/</g, "&lt;")}</b><br>저장한 때: ${new Date(bkData.saved).toLocaleString("ko-KR")}<br>${bkCounts(bkData)}`;
   $("bkDlg").showModal();
 };
 $("bkNo").onclick = () => { bkData = null; $("bkDlg").close(); };
 $("bkReplace").onclick = () => {
   if (!bkData || !confirm("지금 저장된 내용을 모두 지우고 백업으로 바꿀까요?")) return;
   BK_KEYS.forEach(k => { if (bkData[k] != null) ls.set(k, bkData[k]); else try { localStorage.removeItem("onair_" + k); } catch (er) {} });
+  if (bkData.raw && typeof bkData.raw === "object") {     // 버전 2: 화면 설정·매장 코드까지 백업 그대로
+    Object.keys(bkRaw()).forEach(k => { if (!(k in bkData.raw)) try { localStorage.removeItem("onair_" + k); } catch (er) {} });
+    Object.entries(bkData.raw).forEach(([k, v]) => { if (typeof v === "string" && !BK_KEYS.includes(k) && !BK_SKIP.includes(k)) try { localStorage.setItem("onair_" + k, v); } catch (er) {} });
+  }
+  ls.lock = true;                                           // 다시 열 때까지 지금 화면이 백업을 덮어쓰지 않게
   toast("백업으로 모두 바꿨습니다 — 다시 엽니다"); setTimeout(() => location.reload(), 900);
 };
 $("bkMerge").onclick = () => {
@@ -2285,7 +2486,7 @@ $("bkMerge").onclick = () => {
   const byKey = (a, b, key) => { const m = new Map(); [...(a || []), ...(b || [])].forEach(x => m.set(key(x), x)); return [...m.values()]; };
   ls.set("mine", byKey(ls.get("mine", []), bkData.mine, x => x.name));
   ls.set("sched", byKey(ls.get("sched", []), bkData.sched, x => x.time + "|" + x.label));
-  ls.set("hist", byKey(ls.get("hist", []), bkData.hist, x => x.at + "|" + x.label).sort((a, b) => (b.at > a.at ? 1 : -1)).slice(0, 200));
+  ls.set("hist", byKey(ls.get("hist", []), bkData.hist, x => (x.ts || x.at) + "|" + x.label).sort((a, b) => histTime(b) - histTime(a)).slice(0, 200));
   ls.set("trcache", { ...ls.get("trcache", {}), ...(bkData.trcache || {}) });
   const st = bkData.state || {};
   S.dict = byKey(S.dict, st.dict, x => x.from + "|" + x.lang);
@@ -2293,7 +2494,16 @@ $("bkMerge").onclick = () => {
   S.extra = [...new Set([...(S.extra || []), ...(st.extra || [])])];
   S.voices = { ...(st.voices || {}), ...S.voices };
   if (!S.apt && st.apt) { S.apt = st.apt; S.aptEn = st.aptEn || ""; }
+  S.packs = byKey(S.packs, st.packs, x => x.name);
+  S.tplEdits = { ...(S.tplEdits || {}), ...(st.tplEdits || {}) };                 // 같은 방송의 고친 문장은 백업 것으로
+  S.vpitch = { ...(st.vpitch || {}), ...(S.vpitch || {}) };
+  S.roomHide = [...new Set([...(S.roomHide || []), ...(st.roomHide || [])])];
+  if (!(S.order || []).length && (st.order || []).length) S.order = st.order;
+  if (st.cd && !S.cd?.what && st.cd.what) S.cd = { ...S.cd, time: st.cd.time, what: st.cd.what, steps: st.cd.steps || S.cd.steps };
   save();
+  const raw = bkData.raw || {}, mine0 = bkRaw();         // 화면 설정·매장 QR 코드: 이 기기에 없는 것만 가져옴
+  Object.entries(raw).forEach(([k, v]) => { if (typeof v === "string" && !(k in mine0) && !BK_KEYS.includes(k) && !BK_SKIP.includes(k)) try { localStorage.setItem("onair_" + k, v); } catch (er) {} });
+  ls.lock = true;
   toast("백업을 합쳤습니다 — 다시 엽니다"); setTimeout(() => location.reload(), 900);
 };
 
@@ -2308,18 +2518,18 @@ $("notice").onclick = () => {
   const { t, langs, who, date } = noticeParts(); if (!langs.length) { toast("공지할 문장이 없습니다"); return; }
   const esc = x => String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const blocks = langs.map((L, i) => `<section class="${i ? "sub" : "main"}"><div class="lang">${L.flag} ${esc(L.extra ? L.name : L.name)}</div><p>${esc(S.texts[L.id].trim())}</p></section>`).join("");
-  const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>공지문 — ${esc(t.name)}</title>
+  const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>공지문 — ${esc(t.name)}</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>@page{size:A4;margin:16mm}*{box-sizing:border-box}body{margin:0;font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif;color:#1f1a14}
 .top{display:flex;align-items:center;gap:14px;border-bottom:4px solid #ea580c;padding-bottom:12px;margin-bottom:18px}.badge{font-size:15px;font-weight:800;letter-spacing:3px;color:#fff;background:#ea580c;padding:8px 14px;border-radius:10px}
-h1{margin:0;font-size:34px;letter-spacing:-.5px;flex:1}.date{font-size:15px;color:#6b5d50}.ic{font-size:44px}
+h1{margin:0;font-size:34px;letter-spacing:-.5px;flex:1;min-width:0;word-break:keep-all;overflow-wrap:anywhere}@media screen and (max-width:600px){body{padding:12px}h1{font-size:24px}.main p{font-size:19px}.top{flex-wrap:wrap}}.date{font-size:15px;color:#6b5d50}.ic{font-size:44px}
 section{margin:0 0 14px;padding:14px 18px;border-radius:14px;break-inside:avoid}.main{background:#fff7ed;border:2px solid #fdba74}.main p{font-size:23px;line-height:1.75;font-weight:600}
 .sub{border:1px solid #e7ddd2}.sub p{font-size:16.5px;line-height:1.65}.lang{font-size:13px;font-weight:700;color:#9a3412;margin-bottom:4px}p{margin:0}
 .foot{margin-top:22px;text-align:right;font-size:18px;font-weight:700}.foot small{display:block;font-size:12px;color:#8a7a6a;font-weight:400;margin-top:4px}</style></head>
 <body><div class="top"><span class="ic">${t.icon}</span><h1>${esc(t.name)}</h1><div style="text-align:right"><div class="badge">안 내</div><div class="date">${date}</div></div></div>
 ${blocks}<div class="foot">${esc(who)}<small>온에어(溫 On-Air) 안내방송과 같은 내용입니다</small></div>
 <script>setTimeout(() => print(), 600)<\/script></body></html>`;
-  const w = window.open("", "_blank"); if (!w) { toast("새 창이 막혔습니다 — 팝업 허용 후 다시 눌러 주세요"); return; }
+  const w = window.open("", "_blank"); if (!w) { toast(POPUP_MSG); return; }
   w.document.write(html); w.document.close();
   toast("📄 공지문을 열었습니다 — 인쇄 창에서 'PDF로 저장'도 됩니다");
 };
@@ -2327,7 +2537,11 @@ $("kakao").onclick = async () => {
   const { t, langs, who } = noticeParts(); if (!langs.length) { toast("보낼 문장이 없습니다"); return; }
   const txt = `📢 [안내] ${t.name}\n\n` + langs.map(L => `${L.flag} ${S.texts[L.id].trim()}`).join("\n\n") + `\n\n— ${who}`;
   try { await navigator.clipboard.writeText(txt); }
-  catch (e) { const ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+  catch (e) {
+    let ok = false; const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(ta); ta.select(); try { ok = document.execCommand("copy"); } catch (er) {} ta.remove();
+    if (!ok) { toast("복사하지 못했습니다 — ② 방송 문장 칸을 길게 눌러 직접 복사해 주세요"); return; }
+  }
   toast("💬 복사했습니다 — 카톡 대화창에 붙여 넣기(Ctrl+V) 하세요");
 };
 
@@ -2450,7 +2664,7 @@ function roomNumSync() {                                 // 주문 번호 방송
 }
 function roomNumSet(v) { v = String(v).replace(/\D/g, "").slice(0, 6); $("roomNumIn").value = v; setNum(v); }
 ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "⌫"].forEach(k => {
-  const b = document.createElement("button"); b.textContent = k; $("roomKeys").appendChild(b);
+  const b = document.createElement("button"); b.textContent = k; if (k === "C") b.setAttribute("aria-label", "번호 모두 지우기"); if (k === "⌫") b.setAttribute("aria-label", "한 자리 지우기"); $("roomKeys").appendChild(b);
   b.onclick = () => { const v = $("roomNumIn").value; roomNumSet(k === "C" ? "" : k === "⌫" ? v.slice(0, -1) : v + k); };
 });
 $("roomNumIn").oninput = () => roomNumSet($("roomNumIn").value);
@@ -2464,14 +2678,16 @@ $("roomStart").onchange = () => { ls.set("roomStart", $("roomStart").checked); t
 function roomTick() {
   if ($("room").hidden) return;
   roomNumSync();
-  const n = new Date(); $("roomClock").textContent = `${pad2(n.getHours())}:${pad2(n.getMinutes())}`;
+  const n = new Date(), ck = `${pad2(n.getHours())}:${pad2(n.getMinutes())}`; if ($("roomClock").textContent !== ck) $("roomClock").textContent = ck;
   $("roomLive").classList.toggle("live", running && $("onair").classList.contains("live"));
-  $("roomNow").innerHTML = running ? $("now").innerHTML : `<b>${curT().icon} ${curT().name}</b> — ${firstText(S.texts, S.langs).replace(/</g, "&lt;")}`;
-  $("roomAir").textContent = running ? "■ 멈추기" : curT().f.includes("num") ? `📢 ${(S.vals.num || "").trim() || "1"}번 호출` : "📢 방송 시작"; $("roomAir").classList.toggle("stop", running);
+  const rn = running ? $("now").innerHTML : `<b>${curT().icon} ${curT().name.replace(/</g, "&lt;")}</b> — ${firstText(S.texts, S.langs).replace(/</g, "&lt;")}`;
+  if (roomTick.rn !== rn) { $("roomNow").innerHTML = rn; roomTick.rn = rn; }
+  const ra = running ? "■ 멈추기" : curT().f.includes("num") ? `📢 ${(S.vals.num || "").trim() || "1"}번 호출` : "📢 방송 시작";
+  if ($("roomAir").textContent !== ra) $("roomAir").textContent = ra; $("roomAir").classList.toggle("stop", running);
 }
 setInterval(roomTick, 400);
 function roomOpen(on) {
-  $("room").hidden = !on;
+  $("room").hidden = !on; document.body.classList.toggle("room", !!on);   // 📱 아래 고정 줄 숨김 (CSS body.room)
   if (on) { renderRoom(); renderRoomHist(); roomTick(); try { document.documentElement.requestFullscreen?.()?.catch?.(() => {}); } catch (e) {} }
   else { try { document.fullscreenElement && document.exitFullscreen().catch(() => {}); } catch (e) {} }
 }
@@ -2486,7 +2702,26 @@ document.addEventListener("fullscreenchange", () => { if (!document.fullscreenEl
 // ================= ❓ 사용법 (처음 열 때 한 번) =================
 $("helpBtn").onclick = () => $("helpDlg").showModal();
 $("helpOk").onclick = () => { $("helpDlg").close(); ls.set("seenHelp", true); };
-setTimeout(() => { if (!ls.get("seenHelp", false)) $("helpDlg").showModal(); }, 600);
+setTimeout(() => { if (!ls.get("seenHelp", false) && !$("manDlg").open && !BOARD && !WAIT) $("helpDlg").showModal(); }, 600);
+// 📘 사용 설명서 (설정 탭 · 사용법 창 · 아래 링크 · 주소 #manual)
+function manOpen(id) {
+  const d = $("manDlg"); if (!d.open) d.showModal();
+  if (id && $(id)) $(id).scrollIntoView({ block: "start" }); else d.scrollTop = 0;
+}
+$("manClose").onclick = () => { $("manDlg").close(); if (/^#(manual|privacy)$/.test(location.hash)) try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} };
+$("manToc").onclick = e => { const b = e.target.closest("button[data-to]"); if (b && $(b.dataset.to)) $(b.dataset.to).scrollIntoView({ behavior: "smooth", block: "start" }); };
+$("manBtn").onclick = () => manOpen(); $("privBtn").onclick = () => manOpen("m-priv");
+$("helpMan").onclick = () => { $("helpDlg").close(); ls.set("seenHelp", true); manOpen(); };
+$("footMan").onclick = e => { e.preventDefault(); manOpen(); }; $("footPriv").onclick = e => { e.preventDefault(); manOpen("m-priv"); };
+$("manPrint").onclick = () => {
+  const w = window.open("", "_blank"); if (!w) { toast(POPUP_MSG); return; }
+  w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>온에어 사용 설명서</title>
+<style>body{font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif;color:#1f1a14;max-width:760px;margin:0 auto;padding:20px;line-height:1.7;font-size:14px}h1{font-size:24px;margin:0 0 8px}h4{font-size:16px;color:#c2410c;margin:16px 0 4px}section{break-inside:avoid}dt{font-weight:700;margin-top:8px}dd{margin:0 0 0 12px}a{color:#c2410c}</style></head>
+<body><h1>📘 온에어 사용 설명서</h1>${document.querySelector("#manDlg .mbody").innerHTML}<script>setTimeout(() => print(), 400)<\/script></body></html>`);
+  w.document.close();
+};
+const manHash = () => { if (BOARD || WAIT) return; if (location.hash === "#manual") manOpen(); else if (location.hash === "#privacy") manOpen("m-priv"); };
+window.addEventListener("hashchange", manHash); manHash();
 
 // ================= 예약 방송 =================
 const DAYN = ["일", "월", "화", "수", "목", "금", "토"];
@@ -2519,35 +2754,47 @@ $("sAdd").onclick = () => {
 };
 function schedInfo() {
   const on = $("schedOn").checked, w = $("sWait");
-  w.hidden = !on || !sched.length;
-  if (!w.hidden) w.textContent = "⏳ 예약 방송 대기 중 — 이 창을 닫거나 PC를 끄지 마세요. 정해진 시각에 자동으로 방송합니다.";
+  w.hidden = !sched.length;
+  w.style.cssText = on ? "" : "background:#fffbeb;border-color:#fde68a;color:#92400e";
+  if (!w.hidden) w.textContent = on ? "⏳ 예약 방송 대기 중 — 이 창을 닫거나 PC를 끄지 마세요. 정해진 시각에 자동으로 방송합니다." : `⏸ 예약 ${sched.length}개가 꺼져 있습니다 — 위 스위치를 켜야 정해진 시각에 방송합니다 (창을 새로 열면 다시 켜 주세요)`;
 }
+let schedSince = 0;                                         // 스위치를 켠 시각 (그 전 예약은 따라잡지 않음)
 $("schedOn").onchange = e => {
-  if (e.target.checked) { audio(); speechSynthesis.getVoices(); try { navigator.wakeLock?.request("screen").then(l => (schedOn.lock = l)).catch(() => {}); } catch (er) {} }
-  else schedOn.lock?.release?.();
+  if (e.target.checked) { audio(); speechSynthesis.getVoices(); keepAwake(); const d = new Date(); d.setSeconds(0, 0); schedSince = +d; }
+  else releaseAwake();
   schedInfo();
 };
-const schedOn = {};
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && ($("schedOn").checked || $("cdOn").checked)) keepAwake(); });   // 화면 잠금이 풀리면 다시
 setInterval(async () => {
   if (!$("schedOn").checked || running || BOARD || WAIT) return;
-  const n = new Date(), hm = `${pad2(n.getHours())}:${pad2(n.getMinutes())}`, key = today() + " " + hm;
+  const n = new Date();
   for (const it of sched) {
-    if (it.time !== hm || it.last === key || (it.days.length && !it.days.includes(n.getDay()))) continue;
+    const [hh, mm] = String(it.time || "").split(":").map(Number), at = new Date(n); at.setHours(hh, mm, 0, 0);
+    const key = today() + " " + it.time, late = +n - +at;     // 다른 방송·잠든 탭 때문에 늦어도 5분 안이면 내보냄
+    if (isNaN(late) || late < 0 || late > 5 * 60000 || +at < schedSince || it.last === key || (it.days.length && !it.days.includes(n.getDay()))) continue;
+    if (running) break;
     it.last = key; ls.set("sched", sched);
     const keep = JSON.parse(JSON.stringify(S));
     Object.assign(S, it.snap); S.__sched = true;
     await run(true); S.__sched = false;
     S = Object.assign(keep, { }); renderAll();
   }
-}, 10000);
+}, 5000);
 
 // ================= 방송 기록 =================
 let hist = ls.get("hist", []);
 const HK = { cd: ["⏱ 카운트다운", "#7c3aed", "#f5f3ff"], air: ["📢 방송", "#c2410c", "#fff7ed"], sched: ["⏰ 예약 방송", "#15803d", "#f0fdf4"], file: ["💾 파일 저장", "#3730a3", "#eef2ff"], stop: ["■ 중단", "#6b7280", "#f3f4f6"] };
 function addHistory(kind = "air", extra = "") {          // 방송 · 예약 방송 · 파일 저장 · 중단 모두 기록 (최근 200개)
   const t = curT();
-  hist.unshift({ at: new Date().toLocaleString("ko-KR"), kind, extra, label: S.__label || `${t.icon} ${t.name}`, texts: { ...S.texts }, langs: { ...S.langs } });
+  hist.unshift({ at: new Date().toLocaleString("ko-KR"), ts: Date.now(), kind, extra, label: S.__label || `${t.icon} ${t.name}`, texts: { ...S.texts }, langs: { ...S.langs } });
   hist = hist.slice(0, 200); ls.set("hist", hist); renderHist(); renderRoomHist();
+}
+function histTime(h) {                                   // 기록 시각 (숫자) — "2026. 10. 10. 오후 3:04:05" 도 읽음
+  if (h.ts) return h.ts;
+  const m = String(h.at || "").match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})\D+(오전|오후)?\s*(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  if (!m) return 0;
+  let hr = +m[5]; if (m[4] === "오후" && hr < 12) hr += 12; if (m[4] === "오전" && hr === 12) hr = 0;
+  return +new Date(+m[1], +m[2] - 1, +m[3], hr, +m[6], +(m[7] || 0));
 }
 function renderHist() {
   const box = $("hList"); box.innerHTML = "";
@@ -2595,22 +2842,23 @@ function boardRender(flash) {
 }
 function boardOpen() {
   const w = window.open(location.href.split("#")[0].split("?")[0] + "?board", "onair_board", "width=1100,height=700");
-  if (!w) { toast("팝업이 막혔습니다 — 주소창 오른쪽에서 팝업을 허용해 주세요"); return; }
+  if (!w) { toast(POPUP_MSG); return; }
   toast("🖥 번호판 창을 TV·모니터로 끌어다 놓고, 화면을 한 번 누르면 전체 화면이 됩니다");
 }
 window.addEventListener("storage", e => { if (e.key === "onair_board") boardRender(true); });   // 다른 창(방송 PC)에서 부른 번호
-$("board").onclick = () => { try { document.fullscreenElement ? document.exitFullscreen().catch(() => {}) : document.documentElement.requestFullscreen?.()?.catch?.(() => {}); } catch (e) {} };
+$("board").onclick = () => { if (BOARD) { try { navigator.wakeLock?.request("screen").then(l => { boardOpen.l = l; }).catch(() => {}); } catch (e) {} } try { document.fullscreenElement ? document.exitFullscreen().catch(() => {}) : document.documentElement.requestFullscreen?.()?.catch?.(() => {}); } catch (e) {} };
 if (BOARD) {                                             // 번호판 전용 창
   document.body.classList.add("boardOnly"); $("board").hidden = false; document.title = "🍽 호출 번호판 — 온에어"; ls.set("seenHelp", true);
   const tick = () => { const d = new Date(); $("bdClock").textContent = `${d.getHours() < 12 ? "오전" : "오후"} ${d.getHours() % 12 || 12}:${pad2(d.getMinutes())}`; };
   tick(); setInterval(tick, 10000); boardRender(false);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && boardOpen.l) { try { navigator.wakeLock?.request("screen").then(l => { boardOpen.l = l; }).catch(() => {}); } catch (e) {} } });
 }
 
 // ================= 📱 손님 휴대폰 알림 (QR · ntfy.sh 중계) =================
 const RELAY = "https://ntfy.sh/", PUBLIC_URL = "https://s95722462-cell.github.io/ONAIR/";
 function shopId() {                                       // 매장 코드: 아무도 짐작할 수 없는 값 (처음 한 번 만들고 저장)
   let id = ls.get("shopId", "");
-  if (!id) { const a = new Uint8Array(12); crypto.getRandomValues(a); id = [...a].map(b => b.toString(36).padStart(2, "0")).join("").slice(0, 20); ls.set("shopId", id); }
+  if (!id) { const a = new Uint8Array(12); if (window.crypto?.getRandomValues) crypto.getRandomValues(a); else a.forEach((_, i) => (a[i] = Math.floor(Math.random() * 256))); id = [...a].map(b => b.toString(36).padStart(2, "0")).join("").slice(0, 20); ls.set("shopId", id); }
   return id;
 }
 function phonePush(num, kind) {
@@ -2619,11 +2867,14 @@ function phonePush(num, kind) {
 }
 let ackES = null, ackSeen = new Set();
 function shopListen() {                                   // ↩ 손님 '확인했어요' 받기 → 그 번호 방송 멈춤
-  if (BOARD || WAIT || !ls.get("shopId", "") || ackES) return;
+  if (BOARD || WAIT || !ls.get("shopId", "") || ackES || typeof EventSource !== "function") return;
   ackES = new EventSource(RELAY + "onair-" + shopId() + "/sse?since=" + Math.floor(Date.now() / 1000));
+  ackES.onerror = () => { if (ackES && ackES.readyState === 2) { ackES = null; setTimeout(shopListen, 15000); } };   // 끊기면 15초 뒤 다시 (보통은 브라우저가 알아서 다시 연결)
   ackES.onmessage = e => {
     try {
       const d = JSON.parse(e.data); if (d.event !== "message" || ackSeen.has(d.id)) return; ackSeen.add(d.id);
+      if (ackSeen.size > 500) ackSeen.delete(ackSeen.values().next().value);   // 하루 종일 켜 두어도 메모리가 늘지 않게
+      if (d.time && d.time * 1000 < Date.now() - 15 * 60000) return;            // 다시 연결할 때 오는 오래된 확인은 무시
       const [k, n] = String(d.message).split("|"); if (k !== "ack") return;
       const cur = curT().f.includes("num") && ((S.vals.num || "").trim() || "1") === n;
       if (running && cur) { stop(); toast(`✅ ${n}번 고객님이 휴대폰에서 확인했습니다 — 방송을 멈췄습니다`); }
@@ -2650,8 +2901,8 @@ $("qrSign").onclick = async () => {                       // 🪧 카운터 안�
   try { await loadQR(); const box = document.createElement("div"); new QRCode(box, { text: waitUrl(""), width: 600, height: 600, correctLevel: QRCode.CorrectLevel.M }); img = box.querySelector("canvas")?.toDataURL() || box.querySelector("img")?.src || ""; }
   catch (e) { toast("QR 그리기 도구를 불러오지 못했습니다 (인터넷 연결 확인)"); return; }
   const shop = (S.apt || "").replace(/</g, "&lt;"), w = window.open("", "_blank", "width=620,height=900");
-  if (!w) { toast("팝업이 막혔습니다 — 주소창 오른쪽에서 팝업을 허용해 주세요"); return; }
-  w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>카운터 안내판</title>
+  if (!w) { toast(POPUP_MSG); return; }
+  w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=620"><title>카운터 안내판</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>@page{size:A5 portrait;margin:0}*{box-sizing:border-box}html,body{margin:0}body{font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif;color:#1c1917;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .pg{width:148mm;height:210mm;padding:11mm 11mm 9mm;display:flex;flex-direction:column;align-items:center;text-align:center;background:#fff7ed;border:0}
@@ -2667,13 +2918,13 @@ li i{display:block;font-style:normal;width:8mm;height:8mm;line-height:8mm;margin
 <div class="qr"><img src="${img}" alt="QR"></div>
 <ol><li><i>1</i>휴대폰 카메라로<br>QR 찍기<small>Scan the QR</small></li><li><i>2</i>영수증의<br>주문 번호 입력<small>Enter your order no.</small></li><li><i>3</i>🔔 알림 받기<br>누르고 기다리기<small>Tap & wait</small></li></ol>
 <div class="note">⚠️ 알림이 울리려면 <b>그 화면을 켜 둔 채</b> 기다려 주세요.<br>Please keep the screen open while you wait.</div>
-</div><script>document.fonts.ready.then(() => setTimeout(() => print(), 300))<\/script></body></html>`);
+</div><script>(document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => print(), 300))<\/script></body></html>`);
   w.document.close();
 };
 $("qrPrint").onclick = () => {
   const img = $("qrBox").querySelector("img")?.src || $("qrBox").querySelector("canvas")?.toDataURL(); if (!img) return;
-  const w = window.open("", "_blank", "width=500,height=700"); if (!w) { toast("팝업이 막혔습니다"); return; }
-  w.document.write(`<!doctype html><meta charset="utf-8"><title>알림 QR</title><body style="font-family:sans-serif;text-align:center;padding:30px"><h2>${$("qrTitle").textContent}</h2><img src="${img}" style="width:300px;height:300px"><p style="font-size:18px">휴대폰 카메라로 찍으면<br>메뉴가 준비됐을 때 알려 드립니다 🔔</p><p style="color:#888">Scan to get notified when your order is ready</p><script>setTimeout(() => print(), 400)<\/script></body>`); w.document.close();
+  const w = window.open("", "_blank", "width=500,height=700"); if (!w) { toast(POPUP_MSG); return; }
+  w.document.write(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>알림 QR</title><body style="font-family:sans-serif;text-align:center;padding:30px"><h2>${$("qrTitle").textContent}</h2><img src="${img}" style="width:300px;height:300px"><p style="font-size:18px">휴대폰 카메라로 찍으면<br>메뉴가 준비됐을 때 알려 드립니다 🔔</p><p style="color:#888">Scan to get notified when your order is ready</p><script>setTimeout(() => print(), 400)<\/script></body>`); w.document.close();
 };
 if (WAIT) {                                               // 📱 손님 휴대폰: 대기 화면
   document.body.classList.add("waitOnly"); $("waitp").hidden = false; document.title = "🔔 주문 번호 알림"; ls.set("seenHelp", true);
@@ -2689,12 +2940,15 @@ if (WAIT) {                                               // 📱 손님 휴대�
     try { if (Notification.permission === "granted") navigator.serviceWorker?.ready.then(r => r.showNotification("🔔 " + num + "번 " + msg, { body: "Your order is ready!", tag: "onair", renotify: true, vibrate: [500, 200, 500] })).catch(() => {}); } catch (e) {}
   };
   const listen = () => {
-    es?.close(); es = new EventSource(RELAY + "onair-" + encodeURIComponent(WAIT) + "/sse?since=" + since);
+    es?.close(); clearTimeout(listen.t);
+    if (typeof EventSource !== "function") { $("wMsg").innerHTML = "⚠️ 이 브라우저에서는 알림을 받을 수 없습니다.<br>휴대폰 기본 브라우저(사파리·크롬·삼성 인터넷)로 열어 주세요."; return; }
+    es = new EventSource(RELAY + "onair-" + encodeURIComponent(WAIT) + "/sse?since=" + since);
+    es.onerror = () => { if (es && es.readyState === 2) listen.t = setTimeout(listen, 5000); };   // 연결이 닫히면 5초 뒤 다시
     es.onmessage = e => { try { const d = JSON.parse(e.data); if (d.event !== "message" || seen.has(d.id)) return; seen.add(d.id); const [n, kind] = String(d.message).split("|"); if (n.trim() === num) ready(kind); } catch (er) {} };
   };
   $("wGo").onclick = () => {
     if (!num) { num = $("wNum").value.trim(); if (!num) { $("wNum").focus(); return; } $("wAsk").hidden = true; $("wBig").hidden = false; $("wBig").textContent = num; }
-    audio(); try { ctx.resume(); } catch (e) {}           // 소리 잠금 풀기 (한 번 눌러야 소리가 남)
+    audio();                                              // 소리 잠금 풀기 (한 번 눌러야 소리가 남)
     navigator.vibrate?.(60);
     try { navigator.wakeLock?.request("screen").catch(() => {}); } catch (e) {}
     try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(() => {}); } catch (e) {}
@@ -2733,13 +2987,18 @@ $("exCar").onclick = () => {                             // 🧪 💾 예시: �
   S.place = "apt"; S.tpl = "car"; S.edited = {}; S.vals = { ...S.vals, car: S.vals.car || "12가 3456" };
   save(); renderPlaces(); renderTpls(); renderFields(); regen(true); aptLabel();
   $("recBtn").scrollIntoView({ behavior: "smooth", block: "center" });
-  $("recBtn").animate([{ boxShadow: "0 0 0 0 #6366f1" }, { boxShadow: "0 0 0 10px #6366f100" }], { duration: 900, iterations: 3 });
+  $("recBtn").animate?.([{ boxShadow: "0 0 0 0 #6366f1" }, { boxShadow: "0 0 0 10px #6366f100" }], { duration: 900, iterations: 3 });
   toast("🚗 차량 이동을 골랐습니다 — 차량 번호를 확인하고 💾 음성 파일로 저장을 누르세요");
 };
 
 $("oaPre").onclick = () => $("preBtn").click();
 $("oaAir").onclick = () => $("airBtn").click();
 $("langOff").onclick = () => { ls.set("showOff", !ls.get("showOff", false)); renderLangs(); };
+function a11yFix() { document.querySelectorAll("button[title]:not([aria-label])").forEach(b => { if (!/[가-힣A-Za-z0-9]/.test(b.textContent)) b.setAttribute("aria-label", b.title); }); }
+try { new MutationObserver(() => { if (!a11yFix.q) a11yFix.q = requestAnimationFrame(() => { a11yFix.q = 0; a11yFix(); }); }).observe(document.body, { childList: true, subtree: true }); } catch (e) {}
+document.addEventListener("keydown", e => {               // Esc: 방송실 모드 나가기 (창이 떠 있으면 창 먼저)
+  if (e.key === "Escape" && !$("room").hidden && !document.querySelector("dialog[open]")) roomOpen(false);
+});
 function renderAll() {
   renderPlaces(); renderTpls(); renderDict(); renderCd(); bkInfo(); renderPacks(); renderFields(); renderLangs();
   [...$("mood").children].forEach(b => b.classList.toggle("on", b.dataset.v === S.mood));
@@ -2753,9 +3012,10 @@ function renderAll() {
 renderDays(); renderSched(); renderHist();
 regen();                                                 // 직접 고치지 않은 문장은 최신 템플릿으로 다시 만듦
 renderAll(); loadVoices(); aptLabel();
+if (!HAS_TTS) { ttsWarn(true); if (!BOARD && !WAIT) $("now").textContent = NO_TTS_MSG; } else setTimeout(() => { if (!voices.length) { voices = speechSynthesis.getVoices(); if (voices.length) loadVoices(); else ttsWarn(true); } }, 4000);
 shopListen();                                            // QR을 쓰는 매장이면 손님 확인을 들음
 if (!BOARD && !WAIT && ls.get("roomStart", false)) roomOpen(true);   // 다음에도 방송실로 시작
-Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 800))]).then(() => document.documentElement.classList.remove("boot"));   // 글꼴 준비 뒤 한 번에 보이기 (커졌다 작아짐 방지)
+Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 800))]).then(() => document.documentElement.classList.remove("boot"));   // 글꼴 준비 뒤 한 번에 보이기 (커졌다 작아짐 방지)
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});   // 인터넷 주소로 열면 홈 화면 앱·오프라인
 })();
 </script>
