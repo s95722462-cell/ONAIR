@@ -256,8 +256,12 @@
       </section>
 
       <section class="card" style="border-color:#c7d2fe;background:#f8faff">
-        <h2>④ 음성 파일 만들기</h2>
-        <p class="muted" style="margin:-4px 0 10px;line-height:1.6">미리 듣기·방송 시작과는 <b>따로 동작</b>합니다. 아래 버튼 하나만 누르면 방송을 한 번 틀면서 녹음해 <b>MP3·WAV 파일</b>로 저장합니다. 방송 장비에 넣거나 카톡으로 보낼 때 쓰세요.</p>
+        <h2>④ 안내방송 파일로 만들기 (USB)</h2>
+        <p class="muted" style="margin:-4px 0 8px;line-height:1.6">안내방송을 할 내용을 선택하고 <b>💾 음성 파일로 저장</b>을 누르면 <b>MP3·WAV 파일</b>이 만들어집니다. USB에 담아 방송 앰프·스피커 같은 <b>외부 장비에서 실행</b>할 수 있습니다.</p>
+        <div style="margin:0 0 10px;padding:10px 12px;border-radius:10px;background:#eef2ff;font-size:14px;line-height:1.7">
+          <b>예시)</b> ① 방송 종류에서 <b>🚗 차량 이동</b> 선택 → 차량 번호 입력 → <b>💾 음성 파일로 저장</b> 클릭하세요.
+          <button class="mini" id="exCar" style="margin-left:4px;border-color:#c7d2fe;background:#fff;color:#3730a3;font-weight:700">🧪 차량 이동 예시 선택</button>
+        </div>
         <div class="save" style="margin-top:0">
           <button class="big" id="recBtn" title="방송을 음성 파일로 저장 (PC의 Edge·Chrome)" style="background:#eef2ff;border-color:#c7d2fe;color:#3730a3">💾 음성 파일로 저장</button>
           <select id="recFmt" title="파일 형식"><option value="mp3">MP3</option><option value="wav">WAV</option></select>
@@ -384,7 +388,7 @@
     <li>날짜·시간 같은 <b>빈칸</b>을 채우면 <b>② 방송 문장</b>이 4개 국어로 자동으로 만들어집니다. 문장은 직접 고쳐도 됩니다.</li>
     <li><b>③ ▶ 미리 듣기</b>로 확인하고 <b>📢 방송 시작</b>을 누릅니다. 목소리·빠르기·차임·배경 음악은 ③에서 바꿉니다.</li>
     <li>자주 쓰는 방송은 <b>⭐ 내 방송</b>으로 저장하고, 매일 하는 방송은 <b>⑤ 예약</b>·<b>📚 방송 묶음</b>으로 묶어 두세요.</li>
-    <li>게시판용 공지는 <b>📄 공지문</b>, 카톡은 <b>💬 카톡 복사</b>, 방송 장비용 파일은 <b>④ 음성 파일</b>로 만듭니다.</li>
+    <li>게시판용 공지는 <b>📄 공지문</b>, 카톡은 <b>💬 카톡 복사</b>, USB에 담을 방송 파일은 <b>④ 안내방송 파일로 만들기</b>로 만듭니다.</li>
   </ol>
   <div class="muted" style="font-size:13px;line-height:1.6">💡 가장 자연스러운 목소리는 <b>PC의 Microsoft Edge</b>에서 나옵니다. 모든 내용은 이 PC 브라우저에 저장되니, 가끔 <b>💼 백업</b>을 해 두세요.</div>
   <div class="btns" style="margin-top:12px"><button class="ok" id="helpOk">시작하기</button></div>
@@ -2310,6 +2314,13 @@ $("hCsv").onclick = () => {
 $("hClear").onclick = () => { if (confirm("방송 기록을 모두 지울까요?")) { hist = []; ls.set("hist", hist); renderHist(); } };
 
 // ================= 시작 =================
+$("exCar").onclick = () => {                             // 🧪 ④ 예시: 차량 이동 → 음성 파일로 저장
+  S.place = "apt"; S.tpl = "car"; S.edited = {}; S.vals = { ...S.vals, car: S.vals.car || "12가 3456" };
+  save(); renderPlaces(); renderTpls(); renderFields(); regen(true); aptLabel();
+  $("recBtn").scrollIntoView({ behavior: "smooth", block: "center" });
+  $("recBtn").animate([{ boxShadow: "0 0 0 0 #6366f1" }, { boxShadow: "0 0 0 10px #6366f100" }], { duration: 900, iterations: 3 });
+  toast("🚗 차량 이동을 골랐습니다 — 차량 번호를 확인하고 💾 음성 파일로 저장을 누르세요");
+};
 $("exFill").onclick = () => {                            // 🧪 사용법 예시: 내일 101동·102동 단수
   const d = new Date(Date.now() + 864e5), iso = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
   S.place = "apt"; S.tpl = "water"; S.edited = {}; S.vals = { ...S.vals, date: iso, start: "10:00", end: "15:00", place: "101동, 102동" };
