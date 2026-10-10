@@ -11,7 +11,10 @@
 <meta name="apple-mobile-web-app-title" content="온에어">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='16' fill='%23ea580c'/%3E%3Ccircle cx='32' cy='30' r='9' fill='%23fff'/%3E%3Cpath d='M16 30a16 16 0 0 1 32 0M10 30a22 22 0 0 1 44 0' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' opacity='.85'/%3E%3Crect x='29' y='38' width='6' height='14' rx='3' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>html.boot body { opacity: 0; } html body { transition: opacity .18s; }</style>
+<script>document.documentElement.classList.add("boot"); setTimeout(() => document.documentElement.classList.remove("boot"), 800);   // 글꼴이 늦어도 0.8초 뒤에는 보이기</script>
 <style>
   :root {
     --bg: #fbf7f2; --card: #ffffff; --line: #eee4d8; --ink: #2b2118; --dim: #8a7a6a; --accent: #ea580c; --accent2: #c2410c;
@@ -2698,6 +2701,7 @@ regen();                                                 // 직접 고치지 않
 renderAll(); loadVoices(); aptLabel();
 shopListen();                                            // QR을 쓰는 매장이면 손님 확인을 들음
 if (!BOARD && !WAIT && ls.get("roomStart", false)) roomOpen(true);   // 다음에도 방송실로 시작
+Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 800))]).then(() => document.documentElement.classList.remove("boot"));   // 글꼴 준비 뒤 한 번에 보이기 (커졌다 작아짐 방지)
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});   // 인터넷 주소로 열면 홈 화면 앱·오프라인
 })();
 </script>
