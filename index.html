@@ -73,6 +73,9 @@
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: 0 1px 2px #0000000a; min-width: 0; }
   .card h2 { margin: 0 0 12px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
   .card h2 .sp { flex: 1; }
+  .card h2 .mini, .card h2 summary.mini { white-space: nowrap; }
+  #markMenu .menu { right: auto; left: 50%; transform: translateX(-50%); }   /* 🎚 억양 메뉴: 버튼 아래 가운데 */
+  @media (max-width: 600px) { #markMenu .ml { display: none; } .card h2 { gap: 6px; } .card h2 .mini { padding: 0 8px; } }
   .muted { color: var(--dim); font-size: 13px; }
 
   .tpls { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
@@ -327,7 +330,10 @@
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
       <section class="card">
-        <h2>② 방송 문장 <span class="sp"></span><button class="mini" id="regen" title="빈칸 내용으로 다시 만들기">↻ 다시 만들기</button>
+        <h2>② 방송 문장 <span class="sp"></span><details class="more" id="markMenu"><summary class="mini" aria-label="억양 표시" title="문장 칸에서 글자를 고른 뒤 누르면 억양 표시를 씌웁니다 (읽을 때만 적용)">🎚<span class="ml"> 억양</span></summary><div class="menu">
+            <button data-mk="강조">🔆 [강조] 또렷하고 천천히</button><button data-mk="천천히">🐢 [천천히]</button><button data-mk="빠르게">🐇 [빠르게]</button>
+            <button data-mk="높게">⬆ [높게]</button><button data-mk="낮게">⬇ [낮게]</button><button data-mk="작게">🔉 [작게]</button>
+            <button data-mk="쉼">⏸ [쉼] 0.5초 쉬기</button><button data-mk="긴쉼">⏸⏸ [긴쉼] 1초 쉬기</button><button data-mk="x">🧹 이 칸의 표시 모두 지우기</button></div></details><button class="mini" id="regen" title="빈칸 내용으로 다시 만들기">↻ 다시 만들기</button>
           <details class="more"><summary class="mini">⋯ 더 보기</summary><div class="menu">
             <button id="mineSave" title="지금 문장을 버튼으로 고정해 두기">⭐ 내 방송으로 저장</button>
             <button id="mNotice">📄 공지문 인쇄</button><button id="mKakao">💬 카톡 복사</button><button id="mAddLang">🌐 언어 추가</button></div></details></h2>
@@ -341,9 +347,11 @@
         <div class="row"><label>목소리 크기</label><input type="range" id="vol" aria-label="목소리 크기" min="0.3" max="1" step="0.05"><span id="volL" style="width:46px"></span></div>
         <div class="row"><label>차임 (딩동댕동)</label><label class="switch"><input type="checkbox" id="chimeOn" aria-label="차임 켜기"><span></span></label>
           <select id="chimeType" aria-label="차임 종류" class="mini" style="height:32px"><option value="classic">딩동댕동 (기본)</option><option value="soft">부드러운 실로폰</option><option value="westminster">웨스트민스터</option></select></div>
-        <details class="adv" id="advSet"><summary>⚙ 자세히 설정 <span class="muted">말투 · 반복 · 남·여 번갈아 · 목소리 높이 · 자동 다듬기</span></summary>
+        <details class="adv" id="advSet"><summary>⚙ 자세히 설정 <span class="muted">말투 · 성우 억양 · 반복 · 남·여 번갈아 · 목소리 높이 · 자동 다듬기</span></summary>
         <div class="row"><label>말투</label>
           <div class="seg" id="mood"><button data-v="calm">차분하게</button><button data-v="bright">밝게</button><button data-v="urgent">긴급</button></div></div>
+        <div class="row"><label>🎙 성우 억양</label><label class="switch" title="시간·날짜·번호·장소를 조금 천천히 또렷하게, 문장 끝은 차분하게 읽음"><input type="checkbox" id="proOn" aria-label="성우 억양"><span></span></label>
+          <span class="muted" style="font-size:12.5px">시간·날짜·번호를 조금 천천히 또렷하게, 문장 끝은 차분하게 (끄면 문장을 한 번에 읽음) · ② <b>🎚 억양</b>으로 직접 표시</span></div>
         <div class="row"><label>자동 다듬기</label><label class="switch" title="방송·미리 듣기·파일 저장 때 직접 쓴 한국어 문장에 쉼표를 알아서 넣음"><input type="checkbox" id="autoPol" aria-label="자동 다듬기"><span></span></label>
           <span class="muted" style="font-size:12.5px">직접 쓰거나 고친 한국어 문장을, 방송할 때 쉼표를 넣어 읽음 (화면 글자는 그대로)</span></div>
         <div class="row"><label>반복</label><div class="seg" id="rep"><button data-v="1">1번</button><button data-v="2">2번</button><button data-v="3">3번</button></div></div>
@@ -501,7 +509,7 @@
 <dialog id="manDlg" aria-labelledby="manTitle">
   <div class="mhead"><h3 id="manTitle" tabindex="-1" autofocus>📘 온에어 사용 설명서</h3><button class="mini" id="manPrint" title="설명서 인쇄">🖨 인쇄</button><button class="mclose" id="manClose" aria-label="설명서 닫기">✕</button></div>
   <nav class="mtoc" id="manToc" aria-label="설명서 차례">
-    <button data-to="m-start">처음 시작</button><button data-to="m-pick">장소·방송 고르기</button><button data-to="m-edit">문장 고치기</button><button data-to="m-voice">목소리</button><button data-to="m-air">미리 듣기·방송</button><button data-to="m-room">방송실 모드</button><button data-to="m-shop">식당·카페 번호</button><button data-to="m-auto">예약·카운트다운·묶음</button><button data-to="m-file">USB 파일</button><button data-to="m-paper">공지문·카톡</button><button data-to="m-log">기록</button><button data-to="m-bk">백업</button><button data-to="m-faq">자주 묻는 질문</button><button data-to="m-priv">개인정보</button>
+    <button data-to="m-start">처음 시작</button><button data-to="m-pick">장소·방송 고르기</button><button data-to="m-edit">문장 고치기</button><button data-to="m-voice">목소리</button><button data-to="m-pro">성우 억양</button><button data-to="m-air">미리 듣기·방송</button><button data-to="m-room">방송실 모드</button><button data-to="m-shop">식당·카페 번호</button><button data-to="m-auto">예약·카운트다운·묶음</button><button data-to="m-file">USB 파일</button><button data-to="m-paper">공지문·카톡</button><button data-to="m-log">기록</button><button data-to="m-bk">백업</button><button data-to="m-faq">자주 묻는 질문</button><button data-to="m-priv">개인정보</button>
   </nav>
   <div class="mbody">
     <section id="m-start"><h4>🚀 처음 시작하기</h4>
@@ -532,6 +540,14 @@
         <li><b>아이폰·아이패드</b>는 어떤 브라우저든 애플 목소리만 씁니다. 한국어는 <b>유나</b>가 정상입니다. 더 좋은 소리: 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어 → <b>유나(고음질)</b> 내려받기.</li>
         <li>안드로이드 휴대폰은 Google 목소리를 씁니다.</li>
         <li>이름·약자를 엉뚱하게 읽으면 ⚙ 설정 → <b>📖 발음 사전</b>에 "쓰는 말 → 읽는 말"을 넣으세요. 화면 글자는 그대로이고 읽을 때만 바뀝니다.</li>
+      </ul></section>
+    <section id="m-pro"><h4>🎙 성우 억양 · 🎚 억양 표시</h4>
+      <ul>
+        <li><b>성우 억양</b>(기본 켜짐, ③ ⚙ 자세히 설정): 시간·날짜·번호·층·호수·차량 번호·빈칸에 넣은 이름을 <b>조금 천천히, 조금 높게</b> 또렷이 읽고, 문장 끝은 차분하게 내립니다. 첫 인사는 조금 밝게 읽습니다. 끄면 예전처럼 문장을 한 번에 읽습니다.</li>
+        <li>직접 정하려면 문장 칸에서 글자를 <b>마우스로 고른 뒤</b> ② 위 <b>🎚 억양</b>에서 고르세요: <b>[강조]…[/]</b> 또렷하게 · <b>[천천히]…[/]</b> · <b>[빠르게]…[/]</b> · <b>[높게]…[/]</b> · <b>[낮게]…[/]</b> · <b>[작게]…[/]</b> · <b>[쉼]</b> 0.5초 · <b>[긴쉼]</b> 1초. 직접 쳐 넣어도 됩니다.</li>
+        <li>예: <code>[강조]14번[/] 고객님, 주문하신 메뉴가 준비되었습니다.[긴쉼] 감사합니다.</code></li>
+        <li>표시는 <b>읽을 때만</b> 쓰입니다. 공지문 인쇄·카톡 복사·자동 번역·기록·방송실 화면에는 표시 없이 나옵니다. 짝이 안 맞는 표시는 무시하고 글만 읽습니다.</li>
+        <li>Edge 온라인 목소리는 조각 사이에 약 0.4초 틈이 생겨, 표시를 너무 잘게 나누면 끊겨 들립니다. 꼭 필요한 곳에만 쓰세요.</li>
       </ul></section>
     <section id="m-air"><h4>▶ 미리 듣기 · 📢 방송</h4>
       <ul>
@@ -922,12 +938,12 @@ const T = [
     ja: "{date}、{range}、貯水槽清掃のため、{place}は断水となります。必要なお水は、事前にご用意ください。",
     zh: "因清洗水箱，{date}{range}，{place}将暂停供水。请提前储备好所需用水。" },
   { id: "power", icon: "⚡", name: "정전", f: ["date", "start", "end", "place", "note"],
-    ko: "{place|는}, {date}, {range}, 전기 설비 점검으로 정전됩니다. 이 시간에는 엘리베이터와 급수 펌프도 멈추니, 이용에 유의해 주시기 바랍니다.",
+    ko: "{place|는}, {date}, {range}, 전기 설비 점검으로 정전됩니다. 이 시간에는, 엘리베이터와 급수 펌프도 멈추니, 이용에 유의해 주시기 바랍니다.",
     en: "Due to electrical maintenance, there will be a power outage for {place} on {date}, {range}. Elevators and water pumps will also stop during this time, so please plan accordingly.",
     ja: "{date}、{range}、電気設備点検のため、{place}は停電となります。この時間はエレベーターと給水ポンプも停止しますので、ご注意ください。",
     zh: "因电力设备检修，{date}{range}，{place}将停电。届时电梯和供水泵也将停止运行，请大家提前做好准备。" },
   { id: "elev", icon: "🛗", name: "엘리베이터 점검", f: ["date", "start", "end", "place", "note"], kind: "elev",
-    ko: "{place} 엘리베이터는, {date}, {range}, 정기 점검으로 운행이 중지됩니다. 이용에 불편을 드려, 죄송합니다.",
+    ko: "{place} 엘리베이터는, {date}, {range}, 정기 점검으로 운행이 중지됩니다. 이용에 불편을 드려 죄송합니다.",
     en: "The elevators in {place} will be out of service on {date}, {range}, for regular inspection. We apologize for the inconvenience.",
     ja: "{date}、{range}、定期点検のため、{place}のエレベーターは運転を停止いたします。ご不便をおかけし、申し訳ございません。",
     zh: "{date}{range}，{place}的电梯将进行定期检修，暂停运行。给您带来不便，敬请谅解。" },
@@ -937,7 +953,7 @@ const T = [
     ja: "{date}、{range}、{place}を対象に定期消毒を実施いたします。担当者が伺いましたら、ドアを開けていただきますようお願いいたします。",
     zh: "{date}{range}，将对{place}进行定期消毒。工作人员上门时，请您开门配合。" },
   { id: "move", icon: "🚚", name: "이사 안내", f: ["mvunit", "date", "start", "end", "spot", "note"],
-    ko: "{date}, {mvunit} 세대의 이사가 예정되어 있습니다. 차량은, {between}에는, {spot} 주차를 자제 부탁드립니다. 이웃 주민 여러분의, 너른 양해 부탁드립니다.",
+    ko: "{date}, {mvunit} 세대의 이사가 예정되어 있습니다. {between}에는, {spot}에 주차를 자제해 주시기 바랍니다. 이웃 주민 여러분께, 너른 양해를 부탁드립니다.",
     en: "A move is scheduled for {mvunit} on {date}, {range}. During this time, please refrain from parking {spot}. Thank you for your understanding.",
     ja: "{date}、{range}、{mvunit}の引っ越しが予定されております。この時間帯は、{spot}への駐車をお控えください。ご理解のほど、よろしくお願いいたします。",
     zh: "{date}{range}，{mvunit}将进行搬家。在此期间，请勿在{spot}停车。敬请各位邻居谅解。" },
@@ -957,7 +973,7 @@ const T = [
     ja: "紙類の分別排出は、毎週日曜日のみ可能です。ほかの曜日には紙類を出さず、日曜日にお出しください。",
     zh: "纸类垃圾仅限每周日分类投放。其他日子请不要投放纸类，请在周日投放。" },
   { id: "fireinsp", icon: "🧑‍🚒", name: "소방 점검", f: ["date", "start", "end", "place", "note"],
-    ko: "{date}, {range}, {place|를} 대상으로, 소방 시설 정기 점검을 실시합니다. 점검 중에는 화재 경보가 울릴 수 있으니 놀라지 마시고, 점검원이 세대를 방문하면, 협조해 주시기 바랍니다.",
+    ko: "{date}, {range}, {place|를} 대상으로, 소방 시설 정기 점검을 실시합니다. 점검 중에는, 화재 경보가 울릴 수 있으니, 놀라지 마시기 바랍니다. 점검원이 세대를 방문하면, 협조해 주십시오.",
     en: "A regular inspection of fire safety equipment will be carried out for {place} on {date}, {range}. The fire alarm may sound during the inspection, so please do not be alarmed, and kindly cooperate when the inspector visits your home.",
     ja: "{date}、{range}、{place}を対象に、消防設備の定期点検を実施いたします。点検中に火災警報が鳴る場合がございますが、慌てずに、点検員がご訪問の際はご協力をお願いいたします。",
     zh: "{date}{range}，将对{place}的消防设施进行定期检查。检查期间火灾警报可能会响起，请不要惊慌；检查人员上门时，请予以配合。" },
@@ -972,17 +988,17 @@ const T = [
     ja: "今月の管理費のお支払い期限は{date}です。期限内のお支払いをお願いいたします。",
     zh: "本月物业费缴纳截止日期为{date}。请按时缴纳。" },
   { id: "works", icon: "🔨", name: "공사 소음", f: ["unit", "date", "date2", "note"],
-    ko: "{unit} 세대 내부 공사로, {daterange}, 소음이 발생할 수 있습니다. 이웃 주민 여러분의, 너른 양해 부탁드립니다.",
+    ko: "{unit} 세대의 내부 공사로, {daterange}, 소음이 발생할 수 있습니다. 이웃 주민 여러분께, 너른 양해를 부탁드립니다.",
     en: "Due to interior renovation at {unit}, there may be construction noise {daterange}. We kindly ask for your understanding.",
     ja: "{unit}の室内工事のため、{daterange}、騒音が発生する場合がございます。ご理解のほど、よろしくお願いいたします。",
     zh: "因{unit}进行室内装修，{daterange}可能会产生噪音，敬请各位邻居谅解。" },
   { id: "quiet", icon: "🤫", name: "층간소음 배려", f: ["note"],
-    ko: "늦은 시간, 뛰거나 큰 소리를 내는 행동, 가구를 끄는 소리는, 이웃에게 큰 불편이 됩니다. 서로 배려하는 마음으로, 조용한 생활을 부탁드립니다.",
+    ko: "늦은 시간에, 뛰거나 큰 소리를 내는 일, 가구를 끌어 옮기는 소리는, 이웃에게 큰 불편이 됩니다. 서로 배려하는 마음으로, 조용한 생활을 부탁드립니다.",
     en: "Running, loud noises, and dragging furniture late at night can greatly disturb your neighbors. Please be considerate and keep noise to a minimum.",
     ja: "夜遅くに走ったり、大きな音を出したり、家具を引きずったりすると、ご近所の大きな迷惑になります。お互いを思いやり、静かな生活をお願いいたします。",
     zh: "深夜跑跳、大声喧哗或拖动家具，都会给邻居带来很大困扰。请大家互相体谅，保持安静。" },
   { id: "event", icon: "🎉", name: "행사 안내", f: ["what", "date", "start", "loc", "note"],
-    ko: "{date}, {range}, {loc}에서, {what} 행사가 열립니다. {aud}의, 많은 참여 바랍니다.",
+    ko: "{date}, {range}, {loc}에서, {what} 행사가 열립니다. {aud}의 많은 참여를 바랍니다.",
     en: "{what} will be held at {loc} on {date}, {range}. We look forward to seeing many of you there.",
     ja: "{date}、{range}、{loc}にて{what}を開催いたします。皆様のご参加をお待ちしております。",
     zh: "{date}{range}，将在{loc}举办{what}。欢迎{aud}踊跃参加。" },
@@ -992,27 +1008,27 @@ const T = [
     ja: "{date}、{range}、{place}を対象に、都市ガスの安全点検を実施いたします。点検員がご訪問の際は、ガスコンロとボイラーの点検にご協力ください。ご不在の場合は、管理事務所までご連絡ください。",
     zh: "{date}{range}，将对{place}进行城市燃气安全检查。检查人员上门时，请配合检查燃气灶和锅炉。如家中无人，请联系物业管理处。" },
   { id: "smoke", icon: "🚭", name: "흡연 자제", f: ["note"],
-    ko: "최근, 베란다와 계단, 화장실에서의 흡연으로, 담배 연기가 이웃 세대로 들어온다는 민원이 늘고 있습니다. 공동 주택에서는, 흡연을 자제해 주시고, 지정된 장소를 이용해 주시기 바랍니다.",
+    ko: "최근, 베란다와 계단, 화장실에서 피운 담배 연기가, 이웃 세대로 들어온다는 민원이 늘고 있습니다. 공동 주택 안에서는, 흡연을 자제해 주시고, 지정된 장소를 이용해 주시기 바랍니다.",
     en: "We have been receiving more complaints about cigarette smoke entering neighboring homes from balconies, stairways, and bathrooms. Please refrain from smoking inside the building, and use the designated smoking area.",
     ja: "最近、ベランダや階段、トイレでの喫煙により、たばこの煙が隣の世帯に入ってくるという苦情が増えております。共同住宅内での喫煙はお控えいただき、指定の場所をご利用ください。",
     zh: "最近，因在阳台、楼梯间和卫生间吸烟，烟味飘进邻居家中的投诉有所增加。请勿在楼内吸烟，请到指定吸烟区吸烟。" },
   { id: "freeze", icon: "❄️", name: "동파 예방", f: ["note"],
-    ko: "한파로, 수도 계량기와 배관이 얼어 터질 수 있습니다. 계량기함은, 헌 옷이나 보온재로 감싸 주시고, 오래 집을 비울 때는, 수돗물을 조금씩 흐르게 틀어 두시기 바랍니다. 보일러도, 외출 모드로 켜 두시기 바랍니다.",
+    ko: "한파로, 수도 계량기와 배관이 얼어 터질 수 있습니다. 계량기함은, 헌 옷이나 보온재로 감싸 주십시오. 오래 집을 비우실 때는, 수돗물을 조금씩 흐르도록 틀어 두시기 바랍니다. 보일러도, 외출 모드로 켜 두시기 바랍니다.",
     en: "Due to the cold wave, water meters and pipes may freeze and burst. Please wrap your water meter box with old clothes or insulation, and leave the tap running slightly if you will be away for a long time. Please also keep your boiler on in away mode.",
     ja: "寒波により、水道メーターや配管が凍結し、破裂するおそれがあります。メーターボックスは古着や保温材で覆い、長時間お留守にされる際は、水道を少し出したままにしてください。ボイラーも外出モードでつけておいてください。",
     zh: "受寒潮影响，水表和水管可能会冻裂。请用旧衣服或保温材料包好水表箱；长时间外出时，请把水龙头开小，让水保持细流。锅炉也请设置为外出模式，保持开启。" },
   { id: "typhoon", icon: "🌀", name: "태풍·호우 대비", f: ["note"],
-    ko: "태풍과 많은 비가 예보되어 있습니다. 창문은 단단히 닫아 주시고, 베란다나 창가의 화분과 물건은, 안으로 옮겨 주시기 바랍니다. 지하 주차장에 주차된 차량은, 침수에 대비해, 지상으로 옮겨 주시기 바랍니다.",
+    ko: "태풍과 많은 비가 예보되어 있습니다. 창문은 단단히 닫아 주시고, 베란다나 창가의 화분과 물건은, 실내로 들여놓아 주시기 바랍니다. 지하 주차장의 차량은, 침수에 대비해, 지상으로 옮겨 주시기 바랍니다.",
     en: "A typhoon and heavy rain are forecast. Please close your windows securely, and bring in flower pots and other items from balconies and windowsills. Vehicles parked in the underground parking lot should be moved above ground in case of flooding.",
     ja: "台風と大雨が予報されています。窓はしっかり閉め、ベランダや窓際の植木鉢や物は、室内に移してください。地下駐車場のお車は、浸水に備えて、地上へ移動してください。",
     zh: "天气预报将有台风和强降雨。请关紧门窗，将阳台和窗边的花盆等物品移到室内。停在地下停车场的车辆，请移至地面，以防被淹。" },
   { id: "pet", icon: "🐕", name: "반려동물 예절", f: ["note"],
-    ko: "반려동물과 함께 외출할 때는, 반드시 목줄을 해 주시고, 배설물은 꼭 치워 주시기 바랍니다. 엘리베이터에서는, 반려동물을 안거나 가까이 붙잡아, 다른 입주민이 놀라지 않도록 배려해 주십시오.",
+    ko: "반려동물과 함께 외출하실 때는, 반드시 목줄을 해 주시고, 배설물은 꼭 치워 주시기 바랍니다. 엘리베이터에서는, 반려동물을 안거나 가까이 붙잡아, 다른 입주민이 놀라지 않도록 배려해 주십시오.",
     en: "When going out with your pet, please always use a leash and clean up after it. In the elevator, please hold your pet or keep it close so that other residents are not startled.",
     ja: "ペットと外出される際は、必ずリードをつけ、ふんは必ず片付けてください。エレベーターでは、ペットを抱くか近くで押さえて、ほかの居住者が驚かないようご配慮ください。",
     zh: "带宠物外出时，请务必系好牵引绳，并及时清理宠物粪便。乘坐电梯时，请抱好宠物或将其拉在身边，以免惊吓其他居民。" },
   { id: "vote", icon: "🗳", name: "동대표 선거·투표", f: ["vote", "date", "start", "end", "vloc", "note"],
-    ko: "{date}, {range}, {vloc}에서, {vote} 투표가 진행됩니다. 우리 아파트의 일을 함께 결정하는 소중한 자리이니, 입주민 여러분의 많은 참여 바랍니다. 신분증을 꼭 지참해 주십시오.",
+    ko: "{date}, {range}, {vloc}에서, {vote|가} 진행됩니다. 우리 아파트의 일을 함께 결정하는 소중한 자리이니, 입주민 여러분의 많은 참여 바랍니다. 신분증을 꼭 지참해 주십시오.",
     en: "Voting for {vote} will take place at {vloc} on {date}, {range}. This is an important opportunity to decide our community's matters together, so we hope many of you will participate. Please be sure to bring your ID.",
     ja: "{date}、{range}、{vloc}にて、{vote}の投票を行います。私たちのマンションのことを一緒に決める大切な機会ですので、皆様のご参加をお願いいたします。身分証明書を必ずお持ちください。",
     zh: "{date}{range}，将在{vloc}进行{vote}投票。这是共同决定小区事务的重要机会，欢迎各位居民踊跃参与。请务必携带身份证件。" },
@@ -1023,17 +1039,17 @@ const T = [
     zh: "如果被困在电梯里，请不要惊慌，按下电梯内的紧急呼叫按钮，通知{sender}。不要强行扒门或试图爬出，请耐心等待救援。电梯内空气充足，请放心。" },
   // ---- 아파트 외 공통: 건물 점검
   { id: "g_power", icon: "⚡", name: "정전 (건물)", f: ["date", "start", "end", "note"],
-    ko: "{date}, {range}, 전기 설비 점검으로, 건물 전체가 정전됩니다. 이 시간에는 엘리베이터와 컴퓨터를 사용할 수 없으니, 미리 저장하고 준비해 주시기 바랍니다.",
+    ko: "{date}, {range}, 전기 설비 점검으로, 건물 전체가 정전됩니다. 이 시간에는, 엘리베이터와 컴퓨터를 사용할 수 없습니다. 작업 중인 자료는, 미리 저장해 두시기 바랍니다.",
     en: "Due to electrical maintenance, there will be a power outage throughout the building on {date}, {range}. Elevators and computers cannot be used during this time, so please save your work and prepare in advance.",
     ja: "{date}、{range}、電気設備点検のため、建物全体が停電となります。この時間はエレベーターとパソコンが使えませんので、事前に保存とご準備をお願いいたします。",
     zh: "因电力设备检修，{date}{range}，整栋建筑将停电。届时电梯和电脑都无法使用，请提前保存资料并做好准备。" },
   { id: "g_water", icon: "🚱", name: "단수 (건물)", f: ["date", "start", "end", "note"],
-    ko: "{date}, {range}, 배관 공사로, 건물 전체가 단수됩니다. 이 시간에는 화장실과 수도를 이용할 수 없으니, 양해 부탁드립니다.",
+    ko: "{date}, {range}, 배관 공사로, 건물 전체가 단수됩니다. 이 시간에는, 화장실과 수도를 이용할 수 없으니, 양해 부탁드립니다.",
     en: "Due to plumbing work, the water supply to the entire building will be suspended on {date}, {range}. Restrooms and taps cannot be used during this time. Thank you for your understanding.",
     ja: "{date}、{range}、配管工事のため、建物全体が断水となります。この時間はトイレと水道がご利用いただけません。ご理解をお願いいたします。",
     zh: "因管道施工，{date}{range}，整栋建筑将停水。届时卫生间和水龙头都无法使用，敬请谅解。" },
   { id: "g_elev", icon: "🛗", name: "엘리베이터 점검 (건물)", f: ["date", "start", "end", "note"],
-    ko: "{date}, {range}, 엘리베이터 정기 점검으로, 운행이 중지됩니다. 이 시간에는 계단을 이용해 주시기 바랍니다. 불편을 드려, 죄송합니다.",
+    ko: "{date}, {range}, 엘리베이터 정기 점검으로, 운행이 중지됩니다. 이 시간에는, 계단을 이용해 주시기 바랍니다. 불편을 드려 죄송합니다.",
     en: "The elevators will be out of service on {date}, {range}, for regular inspection. Please use the stairs during this time. We apologize for the inconvenience.",
     ja: "{date}、{range}、エレベーターの定期点検のため、運転を停止いたします。この時間は階段をご利用ください。ご不便をおかけし、申し訳ございません。",
     zh: "{date}{range}，电梯将进行定期检修，暂停运行。届时请走楼梯。给您带来不便，敬请谅解。" },
@@ -1055,7 +1071,7 @@ const T = [
     zh: "今天细颗粒物浓度较高，体育课和操场活动将改为室内活动。外出时请务必佩戴口罩。" },
   // ---- 회사·공장
   { id: "f_safety", icon: "⛑", name: "안전 수칙", f: ["note"], places: ["office"],
-    ko: "작업장에서는, 안전모와 안전화를 반드시 착용해 주시고, 지게차가 다니는 통로에서는, 좌우를 잘 살피며 이동해 주시기 바랍니다. 오늘도 안전한 하루 되십시오.",
+    ko: "작업장에서는, 안전모와 안전화를 반드시 착용해 주시고, 지게차가 다니는 통로에서는, 좌우를 잘 살피며 이동해 주시기 바랍니다. 오늘도 안전한 하루 보내십시오.",
     en: "In the work area, please always wear your safety helmet and safety shoes, and look both ways carefully in forklift passages. Have a safe day.",
     ja: "作業場では、安全帽と安全靴を必ず着用し、フォークリフトが通る通路では、左右をよく確認して移動してください。本日も安全な一日をお過ごしください。",
     zh: "在作业区，请务必佩戴安全帽、穿好安全鞋；在叉车通道请注意左右观察。祝大家今天平安顺利。" },
@@ -1065,13 +1081,13 @@ const T = [
     ja: "ただいまから、昼休みです。使用中の機械は、安全に停止してから、お食事をどうぞ。",
     zh: "现在是午餐时间。请先安全关停正在使用的机器，再去用餐。祝大家用餐愉快。" },
   { id: "f_end", icon: "🌇", name: "업무 종료", f: ["note"], places: ["office"],
-    ko: "오늘 업무를, 마칠 시간입니다. 퇴근하시기 전에, 기계와 전원, 창문을 다시 한번 확인해 주시고, 안전하게 귀가하시기 바랍니다. 오늘도 수고하셨습니다.",
+    ko: "오늘 업무를 마칠 시간입니다. 퇴근하시기 전에, 기계와 전원, 창문을 다시 한번 확인해 주시고, 안전하게 귀가하시기 바랍니다. 오늘도 수고하셨습니다.",
     en: "It is time to finish today's work. Before you leave, please check the machines, power, and windows once more, and get home safely. Thank you for your hard work today.",
     ja: "本日の業務を終える時間です。お帰りの前に、機械と電源、窓をもう一度ご確認のうえ、お気をつけてお帰りください。本日もお疲れさまでした。",
     zh: "今天的工作时间到了。下班前，请再次检查机器、电源和门窗，注意安全回家。大家今天辛苦了。" },
   // ---- 상가·마트
   { id: "m_close", icon: "🕙", name: "영업 종료", f: ["start", "note"], labels: { start: "영업 종료 시각" }, places: ["store"],
-    ko: "잠시 후, {time}에 영업을 종료합니다. 쇼핑 중이신 고객님께서는, 계산대로 이동해 주시기 바랍니다. 오늘도 찾아 주셔서, 감사합니다.",
+    ko: "잠시 후, {time}에 영업을 종료합니다. 쇼핑 중이신 고객님께서는, 계산대로 이동해 주시기 바랍니다. 오늘도 찾아 주셔서 감사합니다.",
     en: "We will be closing shortly, at {time}. Customers who are still shopping, please proceed to the checkout. Thank you for visiting us today.",
     ja: "まもなく、{time}に閉店いたします。お買い物中のお客様は、レジへお進みください。本日もご来店いただき、ありがとうございました。",
     zh: "本店将于{time}结束营业。正在购物的顾客，请到收银台结账。感谢您今天的光临。" },
@@ -1109,38 +1125,38 @@ const T = [
     zh: "{loc}已经准备好了餐食。请大家排好队依次前往，并请先让长辈入座。" },
   // ---- 관공서
   { id: "o_close", icon: "🏛", name: "민원 업무 마감", f: ["start", "note"], labels: { start: "마감 시각" }, places: ["gov"],
-    ko: "잠시 후, {time}에 민원 업무를 마감합니다. 아직 번호표를 받지 않으신 분은, 서둘러 받아 주시기 바랍니다. 오늘도 방문해 주셔서, 감사합니다.",
+    ko: "잠시 후, {time}에 민원 업무를 마감합니다. 아직 번호표를 받지 않으신 분은, 서둘러 받아 주시기 바랍니다. 오늘도 방문해 주셔서 감사합니다.",
     en: "Civil service counters will close shortly, at {time}. If you have not yet taken a number ticket, please do so now. Thank you for visiting us today.",
     ja: "まもなく、{time}に窓口業務を終了いたします。まだ番号札をお取りでない方は、お早めにお取りください。本日もご来庁いただき、ありがとうございました。",
     zh: "政务窗口将于{time}结束办理。尚未取号的市民，请尽快取号。感谢您今天的到访。" },
   // ---- 공항·역
   { id: "a_board", icon: "🛫", name: "탑승 안내", f: ["flight", "dest", "gate", "note"], places: ["airport"],
-    ko: "{dest}행, {flight}편을 이용하실 승객 여러분께서는, {gate}번 탑승구에서, 지금 탑승을 시작합니다. 탑승권과 신분증을 준비해 주시기 바랍니다.",
+    ko: "{dest}행 {flight}편의 탑승을, 지금 {gate}번 탑승구에서 시작합니다. 탑승권과 신분증을 준비해 주시기 바랍니다.",
     en: "Passengers on flight {flight} to {dest}, boarding is now beginning at gate {gate}. Please have your boarding pass and ID ready.",
     ja: "{dest}行き、{flight}便にご搭乗のお客様は、{gate}番搭乗口より、ただいまご搭乗を開始いたします。搭乗券と身分証明書をご用意ください。",
     zh: "乘坐{flight}航班前往{dest}的旅客请注意，现在开始在{gate}号登机口登机。请准备好登机牌和身份证件。" },
   { id: "a_gate", icon: "🔀", name: "탑승구 변경", f: ["flight", "dest", "gate", "note"], labels: { gate: "바뀐 탑승구 번호 (예: 31)" }, places: ["airport"],
-    ko: "{dest}행, {flight}편의 탑승구가, {gate}번으로 변경되었습니다. 이용에 착오 없으시기 바랍니다.",
+    ko: "{dest}행 {flight}편의 탑승구가, {gate}번으로 변경되었습니다. 이용에 착오 없으시기 바랍니다.",
     en: "The boarding gate for flight {flight} to {dest} has been changed to gate {gate}. Please proceed to the new gate.",
     ja: "{dest}行き、{flight}便の搭乗口は、{gate}番に変更となりました。お間違えのないようご注意ください。",
     zh: "前往{dest}的{flight}航班登机口已变更为{gate}号。请前往新的登机口。" },
   { id: "a_delay", icon: "⏳", name: "출발 지연", f: ["flight", "dest", "start", "note"], labels: { start: "바뀐 출발 시각" }, places: ["airport"],
-    ko: "{dest}행, {flight}편은, 기상 및 운항 사정으로, 출발이 {time|으로} 지연되었습니다. 이용에 불편을 드려, 죄송합니다.",
+    ko: "{dest}행 {flight}편은, 기상 및 운항 사정으로, 출발이 {time|으로} 지연되었습니다. 이용에 불편을 드려 죄송합니다.",
     en: "Flight {flight} to {dest} has been delayed to {time} due to weather and operational reasons. We apologize for the inconvenience.",
     ja: "{dest}行き、{flight}便は、天候および運航上の都合により、出発が{time}に遅れております。ご迷惑をおかけし、申し訳ございません。",
     zh: "因天气和运营原因，前往{dest}的{flight}航班起飞时间推迟至{time}。给您带来不便，敬请谅解。" },
   { id: "a_cancel", icon: "🚫", name: "결항 안내", f: ["flight", "dest", "note"], places: ["airport"],
-    ko: "{dest}행, {flight}편은, 기상 악화로 결항되었습니다. 해당 항공편 승객께서는, 항공사 카운터에서 안내를 받으시기 바랍니다.",
+    ko: "{dest}행 {flight}편은, 기상 악화로 결항되었습니다. 해당 항공편 승객께서는, 항공사 카운터에서 안내를 받으시기 바랍니다.",
     en: "Flight {flight} to {dest} has been cancelled due to bad weather. Passengers on this flight, please contact the airline counter for assistance.",
     ja: "{dest}行き、{flight}便は、悪天候のため欠航となりました。該当便のお客様は、航空会社カウンターでご案内をお受けください。",
     zh: "前往{dest}的{flight}航班因天气恶劣已取消。该航班的旅客请到航空公司柜台咨询。" },
   { id: "a_call", icon: "📢", name: "승객 호출 (마지막 탑승)", f: ["pax", "flight", "dest", "gate", "note"], places: ["airport"],
-    ko: "{flight}편으로, {dest}에 가시는, {pax} 승객께서는, 지금 바로, {gate}번 탑승구로 와 주시기 바랍니다. 곧 탑승이 마감됩니다.",
+    ko: "{flight}편으로 {dest}에 가시는, {pax} 승객께서는, 지금 바로 {gate}번 탑승구로 와 주시기 바랍니다. 곧 탑승이 마감됩니다.",
     en: "Final call for passenger {pax} on flight {flight} to {dest}. Please proceed immediately to gate {gate}. Boarding is closing soon.",
     ja: "{dest}行き、{flight}便にご搭乗予定の{pax}様、至急、{gate}番搭乗口までお越しください。まもなく搭乗を締め切ります。",
     zh: "乘坐{flight}航班前往{dest}的旅客{pax}，请立即前往{gate}号登机口。登机即将结束。" },
   { id: "a_sec", icon: "🛂", name: "보안 검색 안내", f: ["note"], places: ["airport"],
-    ko: "보안 검색을 빠르게 받으시려면, 액체류는 100밀리리터 이하 용기에 담아 투명 봉투에 넣어 주시고, 노트북은 가방에서 꺼내 주시기 바랍니다.",
+    ko: "보안 검색을 빠르게 받으시려면, 액체류는, 100밀리리터 이하의 용기에 담아, 투명 봉투에 넣어 주십시오. 노트북은, 가방에서 꺼내 주시기 바랍니다.",
     en: "For a faster security check, please put liquids in containers of 100 milliliters or less in a clear plastic bag, and take your laptop out of your bag.",
     ja: "保安検査をスムーズに受けていただくため、液体物は100ミリリットル以下の容器に入れて透明な袋にまとめ、ノートパソコンはかばんから出してください。",
     zh: "为加快安检速度，请将液体装入100毫升以下的容器并放入透明袋中，并将笔记本电脑从包中取出。" },
@@ -1155,7 +1171,7 @@ const T = [
     ja: "{dest}行きの列車が、{gate}番線に到着いたします。安全線の内側まで、お下がりください。",
     zh: "开往{dest}的列车即将进入{gate}号站台。请退到安全线以内。" },
   { id: "t_delay", icon: "🕓", name: "열차 지연 (역)", f: ["dest", "mins", "note"], labels: { dest: "행선지 (예: 부산)" }, places: ["airport"],
-    ko: "{dest}행 열차가, 선로 사정으로, 약 {mins}분 늦게 도착할 예정입니다. 이용에 불편을 드려, 죄송합니다.",
+    ko: "{dest}행 열차가, 선로 사정으로, 약 {mins}분 늦게 도착할 예정입니다. 이용에 불편을 드려 죄송합니다.",
     en: "The train bound for {dest} will arrive about {mins} minutes late due to track conditions. We apologize for the inconvenience.",
     ja: "{dest}行きの列車は、線路の都合により、約{mins}分遅れて到着する見込みです。ご迷惑をおかけし、申し訳ございません。",
     zh: "开往{dest}的列车因线路原因，预计晚点约{mins}分钟到达。给您带来不便，敬请谅解。" },
@@ -1166,7 +1182,7 @@ const T = [
     ja: "まもなく、{time}より、{hall}にて、新郎{groom}様と新婦{bride}様の結婚式が始まります。ご列席の皆様は、式場内にお入りいただき、お席にお着きください。",
     zh: "{groom}先生和{bride}女士的婚礼将于{time}在{hall}开始。请各位来宾入场就座。" },
   { id: "w_phone", icon: "📵", name: "휴대전화 무음", f: ["note"], places: ["wedding"],
-    ko: "예식이 곧 시작됩니다. 휴대전화는, 무음이나 진동으로 바꿔 주시고, 예식 중에는, 큰 소리의 대화를 삼가 주시기 바랍니다.",
+    ko: "예식이 곧 시작됩니다. 휴대전화는, 무음이나 진동으로 바꿔 주시고, 예식 중에는, 큰 소리로 대화하는 것을 삼가 주시기 바랍니다.",
     en: "The ceremony will begin shortly. Please switch your phone to silent or vibrate, and refrain from loud conversations during the ceremony.",
     ja: "まもなく挙式が始まります。携帯電話はマナーモードに切り替え、挙式中は大きな声での会話をお控えください。",
     zh: "婚礼即将开始。请将手机调为静音或振动，婚礼期间请勿大声交谈。" },
@@ -1176,7 +1192,7 @@ const T = [
     ja: "ただいまより、集合写真の撮影を行います。新郎新婦のご家族、ご親族、ご友人の皆様は、前の方へお進みください。",
     zh: "现在开始拍摄合影。请新郎新娘的家人、亲友到前面来。" },
   { id: "w_meal", icon: "🍽", name: "식사 안내", f: ["loc", "note"], labels: { loc: "식사 장소 (예: 2층 연회장 / 비우면 '연회장')" }, places: ["wedding"],
-    ko: "식사는, {loc}에 준비되어 있습니다. 식권을 지참하시고, 이동해 주시기 바랍니다. 오늘 귀한 걸음 해 주셔서, 감사합니다.",
+    ko: "식사는, {loc}에 준비되어 있습니다. 식권을 지참하시고, 이동해 주시기 바랍니다. 오늘 귀한 걸음 해 주셔서 감사합니다.",
     en: "A meal has been prepared at {loc}. Please bring your meal ticket and proceed there. Thank you for joining us today.",
     ja: "お食事は、{loc}にご用意しております。お食事券をお持ちのうえ、お進みください。本日はご列席いただき、ありがとうございます。",
     zh: "餐食已在{loc}准备好。请携带餐券前往用餐。感谢您今天的光临。" },
@@ -1192,12 +1208,12 @@ const T = [
     zh: "开车前来的来宾，请到服务台登记车牌号。未登记的车辆可能会被收取停车费。" },
   // ---- 공연장
   { id: "p_soon", icon: "🎬", name: "공연 시작 전", f: ["what", "mins", "note"], labels: { what: "공연 이름 (예: 가을 음악회 / 비우면 '공연')", mins: "몇 분 뒤 시작 (비우면 10)" }, places: ["show"],
-    ko: "잠시 후, {mins}분 뒤에, {what|이} 시작됩니다. 관객 여러분께서는, 자리에 앉아 주시기 바랍니다.",
+    ko: "{mins}분 뒤에, {what|이} 시작됩니다. 관객 여러분께서는, 자리에 앉아 주시기 바랍니다.",
     en: "{What} will begin in {mins} minutes. Please take your seats.",
-    ja: "まもなく、{mins}分後に、{what}が始まります。お客様は、お席にお着きください。",
+    ja: "{mins}分後に、{what}が始まります。お客様は、お席にお着きください。",
     zh: "{what}将在{mins}分钟后开始。请各位观众就座。" },
   { id: "p_phone", icon: "🚫", name: "촬영 금지·휴대전화", f: ["note"], places: ["show"],
-    ko: "공연 중, 사진 촬영과 녹음, 녹화는, 금지되어 있습니다. 휴대전화는, 전원을 꺼 주시기 바랍니다. 모두가 즐거운 관람을 위해, 협조 부탁드립니다.",
+    ko: "공연 중에는, 사진 촬영과 녹음, 녹화가 금지되어 있습니다. 휴대전화는, 전원을 꺼 주시기 바랍니다. 모두가 즐겁게 관람할 수 있도록, 협조 부탁드립니다.",
     en: "Photography, audio recording, and video recording are prohibited during the performance. Please turn off your mobile phones. Thank you for helping everyone enjoy the show.",
     ja: "公演中の写真撮影、録音、録画は、禁止されております。携帯電話の電源は、お切りください。皆様が快適にご鑑賞いただけるよう、ご協力をお願いいたします。",
     zh: "演出期间禁止拍照、录音和录像。请关闭手机。为了让大家都能愉快观看，感谢您的配合。" },
@@ -1217,12 +1233,12 @@ const T = [
     ja: "まもなく第二部が始まります。お客様は、お席にお戻りください。",
     zh: "下半场演出即将开始。请各位观众回到座位。" },
   { id: "p_delay", icon: "⏳", name: "공연 지연", f: ["mins", "note"], labels: { mins: "늦어지는 시간 (분, 비우면 10)" }, places: ["show"],
-    ko: "공연 준비 관계로, 시작이 약 {mins}분 늦어지겠습니다. 기다려 주셔서, 감사합니다.",
+    ko: "공연 준비 관계로, 시작이 약 {mins}분 늦어지겠습니다. 기다려 주셔서 감사합니다.",
     en: "Due to preparations, the start of the performance will be delayed by about {mins} minutes. Thank you for your patience.",
     ja: "公演準備の都合により、開演が約{mins}分遅れます。お待たせして申し訳ございません。",
     zh: "由于演出准备原因，开演时间将推迟约{mins}分钟。感谢您的耐心等待。" },
   { id: "p_end", icon: "👏", name: "공연 종료·퇴장", f: ["note"], places: ["show"],
-    ko: "오늘 공연은, 모두 마쳤습니다. 퇴장하실 때에는, 앞사람을 밀지 마시고, 천천히 이동해 주시기 바랍니다. 주차 정산은, 출구 옆 무인 정산기를 이용해 주십시오. 찾아 주셔서, 감사합니다.",
+    ko: "오늘 공연은, 모두 마쳤습니다. 퇴장하실 때에는, 앞사람을 밀지 마시고, 천천히 이동해 주시기 바랍니다. 주차 정산은, 출구 옆 무인 정산기를 이용해 주십시오. 찾아 주셔서 감사합니다.",
     en: "Today's performance has ended. When leaving, please do not push, and move slowly. For parking, please use the automatic pay station next to the exit. Thank you for coming.",
     ja: "本日の公演は、すべて終了いたしました。ご退場の際は、前の方を押さず、ゆっくりお進みください。駐車料金は、出口横の自動精算機をご利用ください。ご来場ありがとうございました。",
     zh: "今天的演出到此全部结束。离场时请不要推挤，慢慢移动。停车费请使用出口旁的自助缴费机。感谢您的光临。" },
@@ -1243,7 +1259,7 @@ const T = [
     ja: "境内では、修行中の僧侶や参拝者のため、大きな声を控え、法堂の中での写真撮影はご遠慮ください。",
     zh: "在寺院内，为了正在修行的僧人和信众，请勿大声喧哗；殿堂内请勿拍照。" },
   { id: "b_fire", icon: "🌲", name: "산불 조심", f: ["note"], places: ["temple"],
-    ko: "산불 예방을 위해, 경내에서는, 흡연과 촛불·향 이외의 불 사용을 금지합니다. 촛불과 향은, 정해진 곳에서만 피워 주시기 바랍니다.",
+    ko: "산불 예방을 위해, 경내에서는 흡연을 금지하며, 촛불과 향 외에는 불을 사용할 수 없습니다. 촛불과 향은, 정해진 곳에서만 피워 주시기 바랍니다.",
     en: "To prevent forest fires, smoking and any use of fire other than candles and incense are prohibited on the temple grounds. Please light candles and incense only in the designated places.",
     ja: "山火事防止のため、境内での喫煙、ろうそくとお線香以外の火の使用は禁止です。ろうそくとお線香は、決められた場所でのみお供えください。",
     zh: "为预防山火，寺院内禁止吸烟及使用除蜡烛和香以外的明火。蜡烛和香请在指定地点点燃。" },
@@ -1295,22 +1311,22 @@ const T = [
     zh: "礼拜结束离开时，请慢慢移动，并请先让长辈通过。愿大家这一周平安。" },
   // ---- 식당·카페 (식당·커피숍·푸드코트·휴게소)
   { id: "cf_ready", icon: "☕", name: "메뉴 준비 완료", f: ["num", "note"], bare: true, places: ["cafe"],
-    ko: "{num}번 고객님, 주문하신 메뉴가, 준비되었습니다. 픽업대에서, 받아 가 주세요. {num}번 고객님, 감사합니다.",
+    ko: "{num}번 고객님, 주문하신 메뉴가 준비되었습니다. 픽업대에서 받아 가시기 바랍니다. {num}번 고객님, 감사합니다.",
     en: "Order number {num}, your order is ready. Please pick it up at the counter. Order number {num}, thank you.",
     ja: "{num}番でお待ちのお客様、ご注文の品が出来上がりました。受け取りカウンターまでお越しください。{num}番のお客様、ありがとうございます。",
     zh: "{num}号顾客，您点的餐品已经准备好了。请到取餐台取餐。{num}号顾客，谢谢。" },
   { id: "cf_again", icon: "🔁", name: "번호 다시 부르기", f: ["num", "note"], bare: true, places: ["cafe"],
-    ko: "{num}번 고객님, 다시 한 번 안내해 드립니다. 주문하신 메뉴가 준비되어 있으니, 픽업대로 와 주시기 바랍니다.",
+    ko: "{num}번 고객님, 다시 한번 안내해 드립니다. 주문하신 메뉴가 준비되어 있으니, 픽업대로 와 주시기 바랍니다.",
     en: "Calling order number {num} once again. Your order is ready, so please come to the pickup counter.",
     ja: "{num}番でお待ちのお客様、もう一度ご案内いたします。ご注文の品が出来上がっておりますので、受け取りカウンターまでお越しください。",
     zh: "{num}号顾客，再次提醒您，您的餐品已经准备好了，请到取餐台取餐。" },
   { id: "cf_last", icon: "⏰", name: "라스트 오더", f: ["start", "note"], labels: { start: "라스트 오더 시각" }, places: ["cafe"],
-    ko: "{attime}, 라스트 오더입니다. 추가로 주문하실 고객님께서는, 미리 주문해 주시기 바랍니다.",
+    ko: "{attime}, 마지막 주문을 받습니다. 추가 주문이 있으신 고객님께서는, 미리 주문해 주시기 바랍니다.",
     en: "Last orders will be taken {attime}. If you would like to order anything else, please do so before then.",
     ja: "{attime}ラストオーダーとなります。追加のご注文がございましたら、お早めにお申し付けください。",
     zh: "本店{attime}停止点单。如需加点，请提前点单。" },
   { id: "cf_close", icon: "🌙", name: "영업 종료 안내", f: ["start", "note"], labels: { start: "영업 종료 시각" }, places: ["cafe"],
-    ko: "오늘 영업은, {attime} 종료됩니다. 오늘도 찾아 주셔서, 감사합니다. 나가실 때에는, 두고 가시는 물건이 없는지 확인해 주세요.",
+    ko: "오늘 영업은, {attime} 종료됩니다. 나가실 때에는, 두고 가시는 물건이 없는지 확인해 주시기 바랍니다. 오늘도 찾아 주셔서 감사합니다.",
     en: "We will be closing {attime}. Thank you for visiting us. Please make sure you have all your belongings with you.",
     ja: "本日の営業は、{attime}終了いたします。本日もご来店いただき、ありがとうございます。お帰りの際は、お忘れ物のないようご注意ください。",
     zh: "本店今天{attime}结束营业。感谢您的光临。离开时请带好您的随身物品。" },
@@ -1320,7 +1336,7 @@ const T = [
     ja: "お召し上がり後の食器とトレーは返却口へお戻しいただき、残ったお料理・お飲み物とごみは分別してお捨てください。ご協力ありがとうございます。",
     zh: "用餐完毕后，请将餐具和托盘放到回收台，剩余食物和垃圾请分类丢弃。感谢您的配合。" },
   { id: "cf_seat", icon: "🪑", name: "혼잡 시 자리 양보", f: ["note"], places: ["cafe"],
-    ko: "지금 매장이 매우 혼잡합니다. 주문 전 자리 맡기는 삼가 주시고, 다른 고객님과 함께 자리를 나누어 이용해 주시기 바랍니다.",
+    ko: "지금 매장이 매우 혼잡합니다. 주문하시기 전에 자리를 먼저 맡아 두는 것은 삼가 주시고, 다른 고객님과 자리를 나누어 이용해 주시기 바랍니다.",
     en: "We are very busy right now. Please refrain from saving seats before ordering, and kindly share tables with other customers.",
     ja: "ただいま店内が大変混雑しております。ご注文前のお席の確保はご遠慮いただき、ほかのお客様と相席にご協力ください。",
     zh: "目前店内非常拥挤。请勿在点单前占座，并请与其他顾客共享座位。" },
@@ -1335,7 +1351,7 @@ const T = [
     ja: "順番待ち{num}番のお客様、お席の準備ができました。入口のスタッフまでお声がけください。",
     zh: "{num}号等位的顾客，您的座位已经准备好了。请到入口处找工作人员。" },
   { id: "rs_take", icon: "🥡", name: "포장 주문 준비 완료", f: ["num", "note"], bare: true, places: ["cafe"],
-    ko: "포장 주문 {num}번 고객님, 포장하신 메뉴가, 준비되었습니다. 카운터에서, 받아 가 주시기 바랍니다.",
+    ko: "포장 주문 {num}번 고객님, 주문하신 포장 메뉴가 준비되었습니다. 카운터에서 받아 가시기 바랍니다.",
     en: "Takeout order number {num}, your order is ready. Please pick it up at the counter.",
     ja: "お持ち帰りご注文{num}番のお客様、お品物のご用意ができました。カウンターでお受け取りください。",
     zh: "外带{num}号顾客，您的餐品已经打包好了，请到柜台领取。" },
@@ -1350,7 +1366,7 @@ const T = [
     ja: "ご注文は、入口のキオスク端末でお願いいたします。操作が難しい方は、スタッフにお声がけください。",
     zh: "请在入口处的自助点餐机点餐。如需帮助，请告诉工作人员。" },
   { id: "rs_self", icon: "🥢", name: "셀프 코너 안내", f: ["note"], places: ["cafe"],
-    ko: "물과 반찬은, 셀프 코너에서, 드실 만큼만 가져다 드시기 바랍니다. 음식물 쓰레기를 줄이는 데, 함께해 주세요.",
+    ko: "물과 반찬은, 셀프 코너에서, 드실 만큼만 가져다 드시기 바랍니다. 음식물 쓰레기를 줄이는 데, 함께해 주시기 바랍니다.",
     en: "Water and side dishes are self-service. Please take only as much as you will eat, and help us reduce food waste.",
     ja: "お水とおかずは、セルフコーナーからお召し上がりになる分だけお取りください。食品ロス削減へのご協力をお願いいたします。",
     zh: "饮用水和小菜请到自助区按需取用，请大家一起减少食物浪费。" },
@@ -1372,7 +1388,7 @@ const T = [
     zh: "长途驾驶的顾客，请充分休息后再出发。疲劳驾驶可能导致严重事故。祝您一路平安。" },
   // ---- 지식산업센터·빌딩
   { id: "k_park", icon: "🅿️", name: "주차장 이용 안내", f: ["note"], places: ["biz"],
-    ko: "지하 주차장이 혼잡합니다. 방문 차량은, 입주사에서 방문 등록을 해 주시고, 정기 주차 차량은, 지정된 구역에 주차해 주시기 바랍니다. 통로와 주차선 밖 주차는, 삼가 주십시오.",
+    ko: "지하 주차장이 혼잡합니다. 방문 차량은, 입주사에서 방문 등록을 해 주시고, 정기 주차 차량은, 지정된 구역에 주차해 주시기 바랍니다. 통로나 주차선을 벗어난 곳에는, 주차하지 말아 주십시오.",
     en: "The underground parking lot is busy. Tenants, please register your visitors' vehicles, and regular-pass vehicles, please park in your designated areas. Please do not park in the aisles or outside the lines.",
     ja: "地下駐車場が混雑しております。来訪車両は入居企業で訪問登録をお願いし、定期駐車の車両は指定区域に駐車してください。通路や区画外への駐車はご遠慮ください。",
     zh: "地下停车场目前较为拥挤。访客车辆请由入驻企业办理访客登记，月租车辆请停放在指定区域。请勿在通道或车位线外停车。" },
@@ -1387,7 +1403,7 @@ const T = [
     ja: "建物の冷暖房は、{range}運転いたします。時間外や週末に冷暖房が必要な入居企業は、管理事務所へ事前にお申し込みください。",
     zh: "大楼空调运行时间为{range}。如需在此时间以外或周末使用空调，请提前向管理处申请。" },
   { id: "k_security", icon: "🔐", name: "야간·주말 출입 통제", f: ["start", "note"], labels: { start: "출입 통제 시작 시각" }, places: ["biz"],
-    ko: "오늘 {time}부터, 건물 출입이 통제됩니다. 이후에는, 출입 카드로 출입해 주시고, 방문객은, 1층 보안실에서 등록해 주시기 바랍니다. 퇴근하실 때는, 사무실 문단속과 전원을 확인해 주십시오.",
+    ko: "오늘 {time}부터, 건물 출입이 통제됩니다. 이후에는, 출입 카드를 사용해 주시고, 방문객은, 1층 보안실에서 등록해 주시기 바랍니다. 퇴근하실 때는, 사무실 문단속과 전원을 확인해 주십시오.",
     en: "From {time} today, access to the building will be restricted. After that, please use your access card, and visitors must register at the security desk on the first floor. When leaving, please lock your office and check the power.",
     ja: "本日{time}より、建物への出入りが制限されます。以降はカードキーで出入りし、来訪者は1階の警備室で登録してください。お帰りの際は、事務所の施錠と電源をご確認ください。",
     zh: "今天{time}起，大楼将实行出入管制。之后请刷门禁卡出入，访客请在一楼保安室登记。下班时请锁好办公室门并确认关闭电源。" },
@@ -1413,17 +1429,17 @@ const T = [
     zh: "快递和邮件可在一楼智能快递柜和管理处领取。请勿将快递箱放在公共走廊和电梯口。" },
   { id: "custom", icon: "✍️", name: "직접 입력", f: ["body"], ko: "{body}", en: "", ja: "", zh: "" },
   { id: "efire", icon: "🔥", name: "긴급: 화재 발생", f: ["firepos", "note"], urgent: true,
-    ko: "지금, {firepos}에서 화재가 발생했습니다. {aud}께서는, 엘리베이터를 이용하지 마시고, 젖은 수건으로 코와 입을 막은 뒤, 계단을 통해, 침착하게 밖으로 대피해 주십시오. 다시 한번 말씀드립니다. 엘리베이터를 타지 마시고, 계단으로 대피해 주십시오.",
+    ko: "지금, {firepos}에서 화재가 발생했습니다. {aud}께서는, 엘리베이터를 이용하지 마십시오. 젖은 수건으로 코와 입을 막고, 계단을 통해, 침착하게 밖으로 대피해 주십시오. 다시 한번 말씀드립니다. 엘리베이터를 타지 마시고, 계단으로 대피해 주십시오.",
     en: "A fire has broken out {firepos}. {Aud}, do not use the elevators. Cover your nose and mouth with a wet towel, and evacuate calmly using the stairs. Once again, do not use the elevators. Please evacuate using the stairs.",
     ja: "ただいま、{firepos}で火災が発生しました。{aud}は、エレベーターを使用せず、濡れたタオルで鼻と口を覆い、階段から落ち着いて屋外へ避難してください。繰り返します。エレベーターは使わず、階段で避難してください。",
     zh: "现在，{firepos}发生火灾。请{aud}不要乘坐电梯，用湿毛巾捂住口鼻，沿楼梯冷静地撤离到室外。再说一遍，请不要乘坐电梯，请走楼梯撤离。" },
   { id: "equake", icon: "🌐", name: "긴급: 지진", f: ["note"], urgent: true,
-    ko: "지금, 지진이 발생했습니다. 흔들리는 동안에는, 튼튼한 탁자 아래로 들어가 머리를 보호해 주십시오. 흔들림이 멈추면, 가스와 전기를 차단하고, 문을 열어 출구를 확보한 뒤, 엘리베이터가 아닌 계단을 이용해, 넓은 공터로 대피해 주십시오.",
+    ko: "지금, 지진이 발생했습니다. 흔들리는 동안에는, 튼튼한 탁자 아래로 들어가 머리를 보호해 주십시오. 흔들림이 멈추면, 가스와 전기를 차단하고, 문을 열어 출구를 확보해 주십시오. 그다음, 엘리베이터가 아닌 계단을 이용해, 넓은 공터로 대피해 주십시오.",
     en: "An earthquake is occurring now. While the shaking continues, get under a sturdy table and protect your head. When the shaking stops, turn off the gas and electricity, open your door to secure an exit, and evacuate to an open area using the stairs, not the elevator.",
     ja: "ただいま、地震が発生しています。揺れている間は、丈夫な机の下に入り、頭を守ってください。揺れが収まったら、ガスと電気を止め、ドアを開けて出口を確保し、エレベーターではなく階段を使って、広い場所へ避難してください。",
     zh: "现在发生地震。摇晃期间，请躲到结实的桌子下面，保护好头部。摇晃停止后，请关闭燃气和电源，打开房门确保出口畅通，不要乘坐电梯，走楼梯撤离到空旷的地方。" },
   { id: "falarm", icon: "🔕", name: "화재 경보 오작동", f: ["firepos", "note"],
-    ko: "조금 전, {firepos}에서 울린 화재 경보는, 오작동으로 확인되었습니다. 화재가 아니니, 안심하시기 바랍니다. 놀라게 해 드려, 죄송합니다.",
+    ko: "조금 전, {firepos}에서 울린 화재 경보는, 오작동으로 확인되었습니다. 화재가 아니니, 안심하시기 바랍니다. 놀라게 해 드려 죄송합니다.",
     en: "The fire alarm that just sounded {firepos} was confirmed to be a false alarm. There is no fire, so please do not worry. We apologize for the disturbance.",
     ja: "先ほど、{firepos}で鳴った火災警報は、誤作動であることが確認されました。火災ではありませんので、ご安心ください。お騒がせして、申し訳ございません。",
     zh: "刚才{firepos}响起的火灾警报，经确认为误报。并未发生火灾，请大家放心。打扰到大家，非常抱歉。" },
@@ -1454,7 +1470,7 @@ const OPEN = {
   zh: a => `${PL().aud[3]}，大家好。这里是${a ? a + "的" : ""}${PL().sender[3]}。`,
 };
 const OPEN_URGENT = { ko: "긴급 안내 말씀 드립니다.", en: "This is an emergency announcement.", ja: "緊急のお知らせです。", zh: "现在播报紧急通知。" };
-const CLOSE = { get ko() { return `${PL().aud[0]}의, 협조 부탁드립니다. 감사합니다.`; }, en: "Thank you for your cooperation.", ja: "ご協力のほど、よろしくお願いいたします。", zh: "感谢您的配合。" };
+const CLOSE = { get ko() { return `${PL().aud[0]}의 협조를 부탁드립니다. 감사합니다.`; }, en: "Thank you for your cooperation.", ja: "ご協力のほど、よろしくお願いいたします。", zh: "感谢您的配合。" };
 const AGAIN = { ko: "다시 한번 안내 말씀 드립니다.", en: "Once again.", ja: "繰り返しお知らせいたします。", zh: "再播报一遍。" };
 
 // ================= 상태 =================
@@ -1479,22 +1495,25 @@ function build(L) {
   if (!src && L !== "ko") return "";
   const map = {
     date: fDate(v.date, L), range: fRange(v.start, v.end, L), daterange: fDateRange(v.date, v.date2, L),
-    place: fPlace(v.place, L, t.kind), unit: fPlace(v.unit, L), car: fCar(v.car, L), firepos: fFirePos(v.firepos, L), mvunit: fMvUnit(v.mvunit, L), spot: fSpot(v.spot, L), between: koBetween(v.start, v.end),
+    place: fPlace(v.place, L, t.kind), unit: (v.unit || "").trim() ? fPlace(v.unit, L) : { ko: "한", en: "one of the units", ja: "ある世帯", zh: "某住户" }[L], car: fCar(v.car, L), firepos: fFirePos(v.firepos, L), mvunit: fMvUnit(v.mvunit, L), spot: fSpot(v.spot, L), between: koBetween(v.start, v.end),
     aud: PL().aud[LI[L]], Aud: PL().aud[1].replace(/^./, c => c.toUpperCase()), sender: PL().sender[LI[L]], senderEn: PL().sender[1],
     groom: v.groom ? (L === "ko" ? v.groom : romanName(v.groom)) : { ko: "신랑", en: "the groom", ja: "新郎", zh: "新郎" }[L], bride: v.bride ? (L === "ko" ? v.bride : romanName(v.bride)) : { ko: "신부", en: "the bride", ja: "新婦", zh: "新娘" }[L],
     hall: v.hall || { ko: "본식장", en: "the main hall", ja: "メインホール", zh: "主厅" }[L],
     flight: (v.flight || "").trim().toUpperCase(), dest: fDest(v.dest, L), gate: v.gate || "", num: (v.num || "").trim() || "1", bus: (v.bus || "").trim() || { ko: "단체 관광버스", en: "the tour bus", ja: "団体観光バス", zh: "旅游大巴" }[L], pax: L === "ko" ? (v.pax || "") : romanName(v.pax), mins: v.mins || ({ p_soon: "10", p_inter: "15", p_delay: "10", t_delay: "10" }[t.id] || ""),
-    time: fTime(v.start, L), attime: v.start ? { ko: fTime(v.start, L) + "에", en: "at " + fTime(v.start, L), ja: fTime(v.start, L) + "に", zh: "将于" + fTime(v.start, L) }[L] : { ko: "잠시 후", en: "shortly", ja: "まもなく", zh: "即将" }[L],   // 시각을 비우면 "잠시 후" child: v.child || "", item: v.item || { ko: "물건", en: "an item", ja: "お忘れ物", zh: "物品" }[L],
+    time: fTime(v.start, L), attime: v.start ? { ko: fTime(v.start, L) + "에", en: "at " + fTime(v.start, L), ja: fTime(v.start, L) + "に", zh: "将于" + fTime(v.start, L) }[L] : { ko: "잠시 후", en: "shortly", ja: "まもなく", zh: "即将" }[L],   // 시각을 비우면 "잠시 후"
+    child: v.child || "", item: v.item || { ko: "물건", en: "an item", ja: "お忘れ物", zh: "物品" }[L],
     loc: v.loc || (t.id === "ch_worship" ? { ko: "본당", en: "the main sanctuary", ja: "礼拝堂", zh: "主堂" }[L] : t.id === "ch_new" ? { ko: "새가족실", en: "the newcomers' room", ja: "新来者室", zh: "新人接待室" }[L] : t.id === "ch_meal" ? { ko: "식당", en: "the fellowship hall", ja: "食堂", zh: "餐厅" }[L] : ["b_service", "b_buddha"].includes(t.id) ? { ko: "대웅전", en: "the main Buddha hall", ja: "本堂", zh: "大雄宝殿" }[L] : t.id === "b_meal" ? { ko: "공양간", en: "the temple dining hall", ja: "斎堂", zh: "斋堂" }[L] : t.id === "w_meal" ? { ko: "연회장", en: "the banquet hall", ja: "宴会場", zh: "宴会厅" }[L] : ["m_child", "lost"].includes(t.id) ? (L === "en" ? "the " : "") + PL().sender[LI[L]] : t.id === "m_park" ? { ko: "근처 공영 주차장", en: "a nearby public parking lot", ja: "近くの公共駐車場", zh: "附近的公共停车场" }[L] : t.id === "c_meal" ? { ko: "식당", en: "the dining hall", ja: "食堂", zh: "餐厅" }[L] : ""),
     what: v.what ? fEvName(v.what, L) : (t.id === "c_start" ? { ko: "모임", en: "The gathering", ja: "集まり", zh: "聚会" }[L] : t.id === "p_soon" ? { ko: "공연", en: "the performance", ja: "公演", zh: "演出" }[L] : t.id === "b_service" ? { ko: "법회", en: "the Dharma service", ja: "法会", zh: "法会" }[L] : t.id === "ch_worship" ? { ko: "예배", en: "the worship service", ja: "礼拝", zh: "礼拜" }[L] : ""),
     What: (fEvName(v.what, "en") || (t.id === "p_soon" ? "the performance" : t.id === "b_service" ? "the Dharma service" : t.id === "ch_worship" ? "the worship service" : "")).replace(/^./, c => c.toUpperCase()),
     vote: v.vote || { ko: "동대표 선거", en: "the resident representative election", ja: "棟代表選挙", zh: "楼栋代表选举" }[L],
     vloc: v.vloc || { ko: "관리사무소", en: "the management office", ja: "管理事務所", zh: "物业管理处" }[L], body: L === "ko" ? koNormalize(v.body || "") : "",
   };
+  if (L === "ko") src = src.replace(/\{(\w+)(\|[가-힣]+)?\}(행|편으로|편을|편의|편은|편|번으로|번|에서|에|의|을|를|이|가|은|는|으로|로|부터|까지)?(?![가-힣])(,?\s?)/g, (m, k, j, suf, sp) => !String(map[k] ?? "").trim() && (j || suf) ? "" : m);   // 비운 칸
   let s = src.replace(/\{(\w+)\|(은|는|이|가|을|를|으로|로)\}/g, (_, k, j) => (map[k] ?? "") + josa(map[k] ?? "", j))
              .replace(/\{(\w+)\}/g, (_, k) => map[k] ?? "");
   s = s.replace(/\s+([,.、。，])/g, "$1").replace(/,(\s*,)+/g, ",").replace(/,\s*([.])/g, "$1").replace(/^\s*,\s*/, "").replace(/、([、。])/g, "$1").replace(/，([，。])/g, "$1")
        .replace(/\.\.(?!\.)/g, ".").replace(/\s{2,}/g, " ").trim();   // "3 p.m.." → "3 p.m."
+  if (L === "ko") s = s.replace(/신랑 신랑, 신부 신부의/, "신랑 신부의").replace(/^가시는, /, "");   // 이름·편명을 비운 예식·승객 호출
   if (L === "ko" && v.note) s += " " + koNormalize(v.note.trim().replace(/[^.!?。]$/, m => m + "."));
   return s;
 }
@@ -1507,7 +1526,7 @@ function curT() {
   }
   return T.find(x => x.id === S.tpl) || T[0];
 }
-const firstText = (texts, langs) => { const L = LANGS.find(x => (!langs || langs[x.id]) && (texts[x.id] || "").trim()); return L ? texts[L.id].trim() : ""; };
+const firstText = (texts, langs) => { const L = LANGS.find(x => (!langs || langs[x.id]) && (texts[x.id] || "").trim()); return L ? unmark(texts[L.id]).trim() : ""; };   // 화면용 (억양 표시 뺌)
 function josa(w, j) {                                   // 받침에 맞춰 은/는 · 이/가 · 을/를
   const c = (w || "").trim().slice(-1), code = c.charCodeAt(0) - 0xac00;
   const has = code >= 0 && code < 11172 ? code % 28 !== 0 : /[013678]$/.test(c);   // 숫자: 일·삼·육·칠·팔·영 은 받침
@@ -1644,7 +1663,7 @@ function renderTpls() {
   };
   const q = ($("tplQ")?.value || "").trim().toLowerCase();
   if (q) {                                                // 🔍 찾기: 이름·문장에 들어 있는 방송만 (모든 장소에서)
-    const all = [...mine.map(m => ["mine:" + m.id, m.icon, m.name, Object.values(m.texts).join(" ")]), ...T.map(t => [t.id, t.icon, t.name, (t.ko || "") + " " + (t.en || "")])];
+    const all = [...mine.map(m => ["mine:" + m.id, m.icon, m.name, unmark(Object.values(m.texts).join(" "))]), ...T.map(t => [t.id, t.icon, t.name, (t.ko || "") + " " + (t.en || "")])];
     const hit = all.filter(([, , n, txt]) => (n + " " + txt).toLowerCase().includes(q));
     const sec = document.createElement("div"); sec.className = "grp";
     sec.innerHTML = `<h4>🔍 '${q.replace(/</g, "&lt;")}' 찾은 방송 ${hit.length}개</h4><div class="tpls"></div>`; root.appendChild(sec);
@@ -1822,9 +1841,9 @@ async function playLang(L, ta, btn) {                   // 이 언어 칸의 문
   lpOn = true; lpStop = false; running = true; speechSynthesis.cancel(); audio();
   const keep = btn.textContent; btn.textContent = "■ 멈추기"; btn.style.background = "var(--accent)"; btn.style.color = "#fff";
   for (let i = 0; i < parts.length && !lpStop; i++) {
-    $("now").innerHTML = `<b>▶ ${L.flag} ${shortName(v)}</b> 문장 듣기 (${i + 1}/${parts.length}) — ${parts[i].replace(/</g, "&lt;")}`;
+    $("now").innerHTML = `<b>▶ ${L.flag} ${shortName(v)}</b> 문장 듣기 (${i + 1}/${parts.length}) — ${unmark(parts[i]).replace(/</g, "&lt;")}`;
     await say(parts[i], L);
-    if (!lpStop) await sleep(/[.!?。！？]$/.test(parts[i]) ? 380 : 200);
+    if (!lpStop) await sleep(/[.!?。！？]$/.test(unmark(parts[i])) ? 380 : 200);
   }
   btn.textContent = keep; btn.style.background = "#fff7ed"; btn.style.color = "var(--accent2)";
   lpOn = false; running = false;
@@ -1870,7 +1889,7 @@ async function trText(text, src, tgt) {
   return out;
 }
 function trSource() {                                   // 번역 원본: 직접 쓴 영어 문장이 있으면 영어(더 정확), 없으면 한국어
-  const en = (S.texts.en || "").trim(), ko = (S.texts.ko || "").trim();
+  const en = unmark(S.texts.en || "").trim(), ko = unmark(S.texts.ko || "").trim();   // 억양 표시는 번역하지 않음
   if (en && !(S.edited.ko && !S.edited.en)) return { lang: "en", text: en };
   return { lang: "ko", text: ko };
 }
@@ -1910,7 +1929,7 @@ async function prepareExtras() {
 async function translate(L, ta) {                       // 기본 언어 칸의 '자동 번역' 버튼 (한국어 → 이 언어)
   try {
     toast("번역 중… (처음엔 언어 파일을 받느라 조금 걸립니다)");
-    ta.value = await trText(S.texts.ko, "ko", L === "zh" ? "zh" : L);
+    ta.value = await trText(unmark(S.texts.ko), "ko", L === "zh" ? "zh" : L);
     S.texts[L] = ta.value; S.edited[L] = true; keepEdit(L, ta.value); save(); estimate(); toast("번역했습니다 — 내용을 한 번 확인해 주세요");
   } catch (e) { toast("이 브라우저에서는 자동 번역을 쓸 수 없습니다"); }
 }
@@ -2079,7 +2098,12 @@ function speakAs(text, L) {                              // 📖 발음 사전: 
     const esc = d.from.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     text = text.replace(new RegExp(esc, /[a-z]/i.test(d.from) ? "gi" : "g"), d.to || "");
   }
-  if (L.id === "ko") text = text.replace(/(\d{1,4})\s*번(?!째)/g, (_, n) => sinoKo(n) + " 번");   // 번호는 한자어 수로: 14번 → 십사 번 (열네 번 X)
+  if (L.id === "ko") {
+    const D1 = x => [...x].map(c => "공일이삼사오육칠팔구"[c]).join("");
+    text = text.replace(/(\d{2,3}) ?([가-힣]) ?(\d{4})(?!\d)/g, (_, a, h, b) => `${sinoKo(a)}${h} ${D1(b)}`)   // 차량 번호: 12가 3456 → 십이가 삼사오육
+               .replace(/\b([A-Z]{2}) ?(\d{2,4})(?= ?편)/g, (_, a, n) => `${a} ${D1(n)}`)                     // 편명: KE703편 → KE 칠공삼 편
+               .replace(/(\d{1,4})\s*번(?!째)/g, (_, n) => sinoKo(n) + " 번");   // 번호는 한자어 수로: 14번 → 십사 번 (열네 번 X)
+  }   // 번호는 한자어 수로: 14번 → 십사 번 (열네 번 X)
   return text;
 }
 function sinoKo(n) {                                      // 144 → 백사십사, 2005 → 이천오, 0 → 영
@@ -2087,24 +2111,157 @@ function sinoKo(n) {                                      // 144 → 백사십�
   const D = ["", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"], U = ["", "십", "백", "천"];
   return [...n].map((c, i) => { const d = +c, u = n.length - 1 - i; return d === 0 ? "" : (d === 1 && u > 0 ? "" : D[d]) + U[u]; }).join("");
 }
-function sentences(t) {                                 // 문장 나누기 ("a.m."·"p.m."·소수점에서는 안 끊음)
+function sentences(t) {                                 // 문장 나누기 ("a.m."·"p.m."·소수점에서는 안 끊음) · 억양 표시는 문장마다 이어 줌
+  t = markFix(t);
   const P = t.replace(/\b([ap])\.m\./gi, "$1§m§").replace(/(\d)\.(\d)/g, "$1§$2");
-  return (P.match(/[^.!?。！？।؟]+(?:[.!?。！？।؟]+|$)/g) || []).map(x => x.replace(/§/g, ".").trim()).filter(Boolean);
+  const parts = (P.match(/[^.!?。！？।؟]+(?:[.!?。！？।؟]+|$)/g) || []).map(x => x.replace(/§/g, ".").trim()).filter(Boolean);
+  if (t.indexOf("[") < 0) return parts;
+  let open = [];
+  return parts.map(p => {
+    const pre = open.map(k => `[${k}]`).join(""), re = new RegExp(MARK_SRC, "g"), st = [...open]; let m;
+    while ((m = re.exec(p))) { if (m[1] === "/") st.pop(); else if (MARKS[m[1]]) st.push(m[1]); }
+    open = st; return pre + p + "[/]".repeat(st.length);
+  }).filter(p => solid(unmark(p)) || /\[(쉼|긴쉼)\]/.test(p));
 }
-function say(text, L, voice) {
+// ================= 🎙 성우 억양: 문장을 몇 조각으로 나눠 조각마다 빠르기·높이·크기·쉼 =================
+// Web Speech 는 SSML 이 안 되므로, 조각마다 따로 읽힘 (Edge 온라인 목소리는 조각 사이 약 0.4초 틈 → 조각 수를 적게)
+const MARKS = { 강조: { rate: 0.9, pitch: 1.06 }, 천천히: { rate: 0.8 }, 빠르게: { rate: 1.18 }, 높게: { pitch: 1.12 }, 낮게: { pitch: 0.88 }, 작게: { vol: 0.6 } };
+const PAUSES = { 쉼: 500, 긴쉼: 1000 };
+const MARK_SRC = "\\[(강조|천천히|빠르게|높게|낮게|작게|쉼|긴쉼|\\/)\\]";
+const unmark = t => {                                     // 화면·공지문·카톡·번역용: 억양 표시 지우기 (저장·백업에는 그대로 둠)
+  t = String(t ?? ""); if (!/\[(강조|천천히|빠르게|높게|낮게|작게|쉼|긴쉼|\/)\]/.test(t)) return t;
+  return t.replace(/\[(쉼|긴쉼)\]/g, " ").replace(/\[(강조|천천히|빠르게|높게|낮게|작게|\/)\]/g, "").replace(/[ \t]+([,.!?。、，！？])/g, "$1").replace(/[ \t]{2,}/g, " ").replace(/^[ \t]+|[ \t]+$/gm, "");
+};
+function markFix(t) {                                     // 짝이 안 맞는 표시는 무시 ([강조]만 있고 [/]가 없음, [/]만 있음)
+  t = String(t || ""); if (t.indexOf("[") < 0) return t;
+  const re = new RegExp(MARK_SRC, "g"), st = [], drop = new Set(); let m;
+  while ((m = re.exec(t))) { const k = m[1]; if (k === "/") { if (st.length) st.pop(); else drop.add(m.index); } else if (MARKS[k]) st.push(m.index); }
+  st.forEach(i => drop.add(i));
+  return drop.size ? t.replace(re, (s, k, i) => (drop.has(i) ? "" : s)) : t;
+}
+const LAT = {};                                           // 목소리마다 '말 시작까지 걸리는 시간' (조각 사이 틈 계산)
+const latOf = v => LAT[v.voiceURI] ?? (/online|natural|neural/i.test(v.name) || v.localService === false ? 450 : 60);
+let cancelN = 0;                                          // 멈추기(speechSynthesis.cancel) 횟수 — 조각 사이 쉼 중에도 바로 멈춤
+try { const c0 = speechSynthesis.cancel.bind(speechSynthesis); speechSynthesis.cancel = () => { cancelN++; c0(); }; } catch (e) {}
+const sleepC = (ms, c) => new Promise(r => { const t0 = Date.now(), iv = setInterval(() => { if (cancelN !== c || Date.now() - t0 >= ms) { clearInterval(iv); r(); } }, 25); });
+const WDN = "Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday", MON_N = "January|February|March|April|May|June|July|August|September|October|November|December";
+function keySpans(t, L) {                                 // 중요한 말 (시간·날짜·번호·층·호·차량 번호·빈칸에 넣은 이름) 위치
+  const R = L.id === "ko"
+    ? [/\d{1,2}월 \d{1,2}일(?: [월화수목금토일]요일)?/g, /(?:오전|오후|낮|밤|새벽|저녁) \d{1,2}시(?: \d{1,2}분)?/g, /\d{2,3} ?[가-힣] ?\d{4}(?!\d)/g, /[A-Z]{1,3} ?\d{2,4}/g,
+       /\d+(?:\.\d+)?(?: ?(?:번째|번|층|호|동|분|시간|명|대|kg|킬로그램|밀리리터|원|부|편|개월|년)(?: ?(?:전|후|뒤|간|동안))?)?/g]
+    : [new RegExp(`\\b\\d{1,2}(?::\\d{2})? ?(?:a\\.m\\.|p\\.m\\.)|\\bnoon\\b|\\bmidnight\\b`, "gi"), new RegExp(`\\b(?:${WDN}),? (?:${MON_N}) \\d{1,2}\\b|\\b(?:${MON_N}) \\d{1,2}\\b`, "g"),
+       /\d+月\d+日(?:[日月火水木金土]曜日|星期[一二三四五六日天])?/g, /(?:午前|午後|上午|下午|中午|晚上|凌晨)\d+[時点](?:\d+分)?/g, /[A-Z]{1,3} ?\d{2,4}/g, /\d+(?:[.:]\d+)?/g];
+  const sp = [];
+  R.forEach(re => { let m; re.lastIndex = 0; while ((m = re.exec(t))) { if (m[0].trim()) sp.push([m.index, m.index + m[0].length]); if (!m[0].length) re.lastIndex++; } });
+  Object.entries(S.vals || {}).forEach(([k, v]) => {      // 빈칸에 직접 넣은 행사 이름·장소·이름 등
+    v = String(v || "").trim(); if (v.length < 2 || ["body", "note", "date", "date2", "start", "end"].includes(k)) return;
+    let i = t.indexOf(v); while (i >= 0) { sp.push([i, i + v.length]); i = t.indexOf(v, i + v.length); }
+  });
+  sp.sort((a, b) => a[0] - b[0]);
+  const out = []; sp.forEach(s => { const l = out[out.length - 1]; if (l && s[0] <= l[1] + 1) l[1] = Math.max(l[1], s[1]); else out.push([...s]); });
+  return out;
+}
+const solid = s => (s.match(/[\p{L}\p{N}]/gu) || []).length;  // 글자 수 (띄어쓰기·문장 부호 빼고)
+function prosodyPlan(text, L, o = {}) {                   // → [{ t, rate, pitch, vol, pre(ms) }]  (배수: 기본 빠르기·높이에 곱함)
+  text = markFix(text);
+  const urgent = S.mood === "urgent", lat = o.lat ?? 450, hi = o.hi ?? lat >= 200;
+  // 1) 직접 표시 → 조각 (표시 묶음 · 쉼)
+  const pcs = []; const re = new RegExp(MARK_SRC, "g"); let m, last = 0, st = [], pause = 0;
+  const put = s => { if (!s) return; pcs.push({ t: s, st: [...st], pre: pause }); pause = 0; };
+  while ((m = re.exec(text))) { put(text.slice(last, m.index)); last = re.lastIndex; const k = m[1]; if (k === "/") st.pop(); else if (PAUSES[k]) pause += PAUSES[k]; else st.push(k); }
+  put(text.slice(last)); if (pause) pcs.push({ t: "", st: [], pre: pause });
+  const styled = pcs.some(p => p.st.length);
+  let segs = [];
+  if (styled || S.prosody === false) {                    // 직접 표시한 문장은 표시대로만 (자동 억양 없음)
+    pcs.forEach(p => { const f = { rate: 1, pitch: 1, vol: 1 }; p.st.forEach(k => { const x = MARKS[k] || {}; f.rate *= x.rate || 1; f.pitch *= x.pitch || 1; f.vol *= x.vol || 1; }); segs.push({ t: p.t, ...f, pre: p.pre }); });
+  } else {
+    // 2) 자동 억양: 쉼표·마침표로 토막 → 중요한 말이 많은 토막은 '강조' → 같은 종류끼리 붙임
+    pcs.forEach((p, pi) => {
+      const sp = keySpans(p.t, L), mask = p.t.replace(/\b([ap])\.m\./gi, "$1§m§").replace(/(\d)\.(\d)/g, "$1§$2").replace(/\b(Mr|Mrs|Ms|Dr|No|St)\./g, "$1§");
+      const chunks = []; { const re2 = /[^,、，;.!?。！？]+(?:[,、，;.!?。！？]+|$)\s*/g; let q; while ((q = re2.exec(mask)) && q[0]) chunks.push(p.t.slice(q.index, q.index + q[0].length)); if (!chunks.length) chunks.push(p.t); }
+      let pos = 0, sent = 0; const cs = [];
+      chunks.forEach(c => {
+        const a = pos, b = pos + c.length; pos = b;
+        const kc = sp.reduce((n, [x, y]) => n + solid(p.t.slice(Math.max(a, x), Math.min(b, y))), 0), all = solid(c);
+        const end = /[.!?。！？]\s*$/.test(c), comma = /[,、，;]\s*$/.test(c);
+        if (kc >= 2 && all && kc / all >= 0.3) cs.push({ t: c, key: true, sent, end, comma });
+        else if (kc >= 2 && !hi) {                          // 빠른 목소리(틈이 짧음): 토막 안에서도 중요한 말만 떼어 읽음
+          const s0 = sp.find(([x, y]) => y > a && x < b); let x = Math.max(a, s0[0]), y = Math.min(b, s0[1]);
+          while (x > a && !/\s/.test(p.t[x - 1])) x--; while (y < b && !/[\s,、，;.!?。！？]/.test(p.t[y])) y++;
+          const pre = p.t.slice(a, x), mid = p.t.slice(x, y), post = p.t.slice(y, b);
+          const sh = x => solid(x) < 5;                     // 짧은 앞뒤 말(예: '5분 | 전입니다')은 떼지 않고 함께 강조
+          if (!sh(pre)) cs.push({ t: pre, key: false, sent }); else cs.push({ t: pre, key: true, sent, glue: true });
+          cs.push({ t: mid, key: true, sent, end: end && sh(post), comma: comma && sh(post) });
+          if (!sh(post)) cs.push({ t: post, key: false, sent, end, comma }); else if (post) cs[cs.length - 1].t += post;
+        } else cs.push({ t: c, key: false, sent, end, comma });
+        if (end) sent++;
+      });
+      // 조각 수 줄이기 (온라인 목소리는 조각마다 틈): 중요한 말 사이의 짧은 보통 토막은 강조에 붙임
+      for (let i = 1; i < cs.length - 1; i++) if (!cs[i].key && cs[i - 1].key && cs[i + 1].key && solid(cs[i].t) < (hi ? 8 : 4) && cs[i].sent === cs[i - 1].sent) cs[i].key = true;
+      const g = [];
+      cs.forEach(c => {
+        const l = g[g.length - 1];
+        const brk = !l || l.key !== c.key || (o.first && !urgent && l.sent === 0 && c.sent > 0);
+        if (brk) g.push({ t: c.t, key: c.key, sent: c.sent, sents: new Set([c.sent]), endAt: c.end, comma: c.comma, pre: !l ? p.pre : l.endAt ? 420 : l.comma ? 220 : 150 });
+        else { l.t += c.t; l.sents.add(c.sent); l.endAt = c.end; l.comma = c.comma; }
+      });
+      if (hi) for (let i = 0; i < g.length; i++) {          // 온라인 목소리: 강조 바로 앞뒤의 짧은 보통 토막(예: '차량 번호,' '전 세대는,')은 강조에 붙여 조각 수를 줄임
+        const x = g[i], nb = [g[i - 1], g[i + 1]].find(y => y && y.key && [...y.sents].some(q => x.sents.has(q)));
+        if (!x.key && nb && solid(x.t) < 6) { if (nb === g[i + 1]) { nb.t = x.t + nb.t; nb.pre = x.pre; } else { nb.t += x.t; nb.endAt = x.endAt; nb.comma = x.comma; } x.sents.forEach(q => nb.sents.add(q)); g.splice(i, 1); i = Math.max(-1, i - 2); }
+      }
+      if (hi) for (let i = 0; i < g.length; i++) if (g[i].key && solid(g[i].t) < 3 && g.length > 1) { const n = g[i + 1] || g[i - 1]; if (n === g[i + 1]) { n.t = g[i].t + n.t; n.pre = g[i].pre; } else n.t += g[i].t; n.sents = new Set([...n.sents, ...g[i].sents]); g.splice(i, 1); i--; }
+      g.forEach((x, i) => {                               // 문장마다 마지막 조각은 조금 낮고 느리게 (그 문장이 두 조각 이상일 때)
+        const s = Math.max(...x.sents), same = g.filter(y => y.sents.has(s)).length;
+        const f = { rate: 1, pitch: 1, vol: 1 };
+        if (x.key) { f.rate *= urgent ? 0.94 : 0.9; f.pitch *= urgent ? 1.02 : 1.05; }
+        if (x.endAt && same > 1 && g.indexOf(x) === g.length - 1 - [...g].reverse().findIndex(y => y.sents.has(s))) { f.rate *= urgent ? 1 : 0.95; f.pitch *= urgent ? 1 : 0.96; }
+        if (o.first && !urgent && x.sents.has(0) && x.sents.size === 1) f.pitch *= 1.05;   // 첫 인사는 조금 밝게
+        segs.push({ t: x.t, ...f, pre: i ? x.pre : p.pre });
+      });
+    });
+  }
+  // 3) 글자 없는 조각(쉼표만 등)은 앞 조각에 붙이고, 같은 소리 조각은 하나로
+  const out = [];
+  segs.forEach(s => {
+    const l = out[out.length - 1];
+    if (s.t && !solid(s.t)) { if (l) l.t += s.t; if (s.pre) out.push({ t: "", rate: 1, pitch: 1, vol: 1, pre: s.pre }); return; }
+    if (l && l.t && s.t && !s.pre && l.rate === s.rate && l.pitch === s.pitch && l.vol === s.vol) { l.t += s.t; return; }
+    out.push({ ...s });
+  });
+  out.forEach(s => { s.t = s.t.replace(/\[\/?[가-힣]{0,4}\]/g, " ").replace(/\s{2,}/g, " ").trim(); });   // 모르는 표시는 읽지 않음
+  return out.filter(s => s.t || s.pre);
+}
+function sayOne(g, L, v, base) {                          // 조각 하나 읽기
   return new Promise(res => {
-    const v = voice || pickVoice(L); if (!v || !text) return res(false);
-    const u = new SpeechSynthesisUtterance(speakAs(text, L));   // 발음 사전 적용 (화면 글자는 그대로)
+    const u = new SpeechSynthesisUtterance(speakAs(g.t, L));   // 발음 사전 적용 (화면 글자는 그대로)
     u.voice = v; u.lang = isMulti(v, L) ? L.bcp : v.lang;          // 다국어 목소리는 읽을 언어를 알려 줌
-    u.rate = S.rate * (L.id === "ko" ? 1 : 0.97); u.volume = S.vol;
-    u.pitch = /natural|neural|premium|enhanced/i.test(v.name) ? vPitch(v) : MOODS[S.mood].pitch * vPitch(v);   // AI 음성: 목소리별로 정한 높이만
-    let done = false; const fin = ok => { if (done) return; done = true; clearTimeout(guard); res(ok); };
-    const guard = setTimeout(() => fin(false), 8000 + text.length * 260);   // 엔진이 멈췄을 때 대비
+    u.rate = Math.min(2, Math.max(0.5, base.rate * g.rate)); u.volume = Math.min(1, Math.max(0, base.vol * g.vol)); u.pitch = Math.min(1.6, Math.max(0.5, base.pitch * g.pitch));
+    let done = false; const t0 = performance.now(); const fin = ok => { if (done) return; done = true; clearTimeout(guard); res(ok); };
+    const guard = setTimeout(() => fin(false), 8000 + g.t.length * 260);   // 엔진이 멈췄을 때 대비
+    u.onstart = () => { const d = performance.now() - t0; if (d > 0 && d < 3000) LAT[v.voiceURI] = LAT[v.voiceURI] == null ? d : LAT[v.voiceURI] * 0.7 + d * 0.3; };
     u.onend = () => fin(true); u.onerror = () => fin(false);
     if (IOS) { try { speechSynthesis.resume(); } catch (e) {} }
     speechSynthesis.speak(u);
   });
 }
+async function say(text, L, voice, o = {}) {              // 한 문장(또는 인사말) 읽기 — 성우 억양이면 조각으로 나눠 이어 읽음
+  const v = voice || pickVoice(L); if (!v || !text) return false;
+  const c = cancelN, base = {
+    rate: S.rate * (L.id === "ko" ? 1 : 0.97), vol: S.vol,
+    pitch: /natural|neural|premium|enhanced/i.test(v.name) ? vPitch(v) : MOODS[S.mood].pitch * vPitch(v),   // AI 음성: 목소리별로 정한 높이만
+  };
+  const segs = prosodyPlan(text, L, { ...o, lat: latOf(v), hi: latOf(v) >= 200 || /online|natural|neural/i.test(v.name) || v.localService === false });   // 온라인 목소리는 조각 수를 적게
+  say.last = segs;
+  for (const g of segs) {
+    if (cancelN !== c) return false;
+    const w = g.pre ? Math.max(0, g.pre - latOf(v)) : 0;   // 조각 사이 틈(말 시작 지연)만큼은 덜 쉼
+    if (w) { await sleepC(w, c); if (cancelN !== c) return false; }
+    if (!g.t) continue;
+    if (!(await sayOne(g, L, v, base))) return false;
+  }
+  return cancelN === c;
+}
+const markPause = t => { let n = 0; String(t || "").replace(/\[(쉼|긴쉼)\]/g, (_, k) => { n += PAUSES[k]; return ""; }); return n / 1000; };
 let running = false, stopFlag = false;
 function plan() {                                       // 방송 순서
   const langs = LANGS.filter(L => S.langs[L.id] && (S.texts[L.id] || "").trim());
@@ -2119,7 +2276,7 @@ function plan() {                                       // 방송 순서
       const head = L.extra ? (r ? H.again : urgent ? H.urgent : H.open) : r ? AGAIN[L.id] : (urgent ? OPEN_URGENT[L.id] : OPEN[L.id](L.id === "ko" ? S.apt : S.aptEn));
       const close = L.extra ? H.close : CLOSE[L.id];
       if (bare) { seq.push({ L, alt: false, parts: sentences(body) }); return; }   // 카운트다운: 인사말 없이 본문만
-      seq.push({ L, alt: !!(S.alt && r % 2 === 1), parts: [head, ...sentences(body), urgent ? "" : close].filter(Boolean) });
+      seq.push({ L, alt: !!(S.alt && r % 2 === 1), head: r ? "" : head, parts: [head, ...sentences(body), urgent ? "" : close].filter(Boolean) });
     });
   }
   return seq;
@@ -2147,10 +2304,11 @@ async function run(real, rec) {
     langPrev = blk.L.id;
     for (const p of blk.parts) {
       if (stopFlag) break;
-      if (rec && $("recLine")) $("recLine").innerHTML = `<b>${blk.L.flag}</b> ${p.replace(/</g, "&lt;")}`;
-      $("now").innerHTML = `${rec ? '<span class="recdot"></span>' : ""}<b>${blk.L.flag} ${real ? "방송 중" : rec ? "녹음 중" : "미리 듣기"}</b> — ${p.replace(/</g, "&lt;")}`;
-      await say(p, blk.L, blk.alt ? altVoice(blk.L) : null);
-      await sleepS(/[.!?。！？]$/.test(p) ? 380 : 200);    // 문장 사이 숨 고르기
+      const pv = unmark(p).replace(/</g, "&lt;");
+      if (rec && $("recLine")) $("recLine").innerHTML = `<b>${blk.L.flag}</b> ${pv}`;
+      $("now").innerHTML = `${rec ? '<span class="recdot"></span>' : ""}<b>${blk.L.flag} ${real ? "방송 중" : rec ? "녹음 중" : "미리 듣기"}</b> — ${pv}`;
+      await say(p, blk.L, blk.alt ? altVoice(blk.L) : null, { first: !!blk.head && p === blk.head });
+      await sleepS(/[.!?。！？]$/.test(unmark(p)) ? 380 : 200);    // 문장 사이 숨 고르기
     }
   }
   if (!stopFlag && S.chime && !S.__noClose) await chime("close");
@@ -2172,7 +2330,7 @@ function setLive(mode) {
 function estimate() {                                    // 대략 걸리는 시간
   setTimeout(oaSync, 0);
   const seq = plan(); let sec = (S.chime ? (CHIMES[S.chimeType]?.len || 2.6) * 2 : 0);
-  seq.forEach(b => b.parts.forEach(p => { sec += p.length / (b.L.id === "en" || /^[\x00-\u024f\s.,!?'"-]+$/.test(p) ? 14 : b.L.id === "ko" ? 6.2 : 6.5) / S.rate + 0.4; }));
+  seq.forEach(b => b.parts.forEach(p => { const q = unmark(p); sec += (q.length / (b.L.id === "en" || /^[\x00-\u024f\s.,!?'"-]+$/.test(q) ? 14 : b.L.id === "ko" ? 6.2 : 6.5) / S.rate) * (S.prosody === false ? 1 : 1.06) + 0.4 + markPause(p); }));
   $("est").textContent = seq.length ? `예상 길이 약 ${Math.round(sec)}초 · ${[...new Set(seq.map(b => b.L.name))].join(" → ")}${S.rep > 1 ? ` · ${S.rep}번 반복` : ""}` : "";
 }
 $("preBtn").onclick = () => (running ? stop() : run(false));
@@ -2311,6 +2469,23 @@ $("rate").oninput = e => { S.rate = +e.target.value; $("rateL").textContent = S.
 $("vol").oninput = e => { S.vol = +e.target.value; $("volL").textContent = Math.round(S.vol * 100) + "%"; save(); };
 $("chimeOn").onchange = e => { S.chime = e.target.checked; save(); estimate(); };
 $("chimeType").onchange = e => { S.chimeType = e.target.value; save(); estimate(); audio(); chime("open"); };
+$("proOn").onchange = e => { S.prosody = e.target.checked; save(); estimate(); toast(S.prosody ? "🎙 성우 억양을 켰습니다 — 시간·날짜·번호를 또렷하게 읽습니다" : "성우 억양을 껐습니다 — 문장을 한 번에 읽습니다"); };
+let markTa = null;                                        // 🎚 억양 표시: 마지막으로 누른 문장 칸
+$("langs").addEventListener("focusin", e => { if (e.target.tagName === "TEXTAREA") markTa = e.target; });
+$("markMenu").querySelector(".menu").onclick = e => {
+  const b = e.target.closest("button[data-mk]"); if (!b) return; closeMore();
+  const ta = markTa && document.contains(markTa) ? markTa : $("langs").querySelector(".lang:not(.off) textarea");
+  if (!ta) { toast("문장 칸이 없습니다"); return; }
+  const k = b.dataset.mk, v = ta.value, a = ta.selectionStart ?? v.length, z = ta.selectionEnd ?? v.length; let nv, c0, c1;
+  if (k === "x") { nv = unmark(v); c0 = c1 = nv.length; }
+  else if (PAUSES[k]) { nv = v.slice(0, z) + `[${k}]` + v.slice(z); c0 = c1 = z + k.length + 2; }
+  else if (a === z) { nv = v.slice(0, a) + `[${k}][/]` + v.slice(a); c0 = c1 = a + k.length + 2; toast(`글자를 고른 뒤 누르면 [${k}]…[/] 로 감쌉니다 — 지금은 빈 표시를 넣었습니다`); }
+  else { nv = v.slice(0, a) + `[${k}]` + v.slice(a, z) + "[/]" + v.slice(z); c0 = a; c1 = z + k.length + 5; }
+  if (nv === v) { toast("지울 표시가 없습니다"); return; }
+  ta.value = nv; ta.focus(); try { ta.setSelectionRange(c0, c1); } catch (er) {}
+  ta.dispatchEvent(new Event("input", { bubbles: true }));
+  if (k === "x") toast("🧹 억양 표시를 지웠습니다"); else if (a !== z || PAUSES[k]) toast(`🎚 [${k}] 표시를 넣었습니다 — ▶ 듣기로 확인해 보세요`);
+};
 $("autoPol").onchange = e => { S.autoPolish = e.target.checked; save(); estimate(); toast(S.autoPolish ? "✨ 자동 다듬기를 켰습니다 — 직접 쓴 한국어 문장에 쉼표를 넣어 읽습니다" : "자동 다듬기를 껐습니다"); };
 $("rep").onclick = e => { const v = +e.target.dataset.v; if (!v) return; S.rep = v; [...$("rep").children].forEach(b => b.classList.toggle("on", +b.dataset.v === v)); save(); estimate(); altInfo(); };
 $("altOn").onchange = e => { S.alt = e.target.checked; save(); altInfo(); };
@@ -2517,7 +2692,7 @@ function noticeParts() {
 $("notice").onclick = () => {
   const { t, langs, who, date } = noticeParts(); if (!langs.length) { toast("공지할 문장이 없습니다"); return; }
   const esc = x => String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  const blocks = langs.map((L, i) => `<section class="${i ? "sub" : "main"}"><div class="lang">${L.flag} ${esc(L.extra ? L.name : L.name)}</div><p>${esc(S.texts[L.id].trim())}</p></section>`).join("");
+  const blocks = langs.map((L, i) => `<section class="${i ? "sub" : "main"}"><div class="lang">${L.flag} ${esc(L.extra ? L.name : L.name)}</div><p>${esc(unmark(S.texts[L.id]).trim())}</p></section>`).join("");
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>공지문 — ${esc(t.name)}</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>@page{size:A4;margin:16mm}*{box-sizing:border-box}body{margin:0;font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif;color:#1f1a14}
@@ -2535,7 +2710,7 @@ ${blocks}<div class="foot">${esc(who)}<small>온에어(溫 On-Air) 안내방송�
 };
 $("kakao").onclick = async () => {
   const { t, langs, who } = noticeParts(); if (!langs.length) { toast("보낼 문장이 없습니다"); return; }
-  const txt = `📢 [안내] ${t.name}\n\n` + langs.map(L => `${L.flag} ${S.texts[L.id].trim()}`).join("\n\n") + `\n\n— ${who}`;
+  const txt = `📢 [안내] ${t.name}\n\n` + langs.map(L => `${L.flag} ${unmark(S.texts[L.id]).trim()}`).join("\n\n") + `\n\n— ${who}`;
   try { await navigator.clipboard.writeText(txt); }
   catch (e) {
     let ok = false; const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
@@ -2816,7 +2991,7 @@ $("hCsv").onclick = () => {
   const q = v => `"${String(v ?? "").replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
   const head = ["날짜·시각", "종류", "방송 이름", "덧붙임", "언어", ...LANGS.map(L => L.extra ? L.ko : L.name)];
   const rows = hist.map(h => [h.at, (HK[h.kind || "air"] || [""])[0].replace(/^\S+\s/, ""), h.label.replace(/^\S+\s/, ""), h.extra || "",
-    LANGS.filter(L => h.langs && h.langs[L.id]).map(L => L.extra ? L.ko : L.name).join("·"), ...LANGS.map(L => (h.langs && h.langs[L.id] ? h.texts[L.id] : "") || "")]);
+    LANGS.filter(L => h.langs && h.langs[L.id]).map(L => L.extra ? L.ko : L.name).join("·"), ...LANGS.map(L => unmark((h.langs && h.langs[L.id] ? h.texts[L.id] : "") || ""))]);
   const csv = "\ufeff" + [head, ...rows].map(r => r.map(q).join(",")).join("\r\n");    // BOM: 엑셀에서 한글이 안 깨지게
   const d = new Date(), a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
@@ -3004,7 +3179,7 @@ function renderAll() {
   [...$("mood").children].forEach(b => b.classList.toggle("on", b.dataset.v === S.mood));
   $("rate").value = S.rate; $("rateL").textContent = (+S.rate).toFixed(2);
   $("vol").value = S.vol; $("volL").textContent = Math.round(S.vol * 100) + "%";
-  $("autoPol").checked = !!S.autoPolish;
+  $("autoPol").checked = !!S.autoPolish; $("proOn").checked = S.prosody !== false;
   $("chimeOn").checked = S.chime; $("chimeType").value = S.chimeType;
   [...$("rep").children].forEach(b => b.classList.toggle("on", +b.dataset.v === S.rep));
   estimate(); altInfo();
