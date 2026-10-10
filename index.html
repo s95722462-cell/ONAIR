@@ -2119,8 +2119,8 @@ function roomTick() {
 setInterval(roomTick, 400);
 function roomOpen(on) {
   $("room").hidden = !on;
-  if (on) { renderRoom(); roomTick(); try { document.documentElement.requestFullscreen?.(); } catch (e) {} }
-  else { try { document.fullscreenElement && document.exitFullscreen(); } catch (e) {} }
+  if (on) { renderRoom(); roomTick(); try { document.documentElement.requestFullscreen?.()?.catch?.(() => {}); } catch (e) {} }
+  else { try { document.fullscreenElement && document.exitFullscreen().catch(() => {}); } catch (e) {} }
 }
 
 $("packAdd").onclick = addToPack;
