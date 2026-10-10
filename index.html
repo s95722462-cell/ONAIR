@@ -443,7 +443,7 @@
   <div id="qrBox"></div>
   <label style="display:flex;gap:8px;justify-content:center;align-items:center;margin:10px 0;font-size:14px"><input type="checkbox" id="qrShared"> 매장 공용 QR (손님이 번호를 직접 입력 · 카운터에 붙여 두기)</label>
   <div class="muted" style="font-size:12px;line-height:1.5">손님 휴대폰에 대기 화면이 열리고, 그 번호를 <b>📢 방송</b>하면 손님 휴대폰이 소리·진동으로 울립니다.<br>메시지는 무료 중계 서비스(ntfy.sh)를 거칩니다 — 매장 코드와 번호만 보냅니다.</div>
-  <div class="btns" style="margin-top:12px"><button id="qrPrint">🖨 인쇄</button><button class="ok" id="qrClose">닫기</button></div>
+  <div class="btns" style="margin-top:12px"><button id="qrSign" title="A5 크기 카운터 안내판 (매장 공용 QR)">🪧 카운터 안내판</button><button id="qrPrint">🖨 인쇄</button><button class="ok" id="qrClose">닫기</button></div>
 </dialog>
 <div class="recbar" id="recBar" hidden></div>
 <div class="toast" id="toast"></div>
@@ -2430,6 +2430,31 @@ async function qrDraw() {
 function qrOpen() { shopId(); $("qrShared").checked = ls.get("qrShared", false); $("qrDlg").showModal(); qrDraw(); }
 $("qrShared").onchange = () => { ls.set("qrShared", $("qrShared").checked); qrDraw(); };
 $("qrClose").onclick = () => $("qrDlg").close();
+$("qrSign").onclick = async () => {                       // 🪧 카운터 안내판 (A5, 매장 공용 QR)
+  let img = "";
+  try { await loadQR(); const box = document.createElement("div"); new QRCode(box, { text: waitUrl(""), width: 600, height: 600, correctLevel: QRCode.CorrectLevel.M }); img = box.querySelector("canvas")?.toDataURL() || box.querySelector("img")?.src || ""; }
+  catch (e) { toast("QR 그리기 도구를 불러오지 못했습니다 (인터넷 연결 확인)"); return; }
+  const shop = (S.apt || "").replace(/</g, "&lt;"), w = window.open("", "_blank", "width=620,height=900");
+  if (!w) { toast("팝업이 막혔습니다 — 주소창 오른쪽에서 팝업을 허용해 주세요"); return; }
+  w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>카운터 안내판</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>@page{size:A5 portrait;margin:0}*{box-sizing:border-box}html,body{margin:0}body{font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif;color:#1c1917;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:148mm;height:210mm;padding:11mm 11mm 9mm;display:flex;flex-direction:column;align-items:center;text-align:center;background:#fff7ed;border:0}
+.shop{font-size:13pt;font-weight:700;color:#9a3412;letter-spacing:.02em;min-height:6mm}.bell{font-size:30pt;line-height:1;margin-top:2mm}
+h1{font-size:23pt;line-height:1.25;margin:2mm 0 1mm;font-weight:900;word-break:keep-all}h1 b{color:#ea580c}.en{font-size:10.5pt;color:#78716c;margin-bottom:5mm}
+.qr{background:#fff;border-radius:6mm;padding:5mm;box-shadow:0 0 0 1.2mm #fdba74}.qr img{width:66mm;height:66mm;display:block}
+ol{list-style:none;padding:0;margin:6mm 0 0;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:3mm}li{background:#fff;border-radius:4mm;padding:3.5mm 2mm;font-size:11.5pt;font-weight:700;line-height:1.35;word-break:keep-all}
+li i{display:block;font-style:normal;width:8mm;height:8mm;line-height:8mm;margin:0 auto 1.5mm;border-radius:50%;background:#f97316;color:#fff;font-weight:900}li small{display:block;font-weight:400;font-size:8.5pt;color:#78716c;margin-top:1mm}
+.note{margin-top:auto;font-size:10pt;color:#9a3412;line-height:1.5}.note b{color:#c2410c}
+@media screen{body{background:#e7e5e4;padding:16px}.pg{margin:0 auto;box-shadow:0 4px 20px #0002}}</style></head><body><div class="pg">
+<div class="shop">${shop}</div><div class="bell">🔔</div>
+<h1>메뉴가 준비되면<br><b>휴대폰으로 알려 드려요</b></h1><div class="en">We'll notify your phone when your order is ready</div>
+<div class="qr"><img src="${img}" alt="QR"></div>
+<ol><li><i>1</i>휴대폰 카메라로<br>QR 찍기<small>Scan the QR</small></li><li><i>2</i>영수증의<br>주문 번호 입력<small>Enter your order no.</small></li><li><i>3</i>🔔 알림 받기<br>누르고 기다리기<small>Tap & wait</small></li></ol>
+<div class="note">⚠️ 알림이 울리려면 <b>그 화면을 켜 둔 채</b> 기다려 주세요.<br>Please keep the screen open while you wait.</div>
+</div><script>document.fonts.ready.then(() => setTimeout(() => print(), 300))<\/script></body></html>`);
+  w.document.close();
+};
 $("qrPrint").onclick = () => {
   const img = $("qrBox").querySelector("img")?.src || $("qrBox").querySelector("canvas")?.toDataURL(); if (!img) return;
   const w = window.open("", "_blank", "width=500,height=700"); if (!w) { toast("팝업이 막혔습니다"); return; }
