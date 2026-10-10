@@ -2334,6 +2334,7 @@ function roomTiles() {
   (S.fav || []).forEach(id => { const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = !m && T.find(x => x.id === id); if (m) tiles.push({ kind: "tpl", id, icon: m.icon, name: m.name }); else if (t) tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: t.urgent }); });
   const hide = S.roomHide || [];
   S.packs.forEach(pk => { if (!hide.includes("pack:" + pk.id)) tiles.push({ kind: "pack", pk, icon: "📚", name: pk.name }); });
+  if (!hide.includes("hist")) tiles.push({ kind: "hist", id: "hist", icon: "📊", name: "최근 방송" });
   ["efire", "equake", "urgent"].forEach(id => { if (!tiles.some(x => x.id === id) && !hide.includes(id)) { const t = T.find(x => x.id === id); tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: true }); } });
   return tiles;
 }
@@ -2350,43 +2351,35 @@ function renderRoom() {
       g.appendChild(b);
     });
     // 기본으로 붙는 것: 방송 묶음 · 긴급 3개 → 눌러서 빼기·넣기
-    const hide = S.roomHide || [], extra = [...S.packs.map(pk => ({ key: "pack:" + pk.id, icon: "📚", name: pk.name })), ...["efire", "equake", "urgent"].filter(id => !(S.fav || []).includes(id)).map(id => { const t = T.find(x => x.id === id); return { key: id, icon: t.icon, name: t.name, urgent: true }; })];
-    if (extra.length) g.insertAdjacentHTML("beforeend", '<div class="rhint" style="padding:10px;font-size:15px;border:0;text-align:left">📌 기본으로 붙는 버튼 (방송 묶음 · 긴급) — 눌러서 빼거나 넣으세요</div>');
+    const hide = S.roomHide || [], extra = [{ key: "hist", icon: "📊", name: "최근 방송" }, ...S.packs.map(pk => ({ key: "pack:" + pk.id, icon: "📚", name: pk.name })), ...["efire", "equake", "urgent"].filter(id => !(S.fav || []).includes(id)).map(id => { const t = T.find(x => x.id === id); return { key: id, icon: t.icon, name: t.name, urgent: true }; })];
+    if (extra.length) g.insertAdjacentHTML("beforeend", '<div class="rhint" style="padding:10px;font-size:15px;border:0;text-align:left">📌 기본으로 붙는 버튼 (최근 방송 · 방송 묶음 · 긴급) — 눌러서 빼거나 넣으세요</div>');
     extra.forEach(x => {
       const on = !hide.includes(x.key), b = document.createElement("button"); b.className = "rtile" + (x.urgent ? " urg" : "") + (on ? " on" : "");
       b.innerHTML = `<span>${x.icon}</span><b></b><i class="st">${on ? "★" : "☆"}</i>`; b.querySelector("b").textContent = x.name;
-      b.onclick = () => { S.roomHide = on ? [...hide, x.key] : hide.filter(k => k !== x.key); save(); renderRoom(); };
+      b.onclick = () => { S.roomHide = on ? [...hide, x.key] : hide.filter(k => k !== x.key); save(); renderRoom(); renderRoomHist(); };
       g.appendChild(b);
     });
     return;
   }
   if (!(S.fav || []).length && !roomTiles().length) g.insertAdjacentHTML("beforeend", '<div class="rhint">⭐ 자주 쓰는 방송을 큰 버튼으로 모아 두세요.<br>위의 <b>☆ 즐겨찾기 고르기</b>를 누르고 방송을 고르면 여기에 생깁니다.</div>');
   roomTiles().forEach(x => {
-    const b = document.createElement("button"); b.className = "rtile" + (x.urgent ? " urg" : "") + (x.kind === "tpl" && S.tpl === x.id ? " on" : "");
+    const b = document.createElement("button"); b.className = "rtile" + (x.urgent ? " urg" : "") + ((x.kind === "tpl" && S.tpl === x.id) || (x.kind === "hist" && S.roomHistOpen !== false) ? " on" : "");
     b.innerHTML = `<span>${x.icon}</span><b></b>`; b.querySelector("b").textContent = x.name;
-    b.onclick = () => { if (x.kind === "pack") { playPack(x.pk); return; } pickTpl(x.id); renderRoom(); };
+    b.onclick = () => { if (x.kind === "hist") { S.roomHistOpen = S.roomHistOpen === false; save(); renderRoom(); renderRoomHist(); return; } if (x.kind === "pack") { playPack(x.pk); return; } pickTpl(x.id); renderRoom(); };
     g.appendChild(b);
   });
 }
 function renderRoomHist() {                              // 📊 방송실: 최근 방송 기록 (누르면 불러오기 · ☆ = 내 방송 + 즐겨찾기)
   const box = $("roomHist"); if (!box || $("room").hidden) return;
+  if (roomPick || (S.roomHide || []).includes("hist") || S.roomHistOpen === false) { box.innerHTML = ""; return; }
   const list = hist.slice(0, 10);
-  box.innerHTML = `<h4>📊 최근 방송 <span>누르면 그 문장을 불러옵니다 · ☆ 누르면 큰 버튼으로 저장</span></h4>` + (list.length ? "" : '<div class="muted" style="opacity:.7;padding:6px 2px">아직 방송 기록이 없습니다.</div>');
+  box.innerHTML = `<h4>📊 최근 방송 <span>누르면 그 문장을 불러옵니다 — 큰 버튼으로 다시 방송하세요</span></h4>` + (list.length ? "" : '<div class="muted" style="opacity:.7;padding:6px 2px">아직 방송 기록이 없습니다.</div>');
   list.forEach(h => {
     const d = document.createElement("div"); d.className = "rh"; const tm = ((h.at.match(/(오전|오후)\s?\d{1,2}:\d{2}/) || h.at.match(/\d{1,2}:\d{2}/) || [])[0] || "").replace(/\s/, " ");
-    const saved = mine.find(m => (S.fav || []).includes("mine:" + m.id) && JSON.stringify(m.texts) === JSON.stringify(Object.fromEntries(Object.entries(h.texts).filter(([k, v]) => h.langs[k] && (v || "").trim()).map(([k, v]) => [k, v.trim()]))));
-    d.innerHTML = `<span class="tm"></span><span class="k"></span><span class="nm"><b></b><span></span></span><button title="${saved ? "이미 큰 버튼으로 저장됨" : "이 문장을 큰 버튼(내 방송 + 즐겨찾기)으로 저장"}">${saved ? "★" : "☆"}</button>`;
+    d.innerHTML = `<span class="tm"></span><span class="k"></span><span class="nm"><b></b><span></span></span>`;
     d.querySelector(".tm").textContent = tm; d.querySelector(".k").textContent = (HK[h.kind || "air"] || [""])[0];
     d.querySelector(".nm b").textContent = h.label; d.querySelector(".nm span").textContent = firstText(h.texts, h.langs);
-    d.onclick = e => {
-      if (e.target.tagName === "BUTTON") {
-        if (saved) { toast("이미 큰 버튼으로 저장되어 있습니다"); return; }
-        const name = prompt("큰 버튼 이름 (방송실·⭐ 내 방송에 생깁니다)", h.label.replace(/^\S+\s/, "")); if (!name || !name.trim()) return;
-        const texts = {}, langs = {}; Object.entries(h.texts).forEach(([k, v]) => { if (h.langs[k] && (v || "").trim()) { texts[k] = v.trim(); langs[k] = true; } });
-        const m = { id: Date.now().toString(36), name: name.trim(), icon: (h.label.match(/^\S+/) || ["⭐"])[0], texts, langs, mood: S.mood === "urgent" ? "calm" : S.mood };
-        mine = [...mine, m]; ls.set("mine", mine); S.fav = [...(S.fav || []), "mine:" + m.id]; save(); renderTpls(); renderRoom(); renderRoomHist();
-        toast(`⭐ '${m.name}' 큰 버튼을 만들었습니다`); return;
-      }
+    d.onclick = () => {
       S.texts = { ...h.texts }; S.langs = { ...h.langs }; S.edited = Object.fromEntries(Object.keys(h.texts).map(k => [k, true]));
       const mn = curT().f.includes("num") && (firstText(h.texts, h.langs).match(/(\d{1,6})\s*번/) || [])[1];
       if (mn) { S.vals.num = mn; $("roomNumIn").value = mn; renderFields(); }      // 불러온 문장의 번호로 번호 칸·큰 버튼·번호판 맞춤
@@ -2410,7 +2403,7 @@ $("roomNumIn").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $
 $("roomNum").querySelectorAll("[data-d]").forEach(b => b.onclick = () => roomNumSet(Math.max(1, (parseInt($("roomNumIn").value, 10) || 0) + +b.dataset.d)));
 $("roomBoard").onclick = () => boardOpen();
 $("roomQR").onclick = () => { setNum($("roomNumIn").value); qrOpen(); };
-$("roomFav").onclick = () => { roomPick = !roomPick; renderRoom(); };
+$("roomFav").onclick = () => { roomPick = !roomPick; renderRoom(); renderRoomHist(); };
 $("roomStart").checked = ls.get("roomStart", false);
 $("roomStart").onchange = () => { ls.set("roomStart", $("roomStart").checked); toast($("roomStart").checked ? "다음부터 온에어를 열면 방송실 모드로 시작합니다" : "다음부터 일반 화면으로 시작합니다"); };
 function roomTick() {
