@@ -1283,10 +1283,11 @@ function josa(w, j) {                                   // 받침에 맞춰 은/
 }
 function keepEdit(lang, text) {                          // ✏️ 고친 문장을 방송 종류별로 기억 (방송실·다른 화면에서도 같은 문장)
   const t = curT();
-  if (t.mine) { const m = mine.find(x => "mine:" + x.id === S.tpl); if (m) { m.texts[lang] = text; m.langs = { ...m.langs, [lang]: !!S.langs[lang] }; ls.set("mine", mine); } return; }
+  if (t.mine) { const m = mine.find(x => "mine:" + x.id === S.tpl); if (m) { m.texts[lang] = text; m.langs = { ...m.langs, [lang]: !!S.langs[lang] }; ls.set("mine", mine); clearTimeout(keepEdit.t); keepEdit.t = setTimeout(() => toast(`✏️ 내 방송 '${m.name}'을(를) 고친 문장으로 저장했습니다`), 1200); } return; }
   const num = (S.vals.num || "").trim() || "1", hasNum = t.f.includes("num");
   const v = hasNum ? text.replace(new RegExp(`(^|\\D)${num.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=\\D|$)`, "g"), "$1{num}") : text;
   S.tplEdits = { ...(S.tplEdits || {}), [S.tpl]: { ...((S.tplEdits || {})[S.tpl] || {}), [lang]: v } };
+  clearTimeout(keepEdit.t); keepEdit.t = setTimeout(() => toast(`✏️ 고친 문장을 저장했습니다 — '${t.name}'은(는) 방송실에서도 이 문장으로 나갑니다 (되돌리기: ↻ 다시 만들기)`), 1200);
 }
 function applyEdits() {                                   // 기억해 둔 고친 문장 다시 넣기 (번호는 지금 번호로)
   const e = (S.tplEdits || {})[S.tpl]; if (!e || curT().mine) return;
