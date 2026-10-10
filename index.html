@@ -121,6 +121,10 @@
   .big.air { background: linear-gradient(135deg, #f97316, #c2410c); color: #fff; box-shadow: 0 14px 30px -14px #c2410c; }
   .big.stop { background: #1f2937; color: #fff; }
   .big:hover { filter: brightness(1.05); }
+  .howto { margin-top: 12px; border: 1px solid #c7d2fe; border-radius: 12px; background: #fff; }
+  .howto summary { cursor: pointer; padding: 10px 14px; font-weight: 700; color: #3730a3; font-size: 14.5px; }
+  .howto .hx { padding: 0 14px 12px; font-size: 14px; line-height: 1.7; }
+  .howto ol { margin: 6px 0; padding-left: 22px; } .howto li { margin: 3px 0; } .howto code { background: #eef2ff; padding: 1px 5px; border-radius: 5px; font-size: 12.5px; word-break: break-all; }
   .now { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: #fffaf5; border: 1px dashed #fdba74; font-size: 14px; min-height: 46px; line-height: 1.55; }
   .now b { color: var(--accent2); }
   .est { font-size: 12.5px; color: var(--dim); margin-top: 6px; }
@@ -258,6 +262,28 @@
           <button class="big" id="recBtn" title="방송을 음성 파일로 저장 (PC의 Edge·Chrome)" style="background:#eef2ff;border-color:#c7d2fe;color:#3730a3">💾 음성 파일로 저장</button>
           <select id="recFmt" title="파일 형식"><option value="mp3">MP3</option><option value="wav">WAV</option></select>
         </div>
+        <details class="howto" open>
+          <summary>📘 사용법 · 예시 — 미리 듣기 · 방송 시작 · 음성 파일</summary>
+          <div class="hx">
+            <b>예시: "내일 101동·102동 단수" 방송 만들기</b>
+            <button class="mini" id="exFill" style="margin-left:6px;border-color:#c7d2fe;background:#eef2ff;color:#3730a3;font-weight:700">🧪 이 예시로 채워 보기</button>
+            <ol>
+              <li><b>① 장소</b> 🏢 아파트 → 방송 종류 <b>🚱 단수</b>를 누릅니다.</li>
+              <li>빈칸에 날짜 <b>내일</b>, 시간 <b>10:00 ~ 15:00</b>, 대상 동 <b>101동, 102동</b>을 넣습니다.<br>
+                <span class="muted">→ ② 문장: "101동, 102동은, ○월 ○일, 오전 10시부터 오후 3시까지, 물탱크 청소로 단수됩니다. …"</span></li>
+              <li><b>▶ 미리 듣기</b> — <u>내 PC 스피커로만</u> 들어 보는 연습입니다. 기록에 남지 않고, 다시 누르면 멈춥니다. 발음이 어색하면 ② 문장을 고치거나 📖 발음 사전에 넣으세요.</li>
+              <li><b>📢 방송 시작</b> — 실제 방송입니다. PC를 방송 앰프에 연결해 두면 차임 → 인사말 → 본문(켜 둔 언어 순서) → 끝인사 → 차임 순서로 나가고, <b>⑥ 방송 기록</b>에 남습니다. 도중에 멈추려면 같은 버튼(■ 방송 멈추기)을 누르세요.</li>
+              <li><b>💾 음성 파일로 저장</b> — 방송 장비에 넣거나 카톡으로 보낼 파일이 필요할 때 씁니다.
+                <ol type="a" style="margin-top:4px">
+                  <li>MP3(작은 파일, 보통 이걸로) 또는 WAV(원음, 장비가 MP3를 못 읽을 때)를 고릅니다.</li>
+                  <li>버튼 → <b>녹음 시작</b> → 화면 공유 창에서 <b>전체 화면</b> 선택 → <b>"시스템 오디오도 공유"</b> 켜기 → <b>공유</b>.</li>
+                  <li>방송이 스피커로 한 번 나오는 동안 녹음되고, 끝나면 <b>다운로드 폴더</b>에 저장됩니다.<br>
+                    <span class="muted">파일 이름 예: <code>온에어_단수_20261011_0930.mp3</code></span></li>
+                </ol></li>
+            </ol>
+            <div class="muted">💡 순서 추천: <b>미리 듣기로 확인 → 방송 시작</b> (또는 → 음성 파일 저장). 음성 파일은 PC의 Edge·Chrome에서만 됩니다. 녹음 중에는 음악·유튜브·알림 소리를 꺼 주세요.</div>
+          </div>
+        </details>
       </section>
 
       <section class="card">
@@ -1655,7 +1681,13 @@ function speakAs(text, L) {                              // 📖 발음 사전: 
     const esc = d.from.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     text = text.replace(new RegExp(esc, /[a-z]/i.test(d.from) ? "gi" : "g"), d.to || "");
   }
+  if (L.id === "ko") text = text.replace(/(\d{1,4})\s*번(?!째)/g, (_, n) => sinoKo(n) + " 번");   // 번호는 한자어 수로: 14번 → 십사 번 (열네 번 X)
   return text;
+}
+function sinoKo(n) {                                      // 144 → 백사십사, 2005 → 이천오, 0 → 영
+  n = String(+n); if (n === "0") return "영";
+  const D = ["", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"], U = ["", "십", "백", "천"];
+  return [...n].map((c, i) => { const d = +c, u = n.length - 1 - i; return d === 0 ? "" : (d === 1 && u > 0 ? "" : D[d]) + U[u]; }).join("");
 }
 function sentences(t) {                                 // 문장 나누기 ("a.m."·"p.m."·소수점에서는 안 끊음)
   const P = t.replace(/\b([ap])\.m\./gi, "$1§m§").replace(/(\d)\.(\d)/g, "$1§$2");
@@ -2272,6 +2304,14 @@ $("hCsv").onclick = () => {
 $("hClear").onclick = () => { if (confirm("방송 기록을 모두 지울까요?")) { hist = []; ls.set("hist", hist); renderHist(); } };
 
 // ================= 시작 =================
+$("exFill").onclick = () => {                            // 🧪 사용법 예시: 내일 101동·102동 단수
+  const d = new Date(Date.now() + 864e5), iso = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  S.place = "apt"; S.tpl = "water"; S.edited = {}; S.vals = { ...S.vals, date: iso, start: "10:00", end: "15:00", place: "101동, 102동" };
+  save(); renderPlaces(); renderTpls(); renderFields(); regen(true); aptLabel();
+  $("preBtn").scrollIntoView({ behavior: "smooth", block: "center" });
+  $("preBtn").animate([{ boxShadow: "0 0 0 0 #fb923c" }, { boxShadow: "0 0 0 10px #fb923c00" }], { duration: 900, iterations: 3 });
+  toast("🧪 예시를 채웠습니다 — ▶ 미리 듣기를 눌러 들어 보세요");
+};
 function renderAll() {
   renderPlaces(); renderTpls(); renderDict(); renderCd(); bkInfo(); renderPacks(); renderFields(); renderLangs();
   [...$("mood").children].forEach(b => b.classList.toggle("on", b.dataset.v === S.mood));
