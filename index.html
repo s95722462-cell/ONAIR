@@ -363,7 +363,7 @@
 
   <div class="pane cards" data-pane="log">
       <section class="card">
-        <h2>📊 방송 기록 <span class="muted" id="hCount" style="font-weight:400;font-size:12px"></span><span class="sp"></span><button class="mini" id="hCsv" title="엑셀에서 열 수 있는 파일로 저장 (업무일지용)">📊 엑셀</button><button class="mini" id="hClear">비우기</button></h2>
+        <h2>📊 방송 기록 <span class="muted" id="hCount" style="font-weight:400;font-size:12px"></span><span class="sp"></span><button class="mini" id="hFav" title="방송 기록을 ★ 즐겨찾기에 넣으면 방송실 모드에 최근 방송이 보입니다">☆ 즐겨찾기</button><button class="mini" id="hCsv" title="엑셀에서 열 수 있는 파일로 저장 (업무일지용)">📊 엑셀</button><button class="mini" id="hClear">비우기</button></h2>
         <div class="list" id="hList"></div>
         <button class="mini" id="hMore" hidden style="margin-top:8px;width:100%;height:34px">전체 보기</button>
       </section>
@@ -1373,7 +1373,7 @@ function tplButton(id, icon, name, cls) {               // 버튼 하나: 왼쪽
   b.querySelector("b").textContent = name;
   b.onclick = e => {
     if (e.target.classList.contains("fv")) {
-      S.fav = fav ? S.fav.filter(x => x !== id) : [...(S.fav || []), id]; save(); renderTpls();
+      S.fav = fav ? S.fav.filter(x => x !== id) : [...(S.fav || []), id]; save(); renderTpls(); if (id === "hist") hFavSync();
       toast(fav ? `☆ 즐겨찾기에서 뺐습니다: ${name}` : `★ 즐겨찾기에 넣었습니다: ${name}`); return;
     }
     if (e.target.classList.contains("x")) {
@@ -1382,6 +1382,7 @@ function tplButton(id, icon, name, cls) {               // 버튼 하나: 왼쪽
       if (S.tpl === id) S.tpl = groupsFor(S.place || "apt")[0].ids[0];
       save(); renderTpls(); renderFields(); regen(true); toast("지웠습니다"); return;
     }
+    if (id === "hist") { goTab("log"); return; }           // 📊 기록 즐겨찾기 → 기록 탭
     pickTpl(id);
   };
   return b;
@@ -1392,6 +1393,7 @@ function renderTpls() {
   const left = S.place && S.place !== "apt" ? [] : T.filter(t => !t.places && !t.id.startsWith("g_") && !["lost"].includes(t.id) && !GROUPS.some(g => g.ids.includes(t.id)));   // 아파트: 묶음에 없는 것은 생활 안내에
   const here = new Set([...GROUPS.flatMap(g => g.ids), ...left.map(t => t.id)]);
   const info = id => {
+    if (id === "hist") return { icon: "📊", name: "최근 방송 기록", cls: "" };
     if (id.startsWith("mine:")) { const m = mine.find(x => "mine:" + x.id === id); return m && { icon: m.icon, name: m.name, cls: "" }; }
     const t = T.find(x => x.id === id); return t && here.has(id) && { icon: t.icon, name: t.name, cls: t.urgent ? "urgent" : "" };
   };
@@ -2331,10 +2333,9 @@ async function playPack(pk) {
 // ================= 🖥 방송실 모드 =================
 function roomTiles() {
   const tiles = [];
-  (S.fav || []).forEach(id => { const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = !m && T.find(x => x.id === id); if (m) tiles.push({ kind: "tpl", id, icon: m.icon, name: m.name }); else if (t) tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: t.urgent }); });
+  (S.fav || []).forEach(id => { if (id === "hist") { tiles.push({ kind: "hist", id, icon: "📊", name: "최근 방송" }); return; } const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = !m && T.find(x => x.id === id); if (m) tiles.push({ kind: "tpl", id, icon: m.icon, name: m.name }); else if (t) tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: t.urgent }); });
   const hide = S.roomHide || [];
   S.packs.forEach(pk => { if (!hide.includes("pack:" + pk.id)) tiles.push({ kind: "pack", pk, icon: "📚", name: pk.name }); });
-  if (!hide.includes("hist")) tiles.push({ kind: "hist", id: "hist", icon: "📊", name: "최근 방송" });
   ["efire", "equake", "urgent"].forEach(id => { if (!tiles.some(x => x.id === id) && !hide.includes(id)) { const t = T.find(x => x.id === id); tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: true }); } });
   return tiles;
 }
@@ -2343,16 +2344,16 @@ function renderRoom() {
   const g = $("roomGrid"); g.innerHTML = ""; $("roomFav").classList.toggle("on", roomPick); $("roomFav").textContent = roomPick ? "✓ 다 골랐어요" : "☆ 즐겨찾기 고르기";
   if (roomPick) {                                         // 이 장소의 방송 + 내 방송 전부, 눌러서 ★ 켜고 끄기
     const ids = [...new Set([...groupsFor(S.place || "apt").flatMap(gr => gr.ids), ...mine.map(m => "mine:" + m.id)])].filter(id => !["efire", "equake", "urgent"].includes(id) || (S.fav || []).includes(id));
-    ids.forEach(id => {
-      const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = !m && T.find(x => x.id === id); if (!m && !t) return;
+    ["hist", ...ids].forEach(id => {
+      const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = id === "hist" ? { icon: "📊", name: "최근 방송 기록" } : !m && T.find(x => x.id === id); if (!m && !t) return;
       const on = (S.fav || []).includes(id), b = document.createElement("button"); b.className = "rtile" + (on ? " on" : "");
       b.innerHTML = `<span>${(m || t).icon}</span><b></b><i class="st">${on ? "★" : "☆"}</i>`; b.querySelector("b").textContent = (m || t).name;
-      b.onclick = () => { S.fav = on ? S.fav.filter(x => x !== id) : [...(S.fav || []), id]; save(); renderTpls(); renderRoom(); };
+      b.onclick = () => { S.fav = on ? S.fav.filter(x => x !== id) : [...(S.fav || []), id]; save(); renderTpls(); renderRoom(); hFavSync(); };
       g.appendChild(b);
     });
     // 기본으로 붙는 것: 방송 묶음 · 긴급 3개 → 눌러서 빼기·넣기
-    const hide = S.roomHide || [], extra = [{ key: "hist", icon: "📊", name: "최근 방송" }, ...S.packs.map(pk => ({ key: "pack:" + pk.id, icon: "📚", name: pk.name })), ...["efire", "equake", "urgent"].filter(id => !(S.fav || []).includes(id)).map(id => { const t = T.find(x => x.id === id); return { key: id, icon: t.icon, name: t.name, urgent: true }; })];
-    if (extra.length) g.insertAdjacentHTML("beforeend", '<div class="rhint" style="padding:10px;font-size:15px;border:0;text-align:left">📌 기본으로 붙는 버튼 (최근 방송 · 방송 묶음 · 긴급) — 눌러서 빼거나 넣으세요</div>');
+    const hide = S.roomHide || [], extra = [...S.packs.map(pk => ({ key: "pack:" + pk.id, icon: "📚", name: pk.name })), ...["efire", "equake", "urgent"].filter(id => !(S.fav || []).includes(id)).map(id => { const t = T.find(x => x.id === id); return { key: id, icon: t.icon, name: t.name, urgent: true }; })];
+    if (extra.length) g.insertAdjacentHTML("beforeend", '<div class="rhint" style="padding:10px;font-size:15px;border:0;text-align:left">📌 기본으로 붙는 버튼 (방송 묶음 · 긴급) — 눌러서 빼거나 넣으세요</div>');
     extra.forEach(x => {
       const on = !hide.includes(x.key), b = document.createElement("button"); b.className = "rtile" + (x.urgent ? " urg" : "") + (on ? " on" : "");
       b.innerHTML = `<span>${x.icon}</span><b></b><i class="st">${on ? "★" : "☆"}</i>`; b.querySelector("b").textContent = x.name;
@@ -2371,7 +2372,7 @@ function renderRoom() {
 }
 function renderRoomHist() {                              // 📊 방송실: 최근 방송 기록 (누르면 불러오기 · ☆ = 내 방송 + 즐겨찾기)
   const box = $("roomHist"); if (!box || $("room").hidden) return;
-  if (roomPick || (S.roomHide || []).includes("hist") || S.roomHistOpen === false) { box.innerHTML = ""; return; }
+  if (roomPick || !(S.fav || []).includes("hist") || S.roomHistOpen === false) { box.innerHTML = ""; return; }
   const list = hist.slice(0, 10);
   box.innerHTML = `<h4>📊 최근 방송 <span>누르면 그 문장을 불러옵니다 — 큰 버튼으로 다시 방송하세요</span></h4>` + (list.length ? "" : '<div class="muted" style="opacity:.7;padding:6px 2px">아직 방송 기록이 없습니다.</div>');
   list.forEach(h => {
@@ -2665,6 +2666,12 @@ $("mKakao").onclick = () => { closeMore(); $("kakao").click(); };
 $("mAddLang").onclick = () => { closeMore(); $("addLang").click(); };
 $("mineSave").addEventListener("click", closeMore);
 document.addEventListener("click", e => { if (!e.target.closest("details.more")) closeMore(); });
+function hFavSync() { const on = (S.fav || []).includes("hist"); $("hFav").textContent = on ? "★ 즐겨찾기" : "☆ 즐겨찾기"; $("hFav").style.cssText = on ? "border-color:#fde68a;background:#fefce8;color:#a16207" : ""; }
+$("hFav").onclick = () => {
+  const on = (S.fav || []).includes("hist"); S.fav = on ? S.fav.filter(x => x !== "hist") : [...(S.fav || []), "hist"]; save(); renderTpls(); hFavSync(); renderRoom(); renderRoomHist();
+  toast(on ? "☆ 방송 기록을 즐겨찾기에서 뺐습니다" : "★ 방송 기록을 즐겨찾기에 넣었습니다 — 방송실 모드에 '📊 최근 방송'이 보입니다");
+};
+hFavSync();
 $("hMore").onclick = () => { const all = $("hList").classList.toggle("all"); $("hMore").textContent = all ? "최근 5건만 보기" : `전체 보기 (${hist.length}건)`; };
 
 // ================= 시작 =================
