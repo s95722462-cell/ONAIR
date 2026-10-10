@@ -513,6 +513,15 @@ const CITY = {                                           // 자주 쓰는 도시
   샌프란시스코: ["San Francisco", "サンフランシスコ", "旧金山"], 하와이: ["Hawaii", "ハワイ", "夏威夷"], 괌: ["Guam", "グアム", "关岛"], 시드니: ["Sydney", "シドニー", "悉尼"],
   런던: ["London", "ロンドン", "伦敦"], 파리: ["Paris", "パリ", "巴黎"], 프랑크푸르트: ["Frankfurt", "フランクフルト", "法兰克福"], 두바이: ["Dubai", "ドバイ", "迪拜"],
 };
+const EVNAME = {                                         // 자주 쓰는 예배·법회 이름 [en, ja, zh]
+  "주일 예배": ["the Sunday worship service", "主日礼拝", "主日礼拜"], "주일 1부 예배": ["the first Sunday service", "主日第一礼拝", "主日第一堂礼拜"], "주일 2부 예배": ["the second Sunday service", "主日第二礼拝", "主日第二堂礼拜"],
+  "주일 3부 예배": ["the third Sunday service", "主日第三礼拝", "主日第三堂礼拜"], "오후 예배": ["the afternoon service", "午後礼拝", "下午礼拜"], "수요 예배": ["the Wednesday service", "水曜礼拝", "周三礼拜"],
+  "금요 기도회": ["the Friday prayer meeting", "金曜祈祷会", "周五祷告会"], "새벽 기도회": ["the early morning prayer meeting", "早天祈祷会", "晨祷会"], "새벽 예배": ["the early morning service", "早天礼拝", "晨更礼拜"],
+  "청년 예배": ["the young adults service", "青年礼拝", "青年礼拜"], "성탄 예배": ["the Christmas service", "クリスマス礼拝", "圣诞礼拜"], "부활절 예배": ["the Easter service", "イースター礼拝", "复活节礼拜"], "추수감사 예배": ["the Thanksgiving service", "収穫感謝礼拝", "感恩节礼拜"],
+  "초하루 법회": ["the new moon Dharma service", "初一法会", "初一法会"], "보름 법회": ["the full moon Dharma service", "十五日法会", "十五法会"], "관음재일 법회": ["the Avalokiteshvara Day service", "観音斎日法会", "观音斋日法会"],
+  "지장재일 법회": ["the Ksitigarbha Day service", "地蔵斎日法会", "地藏斋日法会"], "동지 법회": ["the winter solstice Dharma service", "冬至法会", "冬至法会"], "백중 기도": ["the Ullambana prayer service", "盂蘭盆の祈祷", "盂兰盆祈福法会"], "새해 해맞이 법회": ["the New Year sunrise service", "初日の出法会", "新年迎日法会"],
+};
+function fEvName(v, L) { v = (v || "").trim(); const e = EVNAME[v.replace(/\s+/g, " ")]; return e && L !== "ko" ? e[{ en: 0, ja: 1, zh: 2 }[L]] : v; }
 function fDest(v, L) {
   v = (v || "").trim(); const c = CITY[v.replace(/\s/g, "")];
   return c && L !== "ko" ? c[{ en: 0, ja: 1, zh: 2 }[L]] : v;
@@ -757,12 +766,12 @@ const T = [
     en: "We will be closing shortly, at {time}. Customers who are still shopping, please proceed to the checkout. Thank you for visiting us today.",
     ja: "まもなく、{time}に閉店いたします。お買い物中のお客様は、レジへお進みください。本日もご来店いただき、ありがとうございました。",
     zh: "本店将于{time}结束营业。正在购物的顾客，请到收银台结账。感谢您今天的光临。" },
-  { id: "m_child", icon: "🧒", name: "미아 찾기", f: ["child", "loc", "note"], places: ["store", "church", "gov", "hospital", "airport", "wedding", "show", "temple"],
+  { id: "m_child", icon: "🧒", name: "미아 찾기", f: ["child", "loc", "note"], places: ["store", "church", "welfare", "gov", "hospital", "airport", "wedding", "show", "temple"],
     ko: "보호자를 찾고 있는 어린이가 있습니다. {child}입니다. 보호자께서는, {loc|으로} 와 주시기 바랍니다.",
     en: "We have a child looking for their guardian: {child}. Guardians, please come to {loc}.",
     ja: "保護者の方をお探しのお子様がいらっしゃいます。{child}です。保護者の方は、{loc}までお越しください。",
     zh: "这里有一位正在寻找家长的小朋友：{child}。请家长到{loc}来接孩子。" },
-  { id: "m_park", icon: "🅿️", name: "주차 혼잡", f: ["loc", "note"], places: ["store", "hospital", "gov", "church", "airport", "wedding", "show", "temple"],
+  { id: "m_park", icon: "🅿️", name: "주차 혼잡", f: ["loc", "note"], places: ["store", "hospital", "gov", "church", "welfare", "airport", "wedding", "show", "temple"],
     ko: "현재, 주차장이 매우 혼잡합니다. 가능하시면, {loc|을} 이용해 주시고, 주차 안내 요원의 안내에 따라 주시기 바랍니다.",
     en: "The parking lot is currently very crowded. If possible, please use {loc}, and follow the directions of the parking staff.",
     ja: "ただいま、駐車場が大変混雑しております。できるだけ{loc}をご利用いただき、係員の案内に従ってください。",
@@ -779,12 +788,12 @@ const T = [
     ja: "病棟の面会時間は、{range}です。感染予防のため、面会の前後には、手をよく洗ってください。",
     zh: "病房探视时间为{range}。为预防感染，探视前后请认真洗手。" },
   // ---- 교회·복지관
-  { id: "c_start", icon: "🕊", name: "모임 시작 안내", f: ["what", "start", "note"], labels: { start: "시작 시각", what: "모임 이름 (예: 주일 예배 / 경로 잔치)" }, places: ["church"],
+  { id: "c_start", icon: "🕊", name: "모임 시작 안내", f: ["what", "start", "note"], labels: { start: "시작 시각", what: "모임 이름 (예: 주일 예배 / 경로 잔치)" }, places: ["welfare"],
     ko: "잠시 후, {time}부터, {what|이} 시작됩니다. 참석하실 분들은, 자리에 앉아 주시기 바랍니다.",
     en: "{what} will begin shortly, at {time}. Those attending, please take your seats.",
     ja: "まもなく、{time}から、{what}が始まります。ご参加の方は、お席にお着きください。",
     zh: "{what}将于{time}开始。参加的朋友请入座。" },
-  { id: "c_meal", icon: "🍚", name: "식사 안내", f: ["loc", "note"], places: ["church"],
+  { id: "c_meal", icon: "🍚", name: "식사 안내", f: ["loc", "note"], places: ["welfare"],
     ko: "{loc}에, 식사가 준비되었습니다. 한 줄로 차례차례 이동해 주시고, 어르신들께 먼저 자리를 양보해 주시기 바랍니다.",
     en: "A meal has been prepared at {loc}. Please line up and move in order, and kindly let our elders go first.",
     ja: "{loc}に、お食事をご用意しております。一列に並んで順番にお進みいただき、ご年配の方に先をお譲りください。",
@@ -939,6 +948,42 @@ const T = [
     en: "The temple gate will close at {time}. Visitors on the grounds, please make your way out in good time. May you have a peaceful day.",
     ja: "{time}に、山門を閉めます。境内にいらっしゃる方は、お早めにお帰りください。本日も安らかにお過ごしください。",
     zh: "寺院山门将于{time}关闭。请院内的游客及时下山。祝您平安吉祥。" },
+  // ---- 교회
+  { id: "ch_worship", icon: "⛪", name: "예배 시작", f: ["what", "start", "loc", "note"], labels: { what: "예배 이름 (예: 주일 예배 / 비우면 '예배')", start: "예배 시각", loc: "장소 (비우면 '본당')" }, places: ["church"],
+    ko: "잠시 후, {time}부터, {loc}에서, {what|이} 시작됩니다. 성도 여러분께서는, 자리에 앉으셔서, 예배를 준비해 주시기 바랍니다. 휴대전화는, 무음으로 바꿔 주십시오.",
+    en: "{What} will begin shortly, at {time}, in {loc}. Please take your seats and prepare for worship. Kindly switch your phone to silent.",
+    ja: "まもなく、{time}より、{loc}にて、{what}が始まります。皆様、お席にお着きいただき、礼拝の準備をお願いいたします。携帯電話はマナーモードにしてください。",
+    zh: "{what}将于{time}在{loc}开始。请各位入座，预备心敬拜。请将手机调为静音。" },
+  { id: "ch_praise", icon: "🎵", name: "찬양 시작", f: ["note"], places: ["church"],
+    ko: "지금부터, 찬양으로 예배를 시작하겠습니다. 모두 함께 일어나셔서, 기쁜 마음으로, 찬양해 주시기 바랍니다.",
+    en: "We will now begin worship with praise. Please stand and sing together with joyful hearts.",
+    ja: "ただいまより、賛美をもって礼拝を始めます。皆様ご起立いただき、喜びの心で、ともに賛美いたしましょう。",
+    zh: "现在我们以赞美开始礼拜。请大家起立，以喜乐的心一同赞美。" },
+  { id: "ch_offer", icon: "🙏", name: "헌금 안내", f: ["note"], places: ["church"],
+    ko: "지금은, 헌금 시간입니다. 헌금 위원의 안내에 따라, 정성껏 드려 주시기 바랍니다. 온라인 헌금은, 주보에 있는 계좌를 이용해 주십시오.",
+    en: "It is now time for the offering. Please follow the ushers' guidance and give with a willing heart. For online giving, please use the account listed in the bulletin.",
+    ja: "ただいまより、献金の時間です。献金係の案内に従い、心を込めてお献げください。オンライン献金は、週報に記載の口座をご利用ください。",
+    zh: "现在是奉献时间。请按照司事的引导，甘心乐意地奉献。网上奉献请使用周报上的账户。" },
+  { id: "ch_new", icon: "🤝", name: "새가족 환영", f: ["loc", "note"], labels: { loc: "환영 모임 장소 (비우면 '새가족실')" }, places: ["church"],
+    ko: "오늘 처음 오신 새가족 여러분을, 진심으로 환영합니다. 예배 후에, {loc}에서, 새가족 환영 모임이 있으니, 함께해 주시기 바랍니다.",
+    en: "We warmly welcome everyone visiting for the first time today. After the service, there will be a welcome gathering for newcomers at {loc}, so please join us.",
+    ja: "本日初めてお越しの皆様を、心より歓迎いたします。礼拝後、{loc}にて、新来者歓迎会がございますので、ぜひご参加ください。",
+    zh: "我们衷心欢迎今天第一次来到教会的新朋友。礼拜结束后，将在{loc}举行新朋友欢迎会，欢迎参加。" },
+  { id: "ch_meal", icon: "🍞", name: "점심 식사 (교제)", f: ["loc", "note"], labels: { loc: "식사 장소 (비우면 '식당')" }, places: ["church"],
+    ko: "예배 후, {loc}에, 점심 식사가 준비되어 있습니다. 모든 성도님께서는, 함께 교제의 시간을 가져 주시기 바랍니다.",
+    en: "After the service, lunch will be served at {loc}. Everyone, please join us for a time of fellowship.",
+    ja: "礼拝後、{loc}にて、昼食をご用意しております。皆様、ともに交わりの時をお過ごしください。",
+    zh: "礼拜结束后，{loc}备有午餐。请大家一起来享受团契时光。" },
+  { id: "ch_park", icon: "🚙", name: "예배 시간 주차", f: ["note"], places: ["church"],
+    ko: "예배 시간에는, 주차장이 매우 혼잡합니다. 주차 안내 봉사자의 안내에 따라 주시고, 가능하시면, 대중교통을 이용해 주시기 바랍니다.",
+    en: "The parking lot is very crowded during services. Please follow the parking volunteers' directions, and use public transportation if possible.",
+    ja: "礼拝の時間は、駐車場が大変混雑します。駐車案内係の誘導に従い、できるだけ公共交通機関をご利用ください。",
+    zh: "礼拜期间停车场非常拥挤。请听从停车引导义工的指挥，尽量乘坐公共交通。" },
+  { id: "ch_end", icon: "🕊", name: "예배 후 인사", f: ["note"], places: ["church"],
+    ko: "예배를 마치고 나가실 때에는, 천천히 이동해 주시고, 어르신들께 먼저 길을 양보해 주시기 바랍니다. 한 주간도, 평안하시기를 바랍니다.",
+    en: "When leaving after the service, please move slowly and let our elders go first. May you have a peaceful week.",
+    ja: "礼拝後ご退出の際は、ゆっくりお進みいただき、ご年配の方にお先をお譲りください。今週も、平安に過ごされますように。",
+    zh: "礼拜结束离开时，请慢慢移动，并请先让长辈通过。愿大家这一周平安。" },
   { id: "custom", icon: "✍️", name: "직접 입력", f: ["body"], ko: "{body}", en: "", ja: "", zh: "" },
   { id: "efire", icon: "🔥", name: "긴급: 화재 발생", f: ["firepos", "note"], urgent: true,
     ko: "지금, {firepos}에서 화재가 발생했습니다. {aud}께서는, 엘리베이터를 이용하지 마시고, 젖은 수건으로 코와 입을 막은 뒤, 계단을 통해, 침착하게 밖으로 대피해 주십시오. 다시 한번 말씀드립니다. 엘리베이터를 타지 마시고, 계단으로 대피해 주십시오.",
@@ -963,7 +1008,8 @@ const PLACES = {
   office:   { icon: "🏭", name: "회사·공장",   sender: ["총무팀", "general affairs team", "総務部", "行政部"], aud: ["직원 여러분", "employees", "社員の皆様", "各位员工"] },
   store:    { icon: "🛒", name: "상가·마트",   sender: ["고객센터", "customer service center", "サービスカウンター", "顾客服务中心"], aud: ["고객 여러분", "customers", "お客様", "各位顾客"] },
   hospital: { icon: "🏥", name: "병원",        sender: ["원무과", "hospital administration office", "医事課", "医院服务中心"], aud: ["환자와 보호자 여러분", "patients and visitors", "患者様とご家族の皆様", "各位患者和家属"] },
-  church:   { icon: "⛪", name: "교회·복지관", sender: ["사무실", "office", "事務室", "办公室"], aud: ["여러분", "everyone", "皆様", "各位朋友"] },
+  church:   { icon: "⛪", name: "교회",        sender: ["교회 사무실", "church office", "教会事務室", "教会办公室"], aud: ["성도 여러분", "everyone", "皆様", "各位弟兄姐妹"] },
+  welfare:  { icon: "🏠", name: "복지관",      sender: ["복지관 사무실", "welfare center office", "福祉館事務室", "福利中心办公室"], aud: ["이용자 여러분", "everyone", "ご利用の皆様", "各位朋友"] },
   temple:   { icon: "🪷", name: "절·사찰",     sender: ["종무소", "temple office", "寺務所", "寺院办公室"], aud: ["불자 여러분", "everyone", "皆様", "各位信众"] },
   airport:  { icon: "✈️", name: "공항·역",     sender: ["안내 센터", "information center", "インフォメーションセンター", "问询处"], aud: ["승객 여러분", "passengers", "ご利用のお客様", "各位旅客"] },
   wedding:  { icon: "💒", name: "예식장",      sender: ["안내 데스크", "information desk", "案内デスク", "服务台"], aud: ["하객 여러분", "guests", "ご列席の皆様", "各位来宾"] },
@@ -1010,9 +1056,9 @@ function build(L) {
     hall: v.hall || { ko: "본식장", en: "the main hall", ja: "メインホール", zh: "主厅" }[L],
     flight: (v.flight || "").trim().toUpperCase(), dest: fDest(v.dest, L), gate: v.gate || "", pax: L === "ko" ? (v.pax || "") : romanName(v.pax), mins: v.mins || ({ p_soon: "10", p_inter: "15", p_delay: "10", t_delay: "10" }[t.id] || ""),
     time: fTime(v.start, L), child: v.child || "", item: v.item || { ko: "물건", en: "an item", ja: "お忘れ物", zh: "物品" }[L],
-    loc: v.loc || (["b_service", "b_buddha"].includes(t.id) ? { ko: "대웅전", en: "the main Buddha hall", ja: "本堂", zh: "大雄宝殿" }[L] : t.id === "b_meal" ? { ko: "공양간", en: "the temple dining hall", ja: "斎堂", zh: "斋堂" }[L] : t.id === "w_meal" ? { ko: "연회장", en: "the banquet hall", ja: "宴会場", zh: "宴会厅" }[L] : ["m_child", "lost"].includes(t.id) ? (L === "en" ? "the " : "") + PL().sender[LI[L]] : t.id === "m_park" ? { ko: "근처 공영 주차장", en: "a nearby public parking lot", ja: "近くの公共駐車場", zh: "附近的公共停车场" }[L] : t.id === "c_meal" ? { ko: "식당", en: "the dining hall", ja: "食堂", zh: "餐厅" }[L] : ""),
-    what: v.what || (t.id === "c_start" ? { ko: "모임", en: "The gathering", ja: "集まり", zh: "聚会" }[L] : t.id === "p_soon" ? { ko: "공연", en: "the performance", ja: "公演", zh: "演出" }[L] : t.id === "b_service" ? { ko: "법회", en: "the Dharma service", ja: "法会", zh: "法会" }[L] : ""),
-    What: (v.what || (t.id === "p_soon" ? "the performance" : t.id === "b_service" ? "the Dharma service" : "")).replace(/^./, c => c.toUpperCase()),
+    loc: v.loc || (t.id === "ch_worship" ? { ko: "본당", en: "the main sanctuary", ja: "礼拝堂", zh: "主堂" }[L] : t.id === "ch_new" ? { ko: "새가족실", en: "the newcomers' room", ja: "新来者室", zh: "新人接待室" }[L] : t.id === "ch_meal" ? { ko: "식당", en: "the fellowship hall", ja: "食堂", zh: "餐厅" }[L] : ["b_service", "b_buddha"].includes(t.id) ? { ko: "대웅전", en: "the main Buddha hall", ja: "本堂", zh: "大雄宝殿" }[L] : t.id === "b_meal" ? { ko: "공양간", en: "the temple dining hall", ja: "斎堂", zh: "斋堂" }[L] : t.id === "w_meal" ? { ko: "연회장", en: "the banquet hall", ja: "宴会場", zh: "宴会厅" }[L] : ["m_child", "lost"].includes(t.id) ? (L === "en" ? "the " : "") + PL().sender[LI[L]] : t.id === "m_park" ? { ko: "근처 공영 주차장", en: "a nearby public parking lot", ja: "近くの公共駐車場", zh: "附近的公共停车场" }[L] : t.id === "c_meal" ? { ko: "식당", en: "the dining hall", ja: "食堂", zh: "餐厅" }[L] : ""),
+    what: v.what ? fEvName(v.what, L) : (t.id === "c_start" ? { ko: "모임", en: "The gathering", ja: "集まり", zh: "聚会" }[L] : t.id === "p_soon" ? { ko: "공연", en: "the performance", ja: "公演", zh: "演出" }[L] : t.id === "b_service" ? { ko: "법회", en: "the Dharma service", ja: "法会", zh: "法会" }[L] : t.id === "ch_worship" ? { ko: "예배", en: "the worship service", ja: "礼拝", zh: "礼拜" }[L] : ""),
+    What: (fEvName(v.what, "en") || (t.id === "p_soon" ? "the performance" : t.id === "b_service" ? "the Dharma service" : t.id === "ch_worship" ? "the worship service" : "")).replace(/^./, c => c.toUpperCase()),
     vote: v.vote || { ko: "동대표 선거", en: "the resident representative election", ja: "棟代表選挙", zh: "楼栋代表选举" }[L],
     vloc: v.vloc || { ko: "관리사무소", en: "the management office", ja: "管理事務所", zh: "物业管理处" }[L], body: L === "ko" ? koNormalize(v.body || "") : "",
   };
@@ -1052,7 +1098,7 @@ const needsCheck = () => {                              // 외국어로 자동 �
   const t = curT();
   const oddF = S.vals.firepos && t.f.includes("firepos") && !/^(\d+)\s*동(\s*\d+\s*층)?$/.test(S.vals.firepos.trim()) ? ["화재 위치"] : [];
   const odd = S.vals.spot && t.f.includes("spot") && !/^(\d+)\s*동\s*(앞|입구|옆)?$/.test(S.vals.spot.trim()) ? ["주차 자제 구역"] : [];
-  return [...t.f.filter(k => F[k].free && S.vals[k] && k !== "body" && !(k === "dest" && CITY[(S.vals.dest || "").replace(/\s/g, "")]) && !["groom", "bride", "pax"].includes(k) && !/^[\x00-\u024f\s]+$/.test(S.vals[k])).map(k => F[k].label.split(" (")[0]), ...odd, ...oddF];
+  return [...t.f.filter(k => F[k].free && S.vals[k] && k !== "body" && !(k === "dest" && CITY[(S.vals.dest || "").replace(/\s/g, "")]) && !["groom", "bride", "pax"].includes(k) && !(k === "what" && EVNAME[(S.vals.what || "").trim().replace(/\s+/g, " ")]) && !/^[\x00-\u024f\s]+$/.test(S.vals[k])).map(k => F[k].label.split(" (")[0]), ...odd, ...oddF];
 };
 
 // ================= 화면: 템플릿·빈칸 =================
@@ -1858,7 +1904,7 @@ const CD_MSG = {
   ja: (w, n) => n ? `${w}開始の${n}分前です。お席にお着きください。` : `ただいまより、${w}を開始いたします。`,
   zh: (w, n) => n ? `距离${w}开始还有${n}分钟。请各位就座。` : `${w}现在开始。`,
 };
-const CD_WHAT = { show: ["공연", "the performance", "公演", "演出"], wedding: ["예식", "the ceremony", "挙式", "婚礼"], temple: ["법회", "the Dharma service", "法会", "法会"] };
+const CD_WHAT = { show: ["공연", "the performance", "公演", "演出"], wedding: ["예식", "the ceremony", "挙式", "婚礼"], temple: ["법회", "the Dharma service", "法会", "法会"], church: ["예배", "the worship service", "礼拝", "礼拜"] };
 function cdWhat(L) { const w = (S.cd?.what || "").trim(); if (w && L === "ko") return w; if (w && !BASE_LANGS.some(x => x.id === L)) return w; if (w) return w; return (CD_WHAT[S.place] || ["행사", "the event", "イベント", "活动"])[LI[L] ?? 1]; }
 S.cd = Object.assign({ time: "19:00", what: "", steps: [10, 5, 1, 0], on: false, done: {} }, S.cd || {}); S.cd.on = false;
 function renderCd() {
