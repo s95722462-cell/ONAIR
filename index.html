@@ -121,10 +121,19 @@
   .big.air { background: linear-gradient(135deg, #f97316, #c2410c); color: #fff; box-shadow: 0 14px 30px -14px #c2410c; }
   .big.stop { background: #1f2937; color: #fff; }
   .big:hover { filter: brightness(1.05); }
-  .howto { margin-top: 12px; border: 1px solid #c7d2fe; border-radius: 12px; background: #fff; }
-  .howto summary { cursor: pointer; padding: 10px 14px; font-weight: 700; color: #3730a3; font-size: 14.5px; }
-  .howto .hx { padding: 0 14px 12px; font-size: 14px; line-height: 1.7; }
-  .howto ol { margin: 6px 0; padding-left: 22px; } .howto li { margin: 3px 0; } .howto code { background: #eef2ff; padding: 1px 5px; border-radius: 5px; font-size: 12.5px; word-break: break-all; }
+  #board { position: fixed; inset: 0; z-index: 90; background: radial-gradient(ellipse at top, #3b1d0e, #140b06 70%); color: #fff7ed; display: flex; flex-direction: column; padding: 3vh 4vw; cursor: pointer; }
+  #board[hidden] { display: none; }
+  body.boardOnly > *:not(#board):not(.toast) { display: none !important; }
+  #board .bt { display: flex; justify-content: space-between; align-items: center; font-size: 3.2vh; opacity: .85; }
+  #board .bm { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #board .bl { font-size: 5vh; font-weight: 800; color: #fdba74; }
+  #board .bn { font-size: min(42vh, 34vw); font-weight: 900; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; text-shadow: 0 0 6vh #f9731688; }
+  #board .bs { font-size: 3vh; opacity: .8; margin-top: 1vh; }
+  #board .bn.flash { animation: bflash .6s ease-in-out 4; }
+  @keyframes bflash { 50% { color: #fb923c; transform: scale(1.06); } }
+  #board .br { display: flex; gap: 2vw; align-items: center; justify-content: center; flex-wrap: wrap; font-size: 3vh; padding-top: 2vh; border-top: 1px solid #ffffff22; }
+  #board .br span { background: #ffffff14; border-radius: 1.2vh; padding: .6vh 1.6vw; font-size: 4.2vh; font-weight: 800; font-variant-numeric: tabular-nums; }
+  #board .bx { position: absolute; right: 2vw; top: 2vh; } 
   .now { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: #fffaf5; border: 1px dashed #fdba74; font-size: 14px; min-height: 46px; line-height: 1.55; }
   .now b { color: var(--accent2); }
   .est { font-size: 12.5px; color: var(--dim); margin-top: 6px; }
@@ -266,28 +275,6 @@
           <button class="big" id="recBtn" title="방송을 음성 파일로 저장 (PC의 Edge·Chrome)" style="background:#eef2ff;border-color:#c7d2fe;color:#3730a3">💾 음성 파일로 저장</button>
           <select id="recFmt" title="파일 형식"><option value="mp3">MP3</option><option value="wav">WAV</option></select>
         </div>
-        <details class="howto" open>
-          <summary>📘 사용법 · 예시 — 미리 듣기 · 방송 시작 · 음성 파일</summary>
-          <div class="hx">
-            <b>예시: "내일 101동·102동 단수" 방송 만들기</b>
-            <button class="mini" id="exFill" style="margin-left:6px;border-color:#c7d2fe;background:#eef2ff;color:#3730a3;font-weight:700">🧪 이 예시로 채워 보기</button>
-            <ol>
-              <li><b>① 장소</b> 🏢 아파트 → 방송 종류 <b>🚱 단수</b>를 누릅니다.</li>
-              <li>빈칸에 날짜 <b>내일</b>, 시간 <b>10:00 ~ 15:00</b>, 대상 동 <b>101동, 102동</b>을 넣습니다.<br>
-                <span class="muted">→ ② 문장: "101동, 102동은, ○월 ○일, 오전 10시부터 오후 3시까지, 물탱크 청소로 단수됩니다. …"</span></li>
-              <li><b>▶ 미리 듣기</b> — <u>내 PC 스피커로만</u> 들어 보는 연습입니다. 기록에 남지 않고, 다시 누르면 멈춥니다. 발음이 어색하면 ② 문장을 고치거나 📖 발음 사전에 넣으세요.</li>
-              <li><b>📢 방송 시작</b> — 실제 방송입니다. PC를 방송 앰프에 연결해 두면 차임 → 인사말 → 본문(켜 둔 언어 순서) → 끝인사 → 차임 순서로 나가고, <b>⑥ 방송 기록</b>에 남습니다. 도중에 멈추려면 같은 버튼(■ 방송 멈추기)을 누르세요.</li>
-              <li><b>💾 음성 파일로 저장</b> — 방송 장비에 넣거나 카톡으로 보낼 파일이 필요할 때 씁니다.
-                <ol type="a" style="margin-top:4px">
-                  <li>MP3(작은 파일, 보통 이걸로) 또는 WAV(원음, 장비가 MP3를 못 읽을 때)를 고릅니다.</li>
-                  <li>버튼 → <b>녹음 시작</b> → 화면 공유 창에서 <b>전체 화면</b> 선택 → <b>"시스템 오디오도 공유"</b> 켜기 → <b>공유</b>.</li>
-                  <li>방송이 스피커로 한 번 나오는 동안 녹음되고, 끝나면 <b>다운로드 폴더</b>에 저장됩니다.<br>
-                    <span class="muted">파일 이름 예: <code>온에어_단수_20261011_0930.mp3</code></span></li>
-                </ol></li>
-            </ol>
-            <div class="muted">💡 순서 추천: <b>미리 듣기로 확인 → 방송 시작</b> (또는 → 음성 파일 저장). 음성 파일은 PC의 Edge·Chrome에서만 됩니다. 녹음 중에는 음악·유튜브·알림 소리를 꺼 주세요.</div>
-          </div>
-        </details>
       </section>
 
       <section class="card">
@@ -426,12 +413,18 @@
   <div class="muted" style="font-size:13px">녹음 중에는 다른 소리(음악·유튜브·알림)를 꺼 주세요. 함께 녹음됩니다. 화면은 녹화하지 않습니다.</div>
   <div class="btns"><button id="recNo">취소</button><button class="ok" id="recGo">녹음 시작</button></div>
 </dialog>
+<div id="board" hidden title="누르면 전체 화면">
+  <div class="bt"><b>🍽 호출 번호판</b><span id="bdClock"></span></div>
+  <div class="bm"><div class="bl" id="bdLabel">주문하신 메뉴가 준비되면 번호가 표시됩니다</div><div class="bn" id="bdNum">—</div><div class="bs" id="bdSub">Order ready · ご注文の品ができました · 您的餐品已备好</div></div>
+  <div class="br" id="bdList"><b>최근 호출</b></div>
+</div>
 <div class="recbar" id="recBar" hidden></div>
 <div class="toast" id="toast"></div>
 
 <script>
 (() => {
 const $ = id => document.getElementById(id);
+const BOARD = /[?&]board\b/.test(location.search);       // 🖥 번호판 전용 창
 const ls = { get(k, d) { try { const v = localStorage.getItem("onair_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
              set(k, v) { try { localStorage.setItem("onair_" + k, JSON.stringify(v)); } catch (e) {} } };
 function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2200); }
@@ -1342,9 +1335,10 @@ function renderFields() {
     if (k === "num") {                                    // ☕ 번호 빠르게: −1 / +1 / 바로 호출
       el.inputMode = "numeric"; el.style.cssText = "font-size:22px;font-weight:800;text-align:center;letter-spacing:2px";
       const row = document.createElement("div"); row.style.cssText = "display:flex;gap:6px;margin-top:6px";
-      row.innerHTML = `<button class="mini" data-d="-1" style="flex:1;height:40px;font-size:18px">−1</button><button class="mini" data-d="1" style="flex:1;height:40px;font-size:18px">+1</button><button class="mini" data-go style="flex:2;height:40px;font-size:15px;font-weight:800;background:var(--accent);border-color:var(--accent);color:#fff">📢 바로 호출</button>`;
+      row.innerHTML = `<button class="mini" data-d="-1" style="flex:1;height:40px;font-size:18px">−1</button><button class="mini" data-d="1" style="flex:1;height:40px;font-size:18px">+1</button><button class="mini" data-board title="TV·모니터에 띄울 번호판 창 열기" style="flex:1.2;height:40px;font-size:14px">🖥 번호판</button><button class="mini" data-go style="flex:2;height:40px;font-size:15px;font-weight:800;background:var(--accent);border-color:var(--accent);color:#fff">📢 바로 호출</button>`;
       row.querySelectorAll("[data-d]").forEach(b => b.onclick = () => { el.value = String(Math.max(1, (parseInt(S.vals.num, 10) || 0) + +b.dataset.d)); setNum(el.value); });
       row.querySelector("[data-go]").onclick = () => { setNum(el.value); $("airBtn").click(); };
+      row.querySelector("[data-board]").onclick = boardOpen;
       d.appendChild(row);
     }
   });
@@ -1783,6 +1777,7 @@ async function run(real, rec) {
   if (LANGS.some(x => x.extra && S.langs[x.id])) { $("now").textContent = "🌐 더한 언어 인사말 준비 중…"; await prepareExtras(); }
   const seq = plan(); if (!seq.length) { toast("방송할 문장이 없습니다"); return; }
   running = true; stopFlag = false; setLive(real ? "air" : rec ? "rec" : "pre");
+  if (real && curT().f.includes("num")) boardPush((S.vals.num || "").trim() || "1", curT().id);   // 🖥 번호판에 크게
   audio(); speechSynthesis.cancel();
   try { navigator.wakeLock?.request("screen").then(l => (run.lock = l)).catch(() => {}); } catch (e) {}
   if (S.bg) bgStart();
@@ -2075,7 +2070,7 @@ async function cdFire(n) {
   S.__bare = false; S.__cd = ""; Object.assign(S, keep); renderLangs(); estimate();
 }
 setInterval(async () => {
-  if (!$("cdOn").checked) return;
+  if (!$("cdOn").checked || BOARD) return;                // 번호판 창에서는 방송 안 함
   cdInfo();
   if (running) return;
   const t = cdTarget(), now = Date.now();
@@ -2306,7 +2301,7 @@ $("schedOn").onchange = e => {
 };
 const schedOn = {};
 setInterval(async () => {
-  if (!$("schedOn").checked || running) return;
+  if (!$("schedOn").checked || running || BOARD) return;
   const n = new Date(), hm = `${pad2(n.getHours())}:${pad2(n.getMinutes())}`, key = today() + " " + hm;
   for (const it of sched) {
     if (it.time !== hm || it.last === key || (it.days.length && !it.days.includes(n.getDay()))) continue;
@@ -2355,6 +2350,33 @@ $("hCsv").onclick = () => {
 };
 $("hClear").onclick = () => { if (confirm("방송 기록을 모두 지울까요?")) { hist = []; ls.set("hist", hist); renderHist(); } };
 
+// ================= 🖥 호출 번호판 (TV·모니터용 창) =================
+const BD_KIND = { cf_ready: ["주문하신 메뉴가 준비되었습니다", "Your order is ready · ご注文の品ができました · 您的餐品已备好"], cf_again: ["주문하신 메뉴가 준비되었습니다", "Your order is ready · ご注文の品ができました · 您的餐品已备好"],
+  rs_wait: ["자리가 준비되었습니다 · 입장해 주세요", "Your table is ready · お席の準備ができました · 您的座位已备好"], rs_take: ["포장 주문이 준비되었습니다", "Takeout is ready · お持ち帰りの品ができました · 外带餐品已备好"] };
+function boardPush(num, kind) {
+  const b = ls.get("board", { recent: [] }); b.recent = [num, ...(b.recent || []).filter(x => x !== num)].slice(0, 8);
+  b.cur = { num, kind, at: Date.now() }; ls.set("board", b); boardRender(true);
+}
+function boardRender(flash) {
+  if ($("board").hidden) return;
+  const b = ls.get("board", { recent: [] }), c = b.cur, k = BD_KIND[c?.kind] || BD_KIND.cf_ready;
+  $("bdNum").textContent = c ? c.num : "—"; $("bdLabel").textContent = c ? k[0] : "주문하신 메뉴가 준비되면 번호가 표시됩니다"; $("bdSub").textContent = k[1];
+  $("bdList").innerHTML = "<b>최근 호출</b>" + (b.recent || []).slice(1).map(n => `<span>${String(n).replace(/</g, "&lt;")}</span>`).join("");
+  if (flash) { $("bdNum").classList.remove("flash"); void $("bdNum").offsetWidth; $("bdNum").classList.add("flash"); }
+}
+function boardOpen() {
+  const w = window.open(location.href.split("#")[0].split("?")[0] + "?board", "onair_board", "width=1100,height=700");
+  if (!w) { toast("팝업이 막혔습니다 — 주소창 오른쪽에서 팝업을 허용해 주세요"); return; }
+  toast("🖥 번호판 창을 TV·모니터로 끌어다 놓고, 화면을 한 번 누르면 전체 화면이 됩니다");
+}
+window.addEventListener("storage", e => { if (e.key === "onair_board") boardRender(true); });   // 다른 창(방송 PC)에서 부른 번호
+$("board").onclick = () => { try { document.fullscreenElement ? document.exitFullscreen().catch(() => {}) : document.documentElement.requestFullscreen?.()?.catch?.(() => {}); } catch (e) {} };
+if (BOARD) {                                             // 번호판 전용 창
+  document.body.classList.add("boardOnly"); $("board").hidden = false; document.title = "🍽 호출 번호판 — 온에어"; ls.set("seenHelp", true);
+  const tick = () => { const d = new Date(); $("bdClock").textContent = `${d.getHours() < 12 ? "오전" : "오후"} ${d.getHours() % 12 || 12}:${pad2(d.getMinutes())}`; };
+  tick(); setInterval(tick, 10000); boardRender(false);
+}
+
 // ================= 시작 =================
 $("exCar").onclick = () => {                             // 🧪 ④ 예시: 차량 이동 → 음성 파일로 저장
   S.place = "apt"; S.tpl = "car"; S.edited = {}; S.vals = { ...S.vals, car: S.vals.car || "12가 3456" };
@@ -2363,14 +2385,7 @@ $("exCar").onclick = () => {                             // 🧪 ④ 예시: 차
   $("recBtn").animate([{ boxShadow: "0 0 0 0 #6366f1" }, { boxShadow: "0 0 0 10px #6366f100" }], { duration: 900, iterations: 3 });
   toast("🚗 차량 이동을 골랐습니다 — 차량 번호를 확인하고 💾 음성 파일로 저장을 누르세요");
 };
-$("exFill").onclick = () => {                            // 🧪 사용법 예시: 내일 101동·102동 단수
-  const d = new Date(Date.now() + 864e5), iso = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-  S.place = "apt"; S.tpl = "water"; S.edited = {}; S.vals = { ...S.vals, date: iso, start: "10:00", end: "15:00", place: "101동, 102동" };
-  save(); renderPlaces(); renderTpls(); renderFields(); regen(true); aptLabel();
-  $("preBtn").scrollIntoView({ behavior: "smooth", block: "center" });
-  $("preBtn").animate([{ boxShadow: "0 0 0 0 #fb923c" }, { boxShadow: "0 0 0 10px #fb923c00" }], { duration: 900, iterations: 3 });
-  toast("🧪 예시를 채웠습니다 — ▶ 미리 듣기를 눌러 들어 보세요");
-};
+
 function renderAll() {
   renderPlaces(); renderTpls(); renderDict(); renderCd(); bkInfo(); renderPacks(); renderFields(); renderLangs();
   [...$("mood").children].forEach(b => b.classList.toggle("on", b.dataset.v === S.mood));
