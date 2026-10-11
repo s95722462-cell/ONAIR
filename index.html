@@ -74,6 +74,16 @@
   .card h2 { margin: 0 0 12px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
   .card h2 .sp { flex: 1; }
   .card h2 .mini, .card h2 summary.mini { white-space: nowrap; }
+  .lang .hd { display: flex; align-items: flex-start; gap: 6px; padding: 7px 12px 0; }
+  .lang .hd.end { padding: 0 12px 8px; } .lang .hd[hidden], .lang.off .hd { display: none; }
+  .lang .hd .hl { flex: none; width: 58px; font-size: 11.5px; font-weight: 700; color: var(--dim); padding-top: 5px; white-space: nowrap; }
+  .lang .hd .hin { flex: 1; min-width: 0; border: 1px dashed #e7d8c6; border-radius: 8px; padding: 3px 8px; font-size: 13.5px; line-height: 1.55; color: #78685a; outline: none; overflow-wrap: anywhere; cursor: text; }
+  .lang .hd .hin:empty::before { content: attr(data-ph); color: #b8a898; }
+  .lang .hd .hin:focus { border-style: solid; border-color: var(--accent); color: inherit; background: #fff; }
+  .lang .hd.mine .hin { border-style: solid; border-color: #fdba74; color: #1f1a14; background: #fffaf5; }
+  .lang .hd .hre { flex: none; height: 26px; padding: 0 7px; font-size: 12px; }
+  @media (max-width: 600px) { .lang .hd { padding: 6px 10px 0; } .lang .hd.end { padding: 0 10px 7px; } .lang .hd .hl { width: 46px; font-size: 11px; } .lang .hd .hin { font-size: 13px; } }
+  .lang .trall.due { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff !important; }
   #markMenu .menu { right: auto; left: 50%; transform: translateX(-50%); }   /* 🎚 억양 메뉴: 버튼 아래 가운데 */
   @media (max-width: 600px) { #markMenu .ml { display: none; } .card h2 { gap: 6px; } .card h2 .mini { padding: 0 8px; } }
   .muted { color: var(--dim); font-size: 13px; }
@@ -530,7 +540,9 @@
       <ul>
         <li>날짜·시간·동 같은 <b>빈칸</b>을 채우면 한국어·영어·일본어·중국어 문장이 자동으로 만들어집니다.</li>
         <li>문장 칸을 <b>직접 고쳐도</b> 됩니다. 고친 문장은 <b>자동으로 저장</b>되어, 다음에 같은 방송을 고르거나 방송실 모드에서도 그 문장으로 나갑니다. 원래 문장으로 되돌리려면 <b>↻ 다시 만들기</b>.</li>
+        <li>한국어 문장을 고친 뒤 <b>🌐 다른 언어에도 적용</b>을 누르면, 켜 둔 영어·일본어·중국어(그리고 더한 언어) 칸이 고친 내용의 번역으로 한 번에 바뀝니다 (고친 인사말·끝인사도). 한국어를 고치고 아직 적용하지 않았으면 버튼이 주황색으로 바뀝니다. (PC의 Edge 에서 됩니다)</li>
         <li>언어 이름 옆 스위치로 켜고 끕니다. ▲▼ 로 방송 순서를 바꿉니다. 다른 언어(베트남어·러시아어 등 27개)는 <b>⋯ 더 보기 → 🌐 언어 추가</b> — 자동 번역됩니다.</li>
+        <li>문장 칸 위아래의 <b>인사말 · 끝인사</b>도 눌러서 고칠 수 있습니다. 고치면 그 장소의 <b>모든 방송</b>에 쓰입니다. 되돌리기는 <b>↺ 기본</b>. 지우면 그 부분 없이 방송합니다.</li>
         <li>한국어 칸의 <b>✨ 다듬기</b>는 끊어 읽을 곳에 쉼표를 넣고, 너무 긴 문장을 알려 줍니다.</li>
         <li>자주 쓰는 문장은 <b>⋯ 더 보기 → ⭐ 내 방송으로 저장</b>. 맨 위 '⭐ 내 방송'에 버튼이 생깁니다.</li>
       </ul></section>
@@ -1472,6 +1484,28 @@ const OPEN = {
 const OPEN_URGENT = { ko: "긴급 안내 말씀 드립니다.", en: "This is an emergency announcement.", ja: "緊急のお知らせです。", zh: "现在播报紧急通知。" };
 const CLOSE = { get ko() { return `${PL().aud[0]}의 협조를 부탁드립니다. 감사합니다.`; }, en: "Thank you for your cooperation.", ja: "ご協力のほど、よろしくお願いいたします。", zh: "感谢您的配合。" };
 const AGAIN = { ko: "다시 한번 안내 말씀 드립니다.", en: "Once again.", ja: "繰り返しお知らせいたします。", zh: "再播报一遍。" };
+// ✏️ 인사말·끝인사: 장소별·언어별로 고쳐 쓰는 '기본 형식' (S.heads[장소][언어] = { open, urgent, close, again })
+const HEAD_NM = { open: "인사말", urgent: "긴급 인사말", close: "끝인사", again: "다시 할 때" };
+function headDef(L, k) {                                  // 원래 기본 문장
+  if (L.extra) return (HEADS[L.id] || {})[k] || "";
+  return k === "open" ? OPEN[L.id](L.id === "ko" ? S.apt : S.aptEn) : k === "urgent" ? OPEN_URGENT[L.id] : k === "close" ? CLOSE[L.id] : AGAIN[L.id];
+}
+const headMine = (L, k) => typeof ((S.heads || {})[S.place || "apt"] || {})[L.id]?.[k] === "string";
+const headTxt = (L, k) => headMine(L, k) ? S.heads[S.place || "apt"][L.id][k] : headDef(L, k);
+function headSet(L, k, v) {                               // v = null → 기본으로
+  const p = S.place || "apt", H = JSON.parse(JSON.stringify(S.heads || {})), c = { ...((H[p] || {})[L.id] || {}) };
+  if (v == null || (v.trim() === headDef(L, k).trim() && headDef(L, k))) delete c[k]; else c[k] = v.trim() ? v : "";
+  H[p] = { ...(H[p] || {}), [L.id]: c };
+  if (!Object.keys(c).length) delete H[p][L.id];
+  if (!Object.keys(H[p]).length) delete H[p];
+  S.heads = H;
+}
+function headsNow(L) {                                    // 지금 방송에서 이 언어 앞뒤로 읽는 말 { open, close } (번호 호출·카운트다운은 없음)
+  if (S.__bare || curT().bare) return { open: "", close: "" };
+  const urgent = S.mood === "urgent";
+  return { open: headTxt(L, urgent ? "urgent" : "open"), close: urgent ? "" : headTxt(L, "close") };
+}
+const fullText = (L, txt) => { const h = headsNow(L); return [h.open, (txt ?? S.texts[L.id] ?? "").trim(), h.close].filter(x => (x || "").trim()).join(" "); };
 
 // ================= 상태 =================
 const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
@@ -1720,19 +1754,19 @@ function renderLangs() {
   const box = $("langs"); box.innerHTML = "";
   const warn = needsCheck();
   LANGS.forEach(L => {
-    const on = S.langs[L.id], d = document.createElement("div"); d.className = "lang" + (on ? "" : " off");
+    const on = S.langs[L.id], d = document.createElement("div"); d.className = "lang" + (on ? "" : " off"); d.dataset.l = L.id;
     const lnm = L.extra ? L.ko : L.name;
     d.innerHTML = `<div class="lh"><label class="switch"><input type="checkbox" aria-label="${lnm} 방송 켜기" ${on ? "checked" : ""}><span></span></label>
       <span style="display:inline-flex;flex-direction:column;line-height:.9"><button class="mini up" title="방송 순서 앞으로" aria-label="${lnm} 순서 앞으로" style="height:16px;padding:0 5px;font-size:10px">▲</button><button class="mini dn" title="방송 순서 뒤로" aria-label="${lnm} 순서 뒤로" style="height:16px;padding:0 5px;font-size:10px">▼</button></span>
       <b>${L.flag} ${L.extra ? L.ko + " · " + L.name : L.name}</b><span class="tags"></span><span class="sp"></span><select title="목소리" aria-label="${lnm} 목소리"></select>
-      <button class="mini lplay" title="이 칸의 문장만 바로 들어 보기 (차임·인사말 없이)" style="border-color:#fed7aa;background:#fff7ed;color:var(--accent2);font-weight:600">▶ 듣기</button>${L.id === "ko" ? '<button class="mini pol" title="쉼표 넣기 · 시간·전화번호 읽기 좋게 · 긴 문장·영어 약자 검사" style="border-color:#bbf7d0;background:#f0fdf4;color:#15803d;font-weight:600">✨ 다듬기</button>' : ""}<button class="mini cmp" title="이 언어의 목소리를 차례로 들어 보기">🔊 비교</button><button class="mini tr" hidden>${L.extra ? "🌐 번역" : "자동 번역"}</button>${L.extra ? '<button class="mini rm" title="이 언어 빼기">✕</button>' : ""}</div><textarea spellcheck="false" data-l="${L.id}" lang="${L.bcp}" aria-label="${lnm} 방송 문장"></textarea>`;
+      <button class="mini lplay" title="이 칸의 문장만 바로 들어 보기 (차임·인사말 없이)" style="border-color:#fed7aa;background:#fff7ed;color:var(--accent2);font-weight:600">▶ 듣기</button>${L.id === "ko" ? '<button class="mini pol" title="쉼표 넣기 · 시간·전화번호 읽기 좋게 · 긴 문장·영어 약자 검사" style="border-color:#bbf7d0;background:#f0fdf4;color:#15803d;font-weight:600">✨ 다듬기</button><button class="mini trall" title="고친 한국어 문장을 켜 둔 다른 언어 칸에 한 번에 번역해 넣습니다" style="border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8;font-weight:600">🌐 다른 언어에도 적용</button>' : ""}<button class="mini cmp" title="이 언어의 목소리를 차례로 들어 보기">🔊 비교</button><button class="mini tr" hidden>${L.extra ? "🌐 번역" : "자동 번역"}</button>${L.extra ? '<button class="mini rm" title="이 언어 빼기">✕</button>' : ""}</div><textarea spellcheck="false" data-l="${L.id}" lang="${L.bcp}" aria-label="${lnm} 방송 문장"></textarea>`;
     d.querySelector("input").onchange = e => {
       if (!e.target.checked && LANGS.filter(x => S.langs[x.id]).length <= 1) { e.target.checked = true; toast("언어를 하나 이상 켜 두어야 합니다"); return; }
       S.langs[L.id] = e.target.checked; save(); renderLangs(); estimate(); altInfo();
     };
-    const ta = d.querySelector("textarea"); ta.value = S.texts[L.id] || "";
+    const ta = d.querySelector("textarea"); ta.value = S.texts[L.id] || ""; headsUI(d, L);
     ta.placeholder = L.id === "ko" ? "방송할 문장" : L.extra ? ("Translator" in self && !trFail[L.id] ? "🌐 자동 번역됩니다 (영어·한국어 문장을 번역)" : "이 언어는 자동 번역이 안 됩니다 — 이 칸에 직접 써 주세요 (파파고 등에서 붙여 넣어도 됩니다)") : (curT()[L.id] === "" ? "직접 입력한 내용은 이 언어로 직접 써 주세요 (또는 '자동 번역')" : "");
-    ta.oninput = () => { S.texts[L.id] = ta.value; S.edited[L.id] = true; keepEdit(L.id, ta.value); save(); estimate(); tags(); };
+    ta.oninput = () => { S.texts[L.id] = ta.value; S.edited[L.id] = true; keepEdit(L.id, ta.value); save(); estimate(); tags(); if (L.id === "ko") trAllDue(); };
     const sel = d.querySelector("select"); fillVoices(sel, L);
     sel.onchange = () => { S.voices[L.id] = sel.value; save(); altInfo(); };
     const tagBox = d.querySelector(".tags");
@@ -1746,6 +1780,7 @@ function renderLangs() {
     d.querySelector(".cmp").onclick = e => compareVoices(L, sel, e.currentTarget);
     d.querySelector(".lplay").onclick = e => playLang(L, ta, e.currentTarget);
     const pol = d.querySelector(".pol"); if (pol) pol.onclick = () => openPolish(ta);
+    const tra = d.querySelector(".trall"); if (tra) tra.onclick = () => applyAllLangs(tra);
     d.querySelector(".up").onclick = () => moveLang(L.id, -1); d.querySelector(".dn").onclick = () => moveLang(L.id, 1);
     const trb = d.querySelector(".tr");
     if (L.id !== "ko" && "Translator" in self) { trb.hidden = false; trb.onclick = () => (L.extra ? (S.edited[L.id] = false, autoTranslate(true).then(() => renderLangs())) : translate(L.id, ta)); }
@@ -1754,7 +1789,7 @@ function renderLangs() {
     box.appendChild(d);
   });
   const off = LANGS.filter(L => !S.langs[L.id]), so = ls.get("showOff", false);   // 꺼 둔 언어는 숨기고 '펼치기'로 보기
-  box.classList.toggle("showoff", so); $("langOff").hidden = !off.length;
+  box.classList.toggle("showoff", so); $("langOff").hidden = !off.length; syncHeads(); trAllDue();
   $("langOff").textContent = so ? "▲ 꺼 둔 언어 접기" : `▼ 꺼 둔 언어 ${off.length}개 보기 (${off.map(L => L.extra ? L.ko : L.name).join(" · ")}) — 켜려면 펼치세요`;
 }
 const SAMPLE = { ko: "안녕하십니까. 관리사무소에서, 입주민 여러분께 안내 말씀 드립니다.", en: "Hello, residents. This is an announcement from the management office.",
@@ -1917,14 +1952,96 @@ async function autoTranslate(force) {
 }
 // 더한 언어의 인사말·끝인사 (영어 문장을 번역해 둠)
 const HEADS = {};
-async function prepareExtras() {
+async function prepareExtras(headsOnly) {
   for (const L of LANGS.filter(x => x.extra && S.langs[x.id])) {
-    const src = { open: OPEN.en(S.aptEn), urgent: OPEN_URGENT.en, close: CLOSE.en, again: AGAIN.en };
-    const h = {};
-    for (const [k, t] of Object.entries(src)) { try { h[k] = await trText(t, "en", L.tr); } catch (e) { h[k] = ""; } }
-    HEADS[L.id] = h;
-    if (!S.edited[L.id] && !(S.texts[L.id] || "").trim()) await autoTranslate();
+    const en = { id: "en" }, src = { open: headTxt(en, "open"), urgent: headTxt(en, "urgent"), close: headTxt(en, "close"), again: headTxt(en, "again") };
+    const key = JSON.stringify(src) + S.place;
+    if (HEADS[L.id]?.key !== key) {
+      const h = { key };
+      for (const [k, t] of Object.entries(src)) { try { h[k] = await trText(t, "en", L.tr); } catch (e) { h[k] = ""; } }
+      HEADS[L.id] = h;
+    }
+    if (!headsOnly && !S.edited[L.id] && !(S.texts[L.id] || "").trim()) await autoTranslate();
   }
+}
+function syncHeads() {                                    // 언어 칸마다 인사말 · 끝인사 줄 내용 맞추기 (장소·긴급·반복이 바뀔 때)
+  const bare = S.__bare || curT().bare, urgent = S.mood === "urgent";
+  let need = false;
+  document.querySelectorAll("#langs .lang").forEach(d => {
+    const L = LANGS.find(x => x.id === d.dataset.l); if (!L) return;
+    d.querySelectorAll(".hd").forEach(row => {
+      const k = row.classList.contains("top") ? (urgent ? "urgent" : "open") : row.classList.contains("end") ? "close" : "again";
+      row.hidden = !!bare || (k === "close" && urgent) || (k === "again" && !(S.rep > 1));
+      row.dataset.k = k; row.querySelector(".hl").textContent = HEAD_NM[k];
+      const ed = row.querySelector(".hin"), mine = headMine(L, k);
+      if (document.activeElement !== ed) ed.textContent = headTxt(L, k);
+      ed.dataset.ph = L.extra && !mine && !HEADS[L.id] ? "🌐 방송할 때 자동 번역됩니다" : "(" + HEAD_NM[k] + " 없이 방송)";
+      ed.setAttribute("aria-label", `${L.extra ? L.ko : L.name} ${HEAD_NM[k]}`);
+      row.classList.toggle("mine", mine); row.querySelector(".hre").hidden = !mine;
+      if (L.extra && S.langs[L.id] && !HEADS[L.id]) need = true;
+    });
+  });
+  if (need && !syncHeads.busy && "Translator" in self) { syncHeads.busy = true; prepareExtras(true).catch(() => {}).finally(() => { syncHeads.busy = false; if (LANGS.every(L => !L.extra || !S.langs[L.id] || HEADS[L.id])) syncHeads(); }); }
+}
+function headsUI(d, L) {                                  // 인사말(위) · 끝인사(아래) · 다시 할 때 — 눌러서 고침, ↺ 기본으로
+  const ta = d.querySelector("textarea[data-l]");
+  const row = cls => { const r = document.createElement("div"); r.className = "hd " + cls;
+    r.innerHTML = `<span class="hl"></span><div class="hin" role="textbox" spellcheck="false" lang="${L.bcp}"></div><button class="mini hre" title="원래 기본 문장으로 되돌리기">↺ 기본</button>`;
+    const ed = r.querySelector(".hin");
+    try { ed.contentEditable = "plaintext-only"; } catch (e) {} if (ed.contentEditable !== "plaintext-only") ed.contentEditable = "true";
+    ed.title = "눌러서 고치세요 — 이 장소의 모든 방송에 이 문장이 쓰입니다";
+    ed.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); ed.blur(); } };
+    ed.oninput = () => {
+      const k = r.dataset.k; headSet(L, k, ed.textContent.replace(/\s*\n\s*/g, " ")); save(); estimate();
+      r.classList.toggle("mine", headMine(L, k)); r.querySelector(".hre").hidden = !headMine(L, k); if (L.id === "ko") trAllDue();
+      clearTimeout(headsUI.t); headsUI.t = setTimeout(() => toast(`✏️ ${HEAD_NM[k]}을 바꿨습니다 — ${PL().icon} ${PL().name}의 모든 방송이 이 문장으로 나갑니다 (↺ 기본: 되돌리기)`), 1200);
+    };
+    ed.onblur = () => syncHeads();
+    r.querySelector(".hre").onclick = () => { const k = r.dataset.k; headSet(L, k, null); save(); syncHeads(); estimate(); if (L.id === "ko") trAllDue(); toast(`↺ ${HEAD_NM[k]}을 기본 문장으로 되돌렸습니다`); };
+    return r;
+  };
+  ta.before(row("top")); ta.after(row("end")); d.querySelector(".hd.end").after(row("rep"));
+}
+const koHeadsKey = () => { const c = ((S.heads || {})[S.place || "apt"] || {}).ko; return c && Object.keys(c).length ? (S.place || "apt") + JSON.stringify(c) : ""; };
+function trAllDue() {                                   // 한국어를 고쳤는데 아직 다른 언어에 적용 안 했으면 버튼 강조
+  const b = document.querySelector("#langs .trall"); if (!b) return;
+  const hk = koHeadsKey(), due = ((!!S.edited.ko && S.koApplied !== S.texts.ko) || (!!hk && S.koHeadApplied !== hk)) && LANGS.some(L => L.id !== "ko" && S.langs[L.id]);
+  b.classList.toggle("due", due); b.title = due ? "한국어 문장이 바뀌었습니다 — 눌러서 다른 언어 칸도 같은 내용으로 번역해 넣으세요" : "고친 한국어 문장을 켜 둔 다른 언어 칸에 한 번에 번역해 넣습니다";
+}
+async function applyAllLangs(btn) {                     // 🌐 고친 한국어 문장 → 켜 둔 다른 언어 칸 전부 번역해 넣기
+  const ko = unmark(S.texts.ko || "").trim(), KO = LANGS.find(x => x.id === "ko");
+  const hk = koHeadsKey(), hKeys = hk ? Object.keys(S.heads[S.place || "apt"].ko) : [];            // 고친 한국어 인사말·끝인사
+  const doBody = !(hk && S.koHeadApplied !== hk && !S.edited.ko);                                     // 인사말만 고쳤으면 본문은 그대로
+  if (doBody && !ko) { toast("한국어 칸이 비어 있습니다"); return; }
+  if (!("Translator" in self)) { toast("이 브라우저에서는 자동 번역이 안 됩니다 — PC의 Edge 에서 눌러 주세요 (또는 각 칸에 직접 써 주세요)"); return; }
+  const targets = LANGS.filter(L => L.id !== "ko" && S.langs[L.id]);
+  if (!targets.length) { toast("켜 둔 다른 언어가 없습니다 — 언어 스위치를 먼저 켜 주세요"); return; }
+  const mine = targets.filter(L => (doBody && S.edited[L.id] && (S.texts[L.id] || "").trim()) || hKeys.some(k => headMine(L, k) && headTxt(L, k) !== "" && (S.headAuto || {})[`${S.place || "apt"}:${L.id}:${k}`] !== headTxt(L, k)));
+  if (mine.length && !confirm(`${mine.map(L => L.extra ? L.ko : L.name).join(" · ")} 칸에 직접 고친 문장이 있습니다.\n한국어 문장의 번역으로 바꿀까요?`)) return;
+  const label = btn.textContent; btn.disabled = true; btn.textContent = "🌐 번역 중…";
+  toast("번역 중… (처음엔 언어 파일을 받느라 조금 걸립니다)");
+  const ok = [], bad = [];
+  for (const L of targets) {
+    try {
+      for (const k of hKeys) { const t = unmark(headTxt(KO, k)).trim(); const o = t ? await trText(t, "ko", L.tr || L.id) : ""; headSet(L, k, o); S.headAuto = { ...(S.headAuto || {}), [`${S.place || "apt"}:${L.id}:${k}`]: headTxt(L, k) }; }
+      if (doBody) {
+        const out = await trText(ko, "ko", L.tr || L.id);
+        if (!out) throw new Error("empty");
+        S.texts[L.id] = out;
+        if (L.extra) { delete trFail[L.id]; S.edited[L.id] = false; S.auto = { ...(S.auto || {}), [L.id]: true }; }
+        else { S.edited[L.id] = true; keepEdit(L.id, out); }
+      }
+      ok.push(L);
+    } catch (e) { bad.push(L); }
+  }
+  if (ok.length && hk) S.koHeadApplied = hk;
+  const src = trSource().text;                            // 더한 언어: 다음 자동 번역이 같은 문장을 다시 번역하지 않게
+  ok.filter(L => L.extra).forEach(L => { S.trFrom = { ...(S.trFrom || {}), [L.id]: src }; });
+  if (ok.length) S.koApplied = S.texts.ko;
+  clearTimeout(keepEdit.t); save(); estimate(); renderLangs();
+  const nm = L => L.extra ? L.ko : L.name;
+  toast(ok.length ? `✅ ${ok.map(nm).join(" · ")}에 적용했습니다${bad.length ? ` — ${bad.map(nm).join(" · ")}는 번역이 안 돼 그대로 둡니다` : ""} · 내용을 한 번 확인해 주세요` : "번역하지 못했습니다 — 인터넷 연결을 확인하거나 각 칸에 직접 써 주세요");
+  btn.disabled = false; btn.textContent = label;
 }
 async function translate(L, ta) {                       // 기본 언어 칸의 '자동 번역' 버튼 (한국어 → 이 언어)
   try {
@@ -2272,9 +2389,7 @@ function plan() {                                       // 방송 순서
       let body = S.texts[L.id].trim();
       const own = curT().mine || ["custom", "urgent"].includes(curT().id) || S.edited.ko;   // 직접 쓴 문장만 (템플릿은 쉼표가 이미 들어 있음)
       if (L.id === "ko" && S.autoPolish && own && !bare) body = polishKo(body).text;   // ✨ 자동 다듬기: 읽을 때만
-      const H = L.extra ? (HEADS[L.id] || {}) : null;
-      const head = L.extra ? (r ? H.again : urgent ? H.urgent : H.open) : r ? AGAIN[L.id] : (urgent ? OPEN_URGENT[L.id] : OPEN[L.id](L.id === "ko" ? S.apt : S.aptEn));
-      const close = L.extra ? H.close : CLOSE[L.id];
+      const head = headTxt(L, r ? "again" : urgent ? "urgent" : "open").trim(), close = headTxt(L, "close").trim();   // ✏️ 장소별로 고친 인사말·끝인사
       if (bare) { seq.push({ L, alt: false, parts: sentences(body) }); return; }   // 카운트다운: 인사말 없이 본문만
       seq.push({ L, alt: !!(S.alt && r % 2 === 1), head: r ? "" : head, parts: [head, ...sentences(body), urgent ? "" : close].filter(Boolean) });
     });
@@ -2328,7 +2443,7 @@ function setLive(mode) {
   $("preBtn").disabled = mode === "air"; $("airBtn").disabled = mode === "pre" || mode === "rec"; $("recBtn").disabled = !!mode;
 }
 function estimate() {                                    // 대략 걸리는 시간
-  setTimeout(oaSync, 0);
+  setTimeout(oaSync, 0); try { syncHeads(); } catch (e) {}
   const seq = plan(); let sec = (S.chime ? (CHIMES[S.chimeType]?.len || 2.6) * 2 : 0);
   seq.forEach(b => b.parts.forEach(p => { const q = unmark(p); sec += (q.length / (b.L.id === "en" || /^[\x00-\u024f\s.,!?'"-]+$/.test(q) ? 14 : b.L.id === "ko" ? 6.2 : 6.5) / S.rate) * (S.prosody === false ? 1 : 1.06) + 0.4 + markPause(p); }));
   $("est").textContent = seq.length ? `예상 길이 약 ${Math.round(sec)}초 · ${[...new Set(seq.map(b => b.L.name))].join(" → ")}${S.rep > 1 ? ` · ${S.rep}번 반복` : ""}` : "";
@@ -2622,7 +2737,7 @@ function bkRaw() {                                        // 그 밖의 onair_* 
 }
 function bkCounts(d) {
   const st = d.state || {}, raw = d.raw || {};
-  return `내 방송 ${(d.mine || []).length} · 즐겨찾기 ${(st.fav || []).length} · 고친 문장 ${Object.keys(st.tplEdits || {}).length} · 방송 묶음 ${(st.packs || []).length} · 예약 ${(d.sched || []).length} · 발음 사전 ${(st.dict || []).length} · 기록 ${(d.hist || []).length} · 더한 언어 ${(st.extra || []).length}${raw.shopId ? " · 📱 매장 QR 코드" : ""}`;
+  return `내 방송 ${(d.mine || []).length} · 즐겨찾기 ${(st.fav || []).length} · 고친 문장 ${Object.keys(st.tplEdits || {}).length} · 방송 묶음 ${(st.packs || []).length} · 예약 ${(d.sched || []).length} · 발음 사전 ${(st.dict || []).length} · 기록 ${(d.hist || []).length} · 더한 언어 ${(st.extra || []).length}${(n => n ? ` · 고친 인사말·끝인사 ${n}` : "")(Object.values(st.heads || {}).reduce((a, o) => a + Object.values(o || {}).reduce((b, c) => b + Object.keys(c || {}).length, 0), 0))}${raw.shopId ? " · 📱 매장 QR 코드" : ""}`;
 }
 function bkInfo() { const d = { raw: bkRaw() }; BK_KEYS.forEach(k => (d[k] = ls.get(k, null))); $("bkInfo").textContent = "지금: " + bkCounts(d) + (ls.get("bkLast", "") ? ` · 마지막 백업 ${ls.get("bkLast", "")}` : ""); }
 $("bkSave").onclick = () => {
@@ -2671,6 +2786,9 @@ $("bkMerge").onclick = () => {
   if (!S.apt && st.apt) { S.apt = st.apt; S.aptEn = st.aptEn || ""; }
   S.packs = byKey(S.packs, st.packs, x => x.name);
   S.tplEdits = { ...(S.tplEdits || {}), ...(st.tplEdits || {}) };                 // 같은 방송의 고친 문장은 백업 것으로
+  const hd = JSON.parse(JSON.stringify(S.heads || {}));                              // ✏️ 고친 인사말·끝인사: 같은 장소·언어는 백업 것으로
+  Object.entries(st.heads || {}).forEach(([p, o]) => { hd[p] = { ...(hd[p] || {}) }; Object.entries(o || {}).forEach(([l, c]) => { hd[p][l] = { ...(hd[p][l] || {}), ...(c || {}) }; }); });
+  S.heads = hd;
   S.vpitch = { ...(st.vpitch || {}), ...(S.vpitch || {}) };
   S.roomHide = [...new Set([...(S.roomHide || []), ...(st.roomHide || [])])];
   if (!(S.order || []).length && (st.order || []).length) S.order = st.order;
@@ -2692,14 +2810,14 @@ function noticeParts() {
 $("notice").onclick = () => {
   const { t, langs, who, date } = noticeParts(); if (!langs.length) { toast("공지할 문장이 없습니다"); return; }
   const esc = x => String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  const blocks = langs.map((L, i) => `<section class="${i ? "sub" : "main"}"><div class="lang">${L.flag} ${esc(L.extra ? L.name : L.name)}</div><p>${esc(unmark(S.texts[L.id]).trim())}</p></section>`).join("");
+  const blocks = langs.map((L, i) => `<section class="${i ? "sub" : "main"}"><div class="lang">${L.flag} ${esc(L.extra ? L.name : L.name)}</div>${(h => [h.open && `<p class="hd">${esc(unmark(h.open).trim())}</p>`, `<p>${esc(unmark(S.texts[L.id]).trim())}</p>`, h.close && `<p class="hd">${esc(unmark(h.close).trim())}</p>`].filter(Boolean).join(""))(headsNow(L))}</section>`).join("");
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>공지문 — ${esc(t.name)}</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>@page{size:A4;margin:16mm}*{box-sizing:border-box}body{margin:0;font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif;color:#1f1a14}
 .top{display:flex;align-items:center;gap:14px;border-bottom:4px solid #ea580c;padding-bottom:12px;margin-bottom:18px}.badge{font-size:15px;font-weight:800;letter-spacing:3px;color:#fff;background:#ea580c;padding:8px 14px;border-radius:10px}
 h1{margin:0;font-size:34px;letter-spacing:-.5px;flex:1;min-width:0;word-break:keep-all;overflow-wrap:anywhere}@media screen and (max-width:600px){body{padding:12px}h1{font-size:24px}.main p{font-size:19px}.top{flex-wrap:wrap}}.date{font-size:15px;color:#6b5d50}.ic{font-size:44px}
 section{margin:0 0 14px;padding:14px 18px;border-radius:14px;break-inside:avoid}.main{background:#fff7ed;border:2px solid #fdba74}.main p{font-size:23px;line-height:1.75;font-weight:600}
-.sub{border:1px solid #e7ddd2}.sub p{font-size:16.5px;line-height:1.65}.lang{font-size:13px;font-weight:700;color:#9a3412;margin-bottom:4px}p{margin:0}
+.sub{border:1px solid #e7ddd2}.sub p{font-size:16.5px;line-height:1.65}.lang{font-size:13px;font-weight:700;color:#9a3412;margin-bottom:4px}p{margin:0}p.hd{font-weight:500;color:#6b5d50;margin:2px 0}.main p.hd{font-size:17px}.sub p.hd{font-size:13px}
 .foot{margin-top:22px;text-align:right;font-size:18px;font-weight:700}.foot small{display:block;font-size:12px;color:#8a7a6a;font-weight:400;margin-top:4px}</style></head>
 <body><div class="top"><span class="ic">${t.icon}</span><h1>${esc(t.name)}</h1><div style="text-align:right"><div class="badge">안 내</div><div class="date">${date}</div></div></div>
 ${blocks}<div class="foot">${esc(who)}<small>온에어(溫 On-Air) 안내방송과 같은 내용입니다</small></div>
@@ -2710,7 +2828,7 @@ ${blocks}<div class="foot">${esc(who)}<small>온에어(溫 On-Air) 안내방송�
 };
 $("kakao").onclick = async () => {
   const { t, langs, who } = noticeParts(); if (!langs.length) { toast("보낼 문장이 없습니다"); return; }
-  const txt = `📢 [안내] ${t.name}\n\n` + langs.map(L => `${L.flag} ${unmark(S.texts[L.id]).trim()}`).join("\n\n") + `\n\n— ${who}`;
+  const txt = `📢 [안내] ${t.name}\n\n` + langs.map(L => `${L.flag} ${unmark(fullText(L)).trim()}`).join("\n\n") + `\n\n— ${who}`;
   try { await navigator.clipboard.writeText(txt); }
   catch (e) {
     let ok = false; const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
@@ -2961,7 +3079,7 @@ let hist = ls.get("hist", []);
 const HK = { cd: ["⏱ 카운트다운", "#7c3aed", "#f5f3ff"], air: ["📢 방송", "#c2410c", "#fff7ed"], sched: ["⏰ 예약 방송", "#15803d", "#f0fdf4"], file: ["💾 파일 저장", "#3730a3", "#eef2ff"], stop: ["■ 중단", "#6b7280", "#f3f4f6"] };
 function addHistory(kind = "air", extra = "") {          // 방송 · 예약 방송 · 파일 저장 · 중단 모두 기록 (최근 200개)
   const t = curT();
-  hist.unshift({ at: new Date().toLocaleString("ko-KR"), ts: Date.now(), kind, extra, label: S.__label || `${t.icon} ${t.name}`, texts: { ...S.texts }, langs: { ...S.langs } });
+  hist.unshift({ at: new Date().toLocaleString("ko-KR"), ts: Date.now(), kind, extra, label: S.__label || `${t.icon} ${t.name}`, texts: { ...S.texts }, langs: { ...S.langs }, heads: Object.fromEntries(LANGS.filter(L => S.langs[L.id]).map(L => [L.id, headsNow(L)])) });
   hist = hist.slice(0, 200); ls.set("hist", hist); renderHist(); renderRoomHist();
 }
 function histTime(h) {                                   // 기록 시각 (숫자) — "2026. 10. 10. 오후 3:04:05" 도 읽음
@@ -2991,7 +3109,7 @@ $("hCsv").onclick = () => {
   const q = v => `"${String(v ?? "").replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
   const head = ["날짜·시각", "종류", "방송 이름", "덧붙임", "언어", ...LANGS.map(L => L.extra ? L.ko : L.name)];
   const rows = hist.map(h => [h.at, (HK[h.kind || "air"] || [""])[0].replace(/^\S+\s/, ""), h.label.replace(/^\S+\s/, ""), h.extra || "",
-    LANGS.filter(L => h.langs && h.langs[L.id]).map(L => L.extra ? L.ko : L.name).join("·"), ...LANGS.map(L => unmark((h.langs && h.langs[L.id] ? h.texts[L.id] : "") || ""))]);
+    LANGS.filter(L => h.langs && h.langs[L.id]).map(L => L.extra ? L.ko : L.name).join("·"), ...LANGS.map(L => { const x = (h.langs && h.langs[L.id] ? h.texts[L.id] : "") || "", hd = (h.heads || {})[L.id]; return unmark(hd && x.trim() ? [hd.open, x.trim(), hd.close].filter(y => (y || "").trim()).join(" ") : x); })]);
   const csv = "\ufeff" + [head, ...rows].map(r => r.map(q).join(",")).join("\r\n");    // BOM: 엑셀에서 한글이 안 깨지게
   const d = new Date(), a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
