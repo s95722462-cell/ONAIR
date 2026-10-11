@@ -138,7 +138,10 @@
   .tabs button { flex: none; height: 40px; padding: 0 var(--s4); border-radius: 10px; border: 0; background: transparent; cursor: pointer; font-size: var(--fs-md); font-weight: 600; color: var(--ink-2); transition: background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast); }
   .tabs button:hover { color: var(--ink); background: var(--surface-2); }
   .tabs button.on { background: var(--surface); color: var(--ink); font-weight: 700; box-shadow: var(--sh-1), 0 0 0 1px var(--line); }
-  .pane { display: none; } body[data-tab="air"] .pane[data-pane="air"], body[data-tab="auto"] .pane[data-pane="auto"], body[data-tab="file"] .pane[data-pane="file"], body[data-tab="log"] .pane[data-pane="log"], body[data-tab="set"] .pane[data-pane="set"] { display: block; }
+  .tabs button[hidden] { display: none; }
+  .tabs .tbadge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; margin-left: 5px; border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent); font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; vertical-align: 1px; }
+  .tabs .tbadge[hidden] { display: none; }
+  .pane { display: none; } body[data-tab="air"] .pane[data-pane="air"], body[data-tab="auto"] .pane[data-pane="auto"], body[data-tab="file"] .pane[data-pane="file"], body[data-tab="log"] .pane[data-pane="log"], body[data-tab="set"] .pane[data-pane="set"], body[data-tab="q"] .pane[data-pane="q"] { display: block; }
   .pane.cards { display: none; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: var(--s4); align-items: start; }
   body[data-tab="auto"] .pane[data-pane="auto"], body[data-tab="file"] .pane[data-pane="file"], body[data-tab="log"] .pane[data-pane="log"], body[data-tab="set"] .pane[data-pane="set"] { display: grid; }
   body.allView .tabs { display: none; } body.allView .pane { display: block !important; margin-bottom: var(--s4); } body.allView .pane.cards { display: grid !important; }
@@ -329,7 +332,12 @@
   #qrBox, #qQrBox { display: flex; justify-content: center; padding: var(--s3); background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); margin: 0 auto; width: max-content; max-width: 100%; } #qrBox img, #qrBox canvas, #qQrBox img, #qQrBox canvas { width: 240px !important; height: 240px !important; }
   #qrBox .muted, #qQrBox .muted { color: #6b5c4f; padding: var(--s6) var(--s3); }
 
-  /* ================= 🧾 대기 순번 — 매장 칸 (방송 탭 · 방송실 공용) ================= */
+  /* ================= 🧾 대기 순번 — 매장 칸 (🧾 대기 탭 · 방송실 공용) ================= */
+  .pane[data-pane="q"] > .card { max-width: 760px; }
+  .qlive { display: flex; align-items: center; gap: var(--s3); margin: calc(-1 * var(--s1)) 0 var(--s3); padding: 6px 6px 6px var(--s3); min-height: 48px; border-radius: var(--r-md); background: var(--danger-soft); border: 1px solid var(--danger-line); color: var(--danger-ink); font-size: var(--fs-sm); font-weight: 700; }
+  .qlive[hidden] { display: none; } .qlive span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .qlive i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; animation: blink 1.2s infinite; }
+  .qlive .mini { flex: none; min-height: 36px; height: auto; }
   .qtop { display: flex; align-items: center; gap: var(--s3); margin: calc(-1 * var(--s1)) 0 var(--s3); min-height: 44px; }
   .qtop .qsw { display: flex; align-items: center; gap: var(--s2); font-weight: 700; font-size: var(--fs-md); cursor: pointer; }
   .qtop .qinfo { flex: 1; min-width: 0; font-size: var(--fs-sm); color: var(--dim); line-height: 1.4; text-align: right; }
@@ -652,6 +660,11 @@
     #oaBar .nm { flex: 1; min-width: 0; font-size: var(--fs-sm); line-height: 1.3; } #oaBar .nm b { display: block; font-size: var(--fs-md); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } #oaBar .nm span { color: var(--dim); font-size: var(--fs-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; margin-top: 2px; }
     #oaBar button { flex: none; height: 48px; border-radius: 14px; border: 1px solid var(--line-strong); font-size: var(--fs-md); font-weight: 700; padding: 0 14px; background: var(--surface); color: var(--ink); touch-action: manipulation; }
     #oaAir { background: linear-gradient(180deg, var(--accent-hi), var(--accent)) !important; border-color: var(--accent) !important; color: #fff !important; padding: 0 var(--s5) !important; box-shadow: var(--sh-accent); } #oaAir.stop { background: #374151 !important; border-color: #374151 !important; box-shadow: 0 0 0 3px rgb(220 38 38 / .35); }
+    #oaQnm, #oaQ { display: none; } body[data-tab="q"]:not(.allView) #oaQnm { display: block; } body[data-tab="q"]:not(.allView) #oaQ { display: inline-flex; align-items: center; justify-content: center; }
+    body[data-tab="q"]:not(.allView) #oaBar > .nm:not(#oaQnm), body[data-tab="q"]:not(.allView) #oaPre, body[data-tab="q"]:not(.allView) #oaAir { display: none; }
+    #oaQ { background: linear-gradient(180deg, var(--accent-hi), var(--accent)); border-color: var(--accent); color: #fff; padding: 0 var(--s4); box-shadow: var(--sh-accent); } #oaQ.stop { background: #374151; border-color: #374151; box-shadow: 0 0 0 3px rgb(220 38 38 / .35); }
+    #oaQ:disabled { background: var(--surface-3); border-color: var(--line); color: var(--faint); box-shadow: none; }
+    .qlive { display: none !important; }   /* 📱 휴대폰은 아래 줄에 방송 중 · 멈춤 */
     .wrap { padding-bottom: 92px; } body.room #oaBar, body.boardOnly #oaBar, body.waitOnly #oaBar, body.qOnly #oaBar { display: none !important; }
     .toast { bottom: calc(84px + env(safe-area-inset-bottom)); }
     body.room .toast, body.boardOnly .toast, body.waitOnly .toast, body.qOnly .toast { bottom: max(var(--s6), calc(env(safe-area-inset-bottom) + var(--s3))); }
@@ -689,16 +702,12 @@
     <button class="hbtn" id="helpBtn" title="사용법" aria-label="사용법">❓</button>
   </header>
   <nav class="tabs" id="tabs">
-    <button data-tab="air">📢 방송</button><button data-tab="auto">📅 예약·자동</button><button data-tab="file">💾 파일·인쇄</button><button data-tab="log">📊 기록</button><button data-tab="set">⚙ 설정</button>
+    <button data-tab="air">📢 방송</button><button data-tab="q" id="qTab" hidden aria-label="대기 순번">🧾 대기<span class="tbadge" id="qTabN" hidden></span></button><button data-tab="auto">📅 예약·자동</button><button data-tab="file">💾 파일·인쇄</button><button data-tab="log">📊 기록</button><button data-tab="set">⚙ 설정</button>
   </nav>
 
   <div class="warnbar" id="ttsWarn" role="alert" hidden></div>
   <div class="pane" data-pane="air"><div class="grid">
     <div class="col">
-      <section class="card" id="qCard" hidden>
-        <h2>🧾 대기 순번</h2>
-        <div id="qBody"></div>
-      </section>
       <section class="card">
         <h2>① 어떤 방송인가요?</h2>
         <button id="placeRow" type="button" aria-haspopup="dialog"></button>
@@ -750,6 +759,13 @@
     </div>
   </div></div>
 
+  <div class="pane" data-pane="q">
+    <section class="card" id="qCard" hidden>
+      <h2>🧾 대기 순번</h2>
+      <div class="qlive" id="qLive" role="status" hidden><i></i><span id="qLiveT"></span><button class="mini" id="qLiveStop">■ 멈춤</button></div>
+      <div id="qBody"></div>
+    </section>
+  </div>
   <div class="pane cards" data-pane="auto">
       <section class="card">
         <h2>⏰ 예약 방송 <span class="sp"></span><label class="switch" title="예약 방송 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="schedOn" aria-label="예약 방송 켜기"><span></span></label></h2>
@@ -953,7 +969,7 @@
         <li><b>📱 QR</b>: 손님이 휴대폰 카메라로 찍으면 대기 화면이 열립니다. <b>매장 공용 QR</b>을 체크하면 한 장을 카운터에 붙여 두고 손님이 자기 번호를 넣습니다. 그 번호를 방송하면 손님 휴대폰이 <b>소리·진동·화면 번쩍</b>으로 알립니다.</li>
         <li>손님이 <b>확인했어요</b>를 누르면 매장 화면에 ✅가 뜨고, 그 번호 방송 중이면 자동으로 멈춥니다. 번호판에도 ✓ 표시가 붙습니다.</li>
         <li><b>🪧 카운터 안내판</b>: QR 창의 버튼 → A5 안내판(QR + 3단계 설명)을 인쇄합니다.</li>
-        <li><b>🧾 대기 순번</b> (키오스크 없이): ① 아래 <b>대기 순번</b>에서 <b>접수</b>를 켜고 🪧 안내판을 붙이면, 손님이 QR로 인원만 골라 번호를 받습니다. <b>다음 손님 부르기</b> 한 번에 방송 · 손님 휴대폰 · 번호판이 함께 알립니다. 번호는 이 PC가 정하므로 <b>온에어를 켜 둔 동안만</b> 등록됩니다.</li>
+        <li><b>🧾 대기 순번</b> (키오스크 없이): ① 위쪽 <b>🧾 대기</b> 탭에서 <b>접수</b>를 켜고 (장소가 <b>식당·카페</b>일 때 탭이 보임) 🪧 안내판을 붙이면, 손님이 QR로 인원만 골라 번호를 받습니다. <b>다음 손님 부르기</b> 한 번에 방송 · 손님 휴대폰 · 번호판이 함께 알립니다. 번호는 이 PC가 정하므로 <b>온에어를 켜 둔 동안만</b> 등록됩니다.</li>
         <li>⚠️ 손님은 <b>대기 화면을 켜 둔 채</b> 기다려야 합니다 (화면이 꺼지면 아이폰은 소리가 안 날 수 있음). 매장 코드는 이 브라우저에 저장되므로, 다른 PC로 옮길 때는 <b>💼 백업</b>으로 옮겨야 붙여 둔 QR을 계속 쓸 수 있습니다.</li>
       </ul></section>
     <section id="m-auto"><h4>📅 예약 · ⏱ 카운트다운 · 📚 방송 묶음</h4>
@@ -1086,7 +1102,7 @@
   <div id="qWalkBody"></div>
   <div class="btns" style="margin-top:16px" id="qWalkBtns"></div>
 </dialog>
-<div id="oaBar"><div class="nm"><b id="oaName"></b><span id="oaEst"></span></div><button id="oaPre">▶ 듣기</button><button id="oaAir">📢 방송</button></div>
+<div id="oaBar"><div class="nm"><b id="oaName"></b><span id="oaEst"></span></div><div class="nm" id="oaQnm"><b id="oaQName"></b><span id="oaQSub"></span></div><button id="oaPre">▶ 듣기</button><button id="oaAir">📢 방송</button><button id="oaQ">📢 다음 손님</button></div>
 <div class="recbar" id="recBar" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -2871,6 +2887,7 @@ function setLive(mode) {
   $("airBtn").className = "big " + (mode === "air" ? "stop" : "air");
   if (mode === "rec") $("preBtn").textContent = "■ 녹음 멈추기";
   $("preBtn").disabled = mode === "air"; $("airBtn").disabled = mode === "pre" || mode === "rec"; $("recBtn").disabled = !!mode;
+  setLive.mode = mode; try { qBarSync(); } catch (e) {}   // 🧾 대기 탭: 방송 중 표시 · 멈춤
 }
 function estimate() {                                    // 대략 걸리는 시간
   setTimeout(oaSync, 0); try { syncHeads(); } catch (e) {}
@@ -3324,7 +3341,7 @@ async function playPack(pk) {
 // ================= 🖥 방송실 모드 =================
 function roomTiles() {
   const tiles = [];
-  if (S.place === "cafe") tiles.push({ kind: "q", icon: "🧾", name: "대기 순번" });   // 🧾 대기 순번 패널 열고 닫기
+  if (qInUse()) tiles.push({ kind: "q", icon: "🧾", name: "대기 순번" });   // 🧾 대기 순번 패널 열고 닫기 (접수 중 · 부를 손님이 남았을 때만)
   (S.fav || []).forEach(id => { if (id === "hist") { tiles.push({ kind: "hist", id, icon: "📊", name: "최근 방송" }); return; } const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = !m && T.find(x => x.id === id); if (m) tiles.push({ kind: "tpl", id, icon: m.icon, name: m.name }); else if (t) tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: t.urgent }); });
   const hide = S.roomHide || [];
   S.packs.forEach(pk => { if (!hide.includes("pack:" + pk.id)) tiles.push({ kind: "pack", pk, icon: "📚", name: pk.name }); });
@@ -3735,7 +3752,7 @@ function qLoad() {
   if (Q.day !== qDay() && !Q.list.some(qAct)) { Object.assign(Q, { r: qRnd(4), day: qDay(), next: 1, cur: 0, list: [] }); }   // 날이 바뀌면 1번부터 (기다리는 손님이 있으면 그대로)
   return Q;
 }
-function qSave() { ls.set("queue", Q); qBoardSync(); renderQ(); }
+function qSave() { ls.set("queue", Q); qBoardSync(); qVis(); }
 function qPace() {                                         // 한 팀당 몇 분 (오늘 처음 부른 시각 간격)
   const t = Q.list.filter(e => e.c1).map(e => e.c1).sort((a, b) => a - b); if (t.length < 2) return 0;
   return Math.min(60, Math.max(1, Math.round((t[t.length - 1] - t[0]) / (t.length - 1) / 30000) / 2));
@@ -3810,7 +3827,7 @@ function qStart() {
   try { if (navigator.locks && navigator.locks.request) { navigator.locks.request("onair_queue", () => { go(); return new Promise(() => {}); }).catch(go); return; } } catch (e) {}
   go();
 }
-window.addEventListener("storage", e => { if (e.key === "onair_queue" && !qLeader && Q) { qLoad(); renderQ(); } });   // 다른 창이 번호를 맡고 있을 때: 보기만
+window.addEventListener("storage", e => { if (e.key === "onair_queue" && !qLeader && Q) { qLoad(); qVis(); } });   // 다른 창이 번호를 맡고 있을 때: 보기만
 setInterval(() => { if (Q && Q.list.some(qAct)) renderQ(); }, 30000);   // 기다린 시간(분) 새로
 function qToggle(on) {
   if (!qLeader) return;
@@ -3850,8 +3867,31 @@ function qBoardSync() {                                    // 🖥 번호판: �
   const b = ls.get("board", { recent: [] }); if (JSON.stringify(b.q || null) === JSON.stringify(nq)) return;
   b.q = nq; ls.set("board", b); boardRender(false);
 }
-function qVis() { if (BOARD || PHONE) return; const show = S.place === "cafe" || !!(Q && (Q.on || Q.list.some(qAct))); $("qCard").hidden = !show; if (show) renderQ(); qRoomVis(); }
-function qRoomVis() { if (BOARD || PHONE || !$("roomQ")) return; $("roomQ").hidden = $("room").hidden || S.place !== "cafe" || S.roomQOpen === false; if (!$("roomQ").hidden) renderQ(); }
+function qInUse() { try { return !!(Q && (Q.on || Q.list.some(e => "wcgn".includes(e.st)))); } catch (e) { return false; } }   // 접수 중이거나 아직 부를 손님이 있음
+let qRoomUse = null;
+function qVis() {                                          // 🧾 대기 탭: 식당·카페이거나 대기를 쓰는 중일 때만
+  if (BOARD || PHONE) return; const show = S.place === "cafe" || qInUse();
+  $("qCard").hidden = !show; $("qTab").hidden = !show;
+  if (!show && document.body.dataset.tab === "q") goTab("air");
+  qRoomVis(1); if (show || !$("roomQ").hidden) renderQ(); else qBarSync();
+}
+function qRoomVis(noDraw) {                                    // 🖥 방송실: 접수 중(또는 부를 손님이 남음)일 때만 대기 칸
+  if (BOARD || PHONE || !$("roomQ")) return; const use = qInUse();
+  if (!$("room").hidden && qRoomUse !== null && use !== qRoomUse) renderRoom(); qRoomUse = use;   // 큰 버튼 줄의 🧾 타일도 함께
+  $("roomQ").hidden = $("room").hidden || !use || S.roomQOpen === false; if (!noDraw && !$("roomQ").hidden) renderQ();
+}
+function qBarSync() {                                      // 🧾 대기 탭 배지 · 방송 중 줄 · 📱 아래 줄 [다음 손님 부르기]
+  if (BOARD || PHONE || !Q) return;
+  const w = Q.list.filter(e => e.st === "w").sort((a, b) => a.n - b.n), live = setLive.mode === "air";
+  $("qTabN").hidden = !w.length; $("qTabN").textContent = w.length; $("qTab").setAttribute("aria-label", `대기 순번${w.length ? ` — 대기 ${w.length}팀` : ""}`);
+  const t = curT(), num = t.f.includes("num") ? ` ${(S.vals.num || "").trim() || "1"}번` : "";
+  $("qLive").hidden = !live; if (live) $("qLiveT").textContent = `방송 중 · ${t.name}${num}`;
+  $("oaQName").textContent = `🧾 대기 ${w.length}팀`; $("oaQSub").textContent = live ? `📢 방송 중 · ${t.name}${num}` : Q.cur ? `지금 ${Q.cur}번` : Q.on ? "접수 중" : "접수 꺼짐";
+  const b = $("oaQ"); b.classList.toggle("stop", live); b.disabled = !live && (!qLeader || !w.length || !!setLive.mode);
+  b.textContent = live ? "■ 멈춤" : w.length ? `📢 다음 ${w[0].n}번` : "📢 다음 손님";
+}
+$("oaQ").onclick = () => { if (setLive.mode === "air") stop(); else qNext(); };
+$("qLiveStop").onclick = () => stop();
 function qUrl() { const base = location.protocol.startsWith("http") ? location.href.split("#")[0].split("?")[0] : PUBLIC_URL; return base + "?q=" + shopId(); }
 function qRowHTML(e) {
   const now = Date.now(), end = e.c1 || (qAct(e) || e.st === "n" ? now : e.doneAt || now), min = Math.max(0, Math.round((end - e.at) / 60000));   // 기다린 분 (처음 부를 때까지)
@@ -3876,6 +3916,7 @@ function qHTML() {
 }
 function renderQ() {
   if (!Q || BOARD || PHONE) return;
+  qBarSync();
   [$("qCard").hidden ? null : $("qBody"), $("roomQ") && !$("roomQ").hidden ? $("roomQBody") : null].forEach(box => {
     if (!box) return; const y = box.querySelector(".qlist")?.scrollTop || 0; box.innerHTML = qHTML(); const l = box.querySelector(".qlist"); if (l) l.scrollTop = y;
   });
