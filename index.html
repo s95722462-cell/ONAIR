@@ -261,7 +261,13 @@
   #roomNum .rkeys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   #roomNum button { height: 46px; border-radius: 12px; border: 1px solid #ffffff2a; background: #ffffff14; color: #fff; font-size: 22px; font-weight: 700; cursor: pointer; }
   #roomNum button:active { background: #f9731666; }
-  #roomNum .rtools { display: grid; grid-template-columns: 1fr 1fr 1.3fr 1fr; gap: 6px; } #roomNum .rtools button { font-size: 16px; }
+  #roomNum .rtools { display: grid; grid-template-columns: 1fr 1fr 1.4fr 1fr; gap: 6px; } #roomNum .rtools button { font-size: 16px; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  @media (max-width: 380px) { #roomNum .rtools { grid-template-columns: 1fr 1fr; } }
+  .numkeys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+  .numkeys button { height: 46px; padding: 0 4px; border-radius: 12px; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .numkeys [data-d] { font-size: 19px; font-weight: 700; }
+  .numkeys .ngo, .numkeys [data-board], .numkeys [data-qr] { grid-column: span 2; }
+  .numkeys .ngo { font-size: 16px; font-weight: 800; background: var(--accent); border-color: var(--accent); color: #fff; } .numkeys .ngo:hover { color: #fff; filter: brightness(1.06); }
   .rtile .st { position: absolute; right: 10px; top: 8px; font-size: 22px; color: #fbbf24; }
   .rtile { position: relative; } #roomGrid .rhint { grid-column: 1 / -1; padding: 30px; text-align: center; opacity: .8; font-size: 18px; line-height: 1.7; border: 2px dashed #ffffff33; border-radius: 18px; }
   #roomPre { min-height: 60px; border-radius: 16px; border: 1px solid #ffffff33; background: #ffffff10; color: #fff; font-size: 18px; cursor: pointer; }
@@ -282,6 +288,23 @@
   @media (max-width: 359px) { .tpls { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } .logo b { font-size: 16px !important; letter-spacing: -.6px; } header .hbtn { padding: 0 7px !important; } }
   @media (max-width: 340px) { .logo b em { display: none; } }
   #oaBar { display: none; }
+  #placeRow { display: none; }
+  #placeDlg { position: fixed; inset: auto 0 0 0; margin: 0; width: 100%; max-width: 100%; max-height: 86vh; max-height: 86dvh; padding: 0 0 calc(14px + env(safe-area-inset-bottom)); border-radius: 16px 16px 0 0; background: #f6f1ea; overflow: auto; overscroll-behavior: contain; box-shadow: 0 -10px 40px #0003; }
+  #placeDlg[open] { display: block; animation: sheetUp .3s cubic-bezier(.2, .85, .25, 1); }
+  #placeDlg::backdrop { background: #1c140c66; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  @keyframes sheetUp { from { transform: translateY(100%); } }
+  @media (prefers-reduced-motion: reduce) { #placeDlg[open] { animation: none; } }
+  #placeDlg:focus { outline: none; }
+  #placeDlg .grab { width: 36px; height: 5px; border-radius: 3px; background: #cdbfb0; margin: 7px auto 0; }
+  #placeDlg .sh { position: sticky; top: 0; z-index: 1; display: grid; grid-template-columns: 64px 1fr 64px; align-items: center; padding: 4px 8px 6px; background: #f6f1ea; }
+  #placeDlg .sh h3 { margin: 0; text-align: center; font-size: 17px; font-weight: 700; }
+  #placeDlg .sh button { height: 44px; border: 0; background: none; color: var(--accent2); font-size: 17px; font-weight: 700; cursor: pointer; justify-self: end; padding: 0 8px; }
+  #placeList { margin: 4px 16px 0; background: #fff; border-radius: 12px; overflow: hidden; }
+  #placeList button { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 50px; padding: 0 16px; border: 0; background: #fff; text-align: left; font-size: 16.5px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  #placeList button + button::before { content: ""; position: absolute; left: 52px; right: 0; top: 0; height: 1px; background: #e6dccf; transform: scaleY(.5); transform-origin: top; }
+  #placeList button:active { background: #f1e9df; } #placeList .pi { width: 24px; text-align: center; font-size: 21px; flex: none; }
+  #placeList .pn { flex: 1; min-width: 0; } #placeList .on .pn { font-weight: 700; } #placeList .ck { flex: none; color: var(--accent2); font-size: 18px; font-weight: 800; }
+  html.nodlg #placeDlg[open] { left: 0; top: auto; bottom: 0; transform: none; max-height: 86vh; }
   .warnbar { margin: -6px 0 14px; padding: 12px 14px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; font-size: 14.5px; line-height: 1.6; }
   .warnbar[hidden] { display: none; } .warnbar small { color: #7f1d1d; font-size: 13px; }
   dialog:not([open]) { display: none; }
@@ -293,7 +316,11 @@
     header .onair { padding: 0 8px; height: 30px; font-size: 11px; } header .onair i { display: none; } header .hbtn { height: 34px; padding: 0 9px; font-size: 13px; }
     #roomBtn { font-size: 0 !important; } #roomBtn::before { content: "🖥"; font-size: 17px; }
     .tabs { margin: 0 0 10px; } .tabs button { height: 38px; padding: 0 12px; font-size: 14px; }
-    .places { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -18px 10px; padding: 0 18px 2px; } .places::-webkit-scrollbar { display: none; } .places button { flex: none; }
+    .places { display: none; }   /* 📱 장소는 한 줄 + 아래 창으로 고르기 */
+    #placeRow { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 54px; padding: 0 12px 0 14px; margin-bottom: 12px; border: 1px solid var(--line); border-radius: 14px; background: #fff; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    #placeRow:active { background: #f6efe7; }
+    #placeRow .pi { font-size: 24px; line-height: 1; flex: none; } #placeRow .pn { flex: 1; min-width: 0; font-size: 16.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #placeRow .pc { flex: none; color: var(--dim); font-size: 14px; display: flex; align-items: center; gap: 4px; } #placeRow .pc::after { content: "›"; font-size: 24px; line-height: 1; color: #c4b3a1; margin-top: -2px; }
     .favtip { display: none; }
     .grp > h4 { cursor: pointer; user-select: none; padding: 7px 0; margin: 0 0 4px; font-size: 14px; } .grp > h4::before { content: "▾"; color: var(--accent2); width: 12px; } .grp.cl > h4::before { content: "▸"; } .grp.cl > h4 { margin-bottom: 0; }
     .grp.cl > .tpls { display: none; }
@@ -331,6 +358,7 @@
     <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
       <section class="card">
         <h2>① 어떤 방송인가요?</h2>
+        <button id="placeRow" type="button" aria-haspopup="dialog"></button>
         <div class="places" id="places"></div>
         <div style="position:relative;margin-bottom:12px"><input id="tplQ" type="search" aria-label="방송 찾기" placeholder="🔍 방송 찾기 (예: 주차, 단수, 엘리베이터, 화재)" style="width:100%;height:42px;border:1px solid var(--line);border-radius:12px;padding:0 40px 0 14px;font-size:15px;background:#fffaf5">
           <button id="tplQx" class="mini" style="position:absolute;right:6px;top:6px;height:30px" aria-label="찾기 지우기" hidden>✕</button></div>
@@ -531,7 +559,7 @@
       </ul></section>
     <section id="m-pick"><h4>① 장소·방송 고르기</h4>
       <ul>
-        <li>위쪽 장소(🏢 아파트 · 🏫 학교 · 🍽 식당·카페 …)를 누르면 그 장소에 맞는 <b>첫 인사</b>와 <b>방송 목록</b>으로 바뀝니다.</li>
+        <li>위쪽 장소(🏢 아파트 · 🏫 학교 · 🍽 식당·카페 …)를 누르면 그 장소에 맞는 <b>첫 인사</b>와 <b>방송 목록</b>으로 바뀝니다. 휴대폰에서는 장소 줄(예: 🏢 아파트 <b>변경 ›</b>)을 누르면 아래에서 목록이 올라옵니다.</li>
         <li>방송 버튼을 누르면 고릅니다. <b>🔍 방송 찾기</b>에 "주차", "단수"처럼 쓰면 모든 장소에서 찾아 줍니다.</li>
         <li>버튼 왼쪽 위 <b>☆</b>를 누르면 맨 위 <b>★ 즐겨찾기</b>에 모입니다. 휴대폰에서는 묶음 제목을 눌러 펼치고 접습니다.</li>
         <li>첫 인사에 들어갈 이름(예: 행복마을 3단지)은 ⚙ 설정 → <b>장소 이름</b>에서 넣습니다.</li>
@@ -550,7 +578,7 @@
       <ul>
         <li><b>PC의 Microsoft Edge 를 권장합니다.</b> 언어마다 목록에서 목소리를 고르고, <b>🔊 비교</b>로 차례로 들어 볼 수 있습니다. (한국어 기본: Brian 다국어)</li>
         <li><b>아이폰·아이패드</b>는 어떤 브라우저든 애플 목소리만 씁니다. 한국어는 <b>유나</b>가 정상입니다. 더 좋은 소리: 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어 → <b>유나(고음질)</b> 내려받기.</li>
-        <li>안드로이드 휴대폰은 Google 목소리를 씁니다.</li>
+        <li>안드로이드 휴대폰은 Google 목소리를 씁니다. 안드로이드의 <b>Edge</b>·<b>삼성 인터넷</b>에는 목소리가 없으니 <b>Chrome</b>으로 여세요 (홈 화면 설치도 Chrome 에서).</li>
         <li>이름·약자를 엉뚱하게 읽으면 ⚙ 설정 → <b>📖 발음 사전</b>에 "쓰는 말 → 읽는 말"을 넣으세요. 화면 글자는 그대로이고 읽을 때만 바뀝니다.</li>
       </ul></section>
     <section id="m-pro"><h4>🎙 성우 억양 · 🎚 억양 표시</h4>
@@ -651,6 +679,11 @@
     </div>
   </div>
 </div>
+<dialog id="placeDlg" aria-labelledby="placeTitle" tabindex="-1">
+  <div class="grab" aria-hidden="true"></div>
+  <div class="sh"><span></span><h3 id="placeTitle">어떤 방송인가요</h3><button id="placeDone" type="button">완료</button></div>
+  <div id="placeList"></div>
+</dialog>
 <dialog id="aptDlg">
   <h3>⚙ 장소 이름</h3>
   <div class="muted" style="font-size:14px;margin-bottom:12px">방송 첫 인사에 들어갑니다. 예: "안녕하십니까. <b>행복마을 3단지</b> 관리사무소에서…", "<b>겐시스템 구미공장</b> 총무팀에서…"</div>
@@ -720,7 +753,9 @@ const HAS_TTS = !!(window.speechSynthesis && typeof window.SpeechSynthesisUttera
 const speechSynthesis = HAS_TTS ? window.speechSynthesis : { speaking: false, pending: false, paused: false, onvoiceschanged: null, getVoices: () => [], speak() {}, cancel() {}, pause() {}, resume() {} };
 const NO_TTS_MSG = "이 브라우저는 음성 읽기를 지원하지 않습니다 — PC의 Microsoft Edge 또는 휴대폰 기본 브라우저로 열어 주세요";
 const POPUP_MSG = "새 창이 막혔습니다 — 주소창 오른쪽의 팝업 차단 표시를 눌러 '항상 허용'을 고른 뒤 다시 눌러 주세요";
-const noVoiceMsg = () => (HAS_TTS ? "이 기기에서 목소리를 찾지 못했습니다 — PC의 Microsoft Edge 를 권장합니다" : NO_TTS_MSG);
+const AND_EDGE = /Android/i.test(navigator.userAgent) && /EdgA\/|SamsungBrowser\//.test(navigator.userAgent);   // 안드로이드 Edge·삼성 인터넷: 목소리 목록이 비어 있음 (안드로이드는 Chrome 만 됨)
+const AE_MSG = `안드로이드용 ${/SamsungBrowser\//.test(navigator.userAgent) ? "삼성 인터넷에서는" : "Edge 에서는"} 목소리를 쓸 수 없습니다 — Chrome 으로 열어 주세요 (홈 화면 설치도 Chrome 에서)`;
+const noVoiceMsg = () => (HAS_TTS ? (AND_EDGE ? AE_MSG : "이 기기에서 목소리를 찾지 못했습니다 — PC의 Microsoft Edge 를 권장합니다") : NO_TTS_MSG);
 if (typeof HTMLDialogElement !== "function") {            // 아주 오래된 브라우저: <dialog> 흉내
   document.documentElement.classList.add("nodlg");
   document.querySelectorAll("dialog").forEach(d => {
@@ -1628,7 +1663,7 @@ function groupsFor(pl) {
 function renderPlaces() {
   const box = $("places"); box.innerHTML = "";
   Object.entries(PLACES).forEach(([id, p]) => {
-    const b = document.createElement("button"); b.textContent = `${p.icon} ${p.name}`; b.className = S.place === id ? "on" : "";
+    const b = document.createElement("button"); b.textContent = `${p.icon} ${p.name}`; b.className = S.place === id ? "on" : ""; b.dataset.p = id;
     b.onclick = () => {
       S.place = id; S.edited = {};
       const ids = groupsFor(id).flatMap(g => g.ids);
@@ -1638,6 +1673,18 @@ function renderPlaces() {
     };
     box.appendChild(b);
   });
+  const cp = PL(); $("placeRow").innerHTML = `<span class="pi">${cp.icon}</span><span class="pn">${cp.name}</span><span class="pc">변경</span>`;
+  $("placeRow").setAttribute("aria-label", `장소: ${cp.name} — 바꾸기`);
+}
+function placeSheet() {                                   // 📱 아래에서 올라오는 장소 고르기 (고르면 위 장소 버튼을 누른 것과 똑같이)
+  const box = $("placeList"), cur = S.place || "apt"; box.innerHTML = "";
+  Object.entries(PLACES).forEach(([id, p]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = id === cur ? "on" : ""; b.setAttribute("aria-pressed", id === cur);
+    b.innerHTML = `<span class="pi">${p.icon}</span><span class="pn">${p.name}</span><span class="ck">${id === cur ? "✓" : ""}</span>`;
+    b.onclick = () => { $("placeDlg").close(); if (id !== (S.place || "apt")) $("places").querySelector(`[data-p="${id}"]`).click(); };
+    box.appendChild(b);
+  });
+  $("placeDlg").showModal(); $("placeDlg").scrollTop = 0; try { $("placeDlg").focus({ preventScroll: true }); } catch (e) {}   // 완료 버튼에 파란 테두리가 먼저 뜨지 않게
 }
 const MOBILE = () => matchMedia("(max-width: 600px)").matches;
 let GOPEN = {}; try { GOPEN = JSON.parse(localStorage.getItem("onair_gopen") || "{}"); } catch (e) {}
@@ -1745,8 +1792,8 @@ function renderFields() {
     d.appendChild(el); box.appendChild(d);
     if (k === "num") {                                    // ☕ 번호 빠르게: −1 / +1 / 바로 호출
       el.inputMode = "numeric"; el.style.cssText = "font-size:22px;font-weight:800;text-align:center;letter-spacing:2px";
-      const row = document.createElement("div"); row.style.cssText = "display:flex;gap:6px;margin-top:6px";
-      row.innerHTML = `<button class="mini" data-d="-1" style="flex:1;height:40px;font-size:18px">−1</button><button class="mini" data-d="1" style="flex:1;height:40px;font-size:18px">+1</button><button class="mini" data-board title="TV·모니터에 띄울 번호판 창 열기" style="flex:1.2;height:40px;font-size:14px">🖥 번호판</button><button class="mini" data-qr title="손님 휴대폰 알림 QR" style="flex:1;height:40px;font-size:14px">📱 QR</button><button class="mini" data-go style="flex:2;height:40px;font-size:15px;font-weight:800;background:var(--accent);border-color:var(--accent);color:#fff">📢 바로 호출</button>`;
+      const row = document.createElement("div"); row.className = "numkeys";
+      row.innerHTML = `<button class="mini" data-d="-1">−1</button><button class="mini" data-d="1">+1</button><button class="mini ngo" data-go>📢 바로 호출</button><button class="mini" data-board title="TV·모니터에 띄울 번호판 창 열기">🖥 번호판</button><button class="mini" data-qr title="손님 휴대폰 알림 QR">📱 QR</button>`;
       row.querySelectorAll("[data-d]").forEach(b => b.onclick = () => { el.value = String(Math.max(1, (parseInt(S.vals.num, 10) || 0) + +b.dataset.d)); setNum(el.value); });
       row.querySelector("[data-go]").onclick = () => { setNum(el.value); $("airBtn").click(); };
       row.querySelector("[data-board]").onclick = boardOpen;
@@ -1798,7 +1845,7 @@ function renderLangs() {
   });
   const off = LANGS.filter(L => !S.langs[L.id]), so = ls.get("showOff", false);   // 꺼 둔 언어는 숨기고 '펼치기'로 보기
   box.classList.toggle("showoff", so); $("langOff").hidden = !off.length; syncHeads(); trAllDue();
-  $("langOff").textContent = so ? "▲ 꺼 둔 언어 접기" : `▼ 꺼 둔 언어 ${off.length}개 보기 (${off.map(L => L.extra ? L.ko : L.name).join(" · ")}) — 켜려면 펼치세요`;
+  $("langOff").innerHTML = so ? "▲ 언어 접기" : `▼ 언어 펼치기 <span style="color:var(--dim);font-size:12.5px">· ${off.length}개</span>`;
 }
 const SAMPLE = { ko: "안녕하십니까. 관리사무소에서, 입주민 여러분께 안내 말씀 드립니다.", en: "Hello, residents. This is an announcement from the management office.",
   ja: "居住者の皆様にお知らせいたします。管理事務所です。", zh: "各位居民，大家好。这里是物业管理处。" };
@@ -2163,13 +2210,14 @@ function loadVoices() {
   }
   renderLangs(); altInfo();
   const info = LANGS.map(L => { const b = voicesFor(L)[0]; return `<b>${L.flag} ${L.name}</b> ${b ? `${stars(b)} ${dispName(b.name)}` : "— 없음"} (${voicesFor(L).length}개)`; }).join("<br>");
-  $("voiceInfo").innerHTML = voices.length ? info : HAS_TTS ? "목소리를 찾지 못했습니다." : NO_TTS_MSG;
+  $("voiceInfo").innerHTML = voices.length ? info : HAS_TTS ? (AND_EDGE ? AE_MSG : "목소리를 찾지 못했습니다.") : NO_TTS_MSG;
   ttsWarn();
   const best = LANGS.every(L => voicesFor(L).some(v => score(v) >= 100));
   const tip = $("voiceTip");
   if (!best) {
     tip.hidden = false;
-    tip.innerHTML = /Edg\//.test(navigator.userAgent) ? "일부 언어의 고급 목소리가 없습니다. 인터넷 연결을 확인해 주세요."
+    tip.innerHTML = AND_EDGE && !voices.length ? AE_MSG
+      : /Edg\//.test(navigator.userAgent) ? "일부 언어의 고급 목소리가 없습니다. 인터넷 연결을 확인해 주세요."
       : /iPhone|iPad|Mac/.test(navigator.userAgent) ? "더 좋은 목소리: <b>설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성</b>에서 한국어·영어·일본어·중국어의 <b>고품질(향상됨)</b> 음성을 내려받으세요."
       : "가장 자연스러운 목소리(★★★)는 <b>PC의 Microsoft Edge</b>에서 이 파일을 열면 무료로 쓸 수 있습니다.";
   } else tip.hidden = true;
@@ -2180,7 +2228,8 @@ function ttsWarn(final) {                                 // 음성 읽기가 �
   if (voices.length) { w.hidden = true; return; }
   if (HAS_TTS && !final) return;                          // 목소리는 조금 늦게 올 수 있음 → 몇 초 기다린 뒤에만
   w.hidden = false;
-  w.innerHTML = `⚠️ <b>${HAS_TTS ? "이 브라우저에서 목소리를 찾지 못했습니다 — PC의 Microsoft Edge 또는 휴대폰 기본 브라우저로 열어 주세요" : NO_TTS_MSG}</b><br><small>카카오톡·밴드 같은 앱 안에서 열었다면 오른쪽 위 ⋮ → '다른 브라우저로 열기'를 눌러 주세요. 번호판 · QR · 공지문 · 카톡 복사 · 기록 · 백업은 그대로 쓸 수 있습니다.</small>`;
+  w.innerHTML = AND_EDGE ? `⚠️ <b>${AE_MSG}</b><br><small>번호판 · QR · 공지문 · 카톡 복사 · 기록 · 백업은 그대로 쓸 수 있습니다.</small>`
+    : `⚠️ <b>${HAS_TTS ? "이 브라우저에서 목소리를 찾지 못했습니다 — PC의 Microsoft Edge 또는 휴대폰 기본 브라우저로 열어 주세요" : NO_TTS_MSG}</b><br><small>카카오톡·밴드 같은 앱 안에서 열었다면 오른쪽 위 ⋮ → '다른 브라우저로 열기'를 눌러 주세요. 번호판 · QR · 공지문 · 카톡 복사 · 기록 · 백업은 그대로 쓸 수 있습니다.</small>`;
 }
 const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 function primeSpeech() {                                  // 아이폰(Safari·Edge·Chrome 모두 WebKit): 손가락으로 누른 그 순간에 한 번 말을 시켜 두어야 나중 말도 나옴
@@ -2420,7 +2469,7 @@ async function run(real, rec) {
   if (!voices.length) {
     if (real && curT().f.includes("num")) {               // 🔇 목소리가 없어도 번호 호출은 번호판·손님 휴대폰으로 보냄
       const n = (S.vals.num || "").trim() || "1"; boardPush(n, curT().id); phonePush(n, curT().id); addHistory("air", "🔇 음성 없이 번호판·휴대폰만");
-      toast(`🔇 소리 없이 ${n}번을 번호판·손님 휴대폰에 알렸습니다 — ${HAS_TTS ? "목소리를 찾지 못했습니다" : "이 브라우저는 음성 읽기를 지원하지 않습니다"}`); $("now").textContent = `🔇 ${n}번을 번호판·휴대폰에만 알렸습니다. ${noVoiceMsg()}`; return;
+      toast(`🔇 소리 없이 ${n}번을 번호판·손님 휴대폰에 알렸습니다 — ${HAS_TTS ? (AND_EDGE ? "이 브라우저에는 목소리가 없습니다 (Chrome 으로 열어 주세요)" : "목소리를 찾지 못했습니다") : "이 브라우저는 음성 읽기를 지원하지 않습니다"}`); $("now").textContent = `🔇 ${n}번을 번호판·휴대폰에만 알렸습니다. ${noVoiceMsg()}`; return;
     }
     toast(noVoiceMsg()); $("now").textContent = noVoiceMsg(); return;
   }
@@ -3306,6 +3355,12 @@ $("exCar").onclick = () => {                             // 🧪 💾 예시: �
 $("oaPre").onclick = () => $("preBtn").click();
 $("oaAir").onclick = () => $("airBtn").click();
 $("langOff").onclick = () => { ls.set("showOff", !ls.get("showOff", false)); renderLangs(); };
+$("placeRow").onclick = placeSheet;
+$("placeDone").onclick = () => $("placeDlg").close();
+$("placeDlg").addEventListener("click", e => {            // 창 바깥(어두운 곳)을 누르면 닫기
+  const r = $("placeDlg").getBoundingClientRect();
+  if (e.target === $("placeDlg") && (e.clientY < r.top || e.clientX < r.left || e.clientX > r.right || e.clientY > r.bottom)) $("placeDlg").close();
+});
 function a11yFix() { document.querySelectorAll("button[title]:not([aria-label])").forEach(b => { if (!/[가-힣A-Za-z0-9]/.test(b.textContent)) b.setAttribute("aria-label", b.title); }); }
 try { new MutationObserver(() => { if (!a11yFix.q) a11yFix.q = requestAnimationFrame(() => { a11yFix.q = 0; a11yFix(); }); }).observe(document.body, { childList: true, subtree: true }); } catch (e) {}
 document.addEventListener("keydown", e => {               // Esc: 방송실 모드 나가기 (창이 떠 있으면 창 먼저)
