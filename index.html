@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>온에어 — 따뜻한 안내방송</title>
 <meta name="description" content="온에어(溫 On-Air) — 아나운서처럼 또박또박, 온기 있는 안내방송 (아파트·학교·회사·상가·병원·관공서). 한국어·영어·일본어·중국어 무료.">
-<meta name="theme-color" content="#c2410c">
+<meta name="theme-color" content="#faf6f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14100c" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="온에어">
@@ -16,325 +17,562 @@
 <style>html.boot body { opacity: 0; } html body { transition: opacity .18s; }</style>
 <script>document.documentElement.classList.add("boot"); setTimeout(() => document.documentElement.classList.remove("boot"), 800);   // 글꼴이 늦어도 0.8초 뒤에는 보이기</script>
 <style>
+  /* ================= 디자인 토큰 (색 · 글자 · 간격 · 모서리 · 그림자 · 움직임) ================= */
   :root {
-    --bg: #fbf7f2; --card: #ffffff; --line: #eee4d8; --ink: #2b2118; --dim: #76665a; --accent: #cf4a0c; --accent2: #c2410c;
-    --soft: #fff1e6; --ok: #15803d; --red: #dc2626;
+    color-scheme: light;
+    --bg: #faf6f1; --surface: #ffffff; --surface-2: #fdf9f4; --surface-3: #f4ece3; --overlay: #1c140ccc;
+    --line: #ece2d6; --line-strong: #d9cab9; --line-input: #cbb9a6;
+    --ink: #261d15; --ink-2: #4f4237; --dim: #6b5c4f; --faint: #8f7f71;
+    --accent: #c2410c; --accent-hi: #d4500f; --accent-press: #a83809; --accent-ink: #b13c0a; --on-accent: #ffffff;
+    --accent-soft: #fff1e6; --accent-line: #fbc9a2;
+    --ok: #15803d; --ok-soft: #ecfdf3; --ok-line: #bbf0cd;
+    --danger: #c81e1e; --danger-ink: #b42318; --danger-soft: #fef2f2; --danger-line: #fbcaca;
+    --info-ink: #1e4fd1; --info-soft: #eff4ff; --info-line: #c9d8fd;
+    --warn-ink: #8a4b06; --warn-soft: #fef6e4; --warn-line: #f6dca0;
+    --mine-soft: #fefbea; --mine-line: #f3e3a0; --mine-ink: #8a5a00;
+    --ring: #b13c0a; --ring-room: #fbbf24;
+    --red: var(--danger); --soft: var(--accent-soft); --accent2: var(--accent-ink); --card: var(--surface);   /* 옛 이름 (JS 문자열에서 씀) */
+    --red-live: #dc2626;
+    /* 글자 */
+    --fs-xs: 12px; --fs-sm: 13px; --fs-md: 15px; --fs-lg: 17px; --fs-xl: 20px; --fs-2xl: 24px;
+    --lh-tight: 1.3; --lh: 1.6;
+    /* 간격 (4·8 단위) */
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px;
+    /* 모서리 */
+    --r-xs: 6px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 20px; --r-pill: 999px;
+    /* 그림자 */
+    --sh-1: 0 1px 2px rgb(64 36 12 / .05), 0 1px 1px rgb(64 36 12 / .03);
+    --sh-2: 0 6px 20px -6px rgb(64 36 12 / .16), 0 2px 4px rgb(64 36 12 / .04);
+    --sh-3: 0 28px 70px -16px rgb(28 16 6 / .42);
+    --sh-accent: 0 10px 24px -10px rgb(194 65 12 / .65);
+    /* 움직임 */
+    --t-fast: .12s; --t: .2s; --t-slow: .32s; --ease: cubic-bezier(.2, .8, .2, 1);
+    /* 조작 높이 */
+    --h-sm: 32px; --h-md: 40px; --h-lg: 48px;
+    /* 방송실 · 번호판 (항상 어두운 화면) */
+    --rm-bg: #17110c; --rm-panel: rgb(255 255 255 / .06); --rm-panel-2: rgb(255 255 255 / .1); --rm-line: rgb(255 255 255 / .16); --rm-ink: #f6eee5; --rm-dim: #c9b9a8;
   }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #14100c; --surface: #1e1813; --surface-2: #241d17; --surface-3: #2e251d; --overlay: #000000c0;
+      --line: #342a21; --line-strong: #463a2e; --line-input: #5a4b3d;
+      --ink: #f4ece3; --ink-2: #dacdbf; --dim: #b3a393; --faint: #8e7e70;
+      --accent: #c2410c; --accent-hi: #d4500f; --accent-press: #a83809; --accent-ink: #fb9d63; --on-accent: #ffffff;
+      --accent-soft: #3a2214; --accent-line: #6e3b1d;
+      --ok: #4ade80; --ok-soft: #12291b; --ok-line: #1f5133;
+      --danger: #ef4444; --danger-ink: #fca5a5; --danger-soft: #361616; --danger-line: #6b2626;
+      --info-ink: #9dbbff; --info-soft: #172238; --info-line: #2c4170;
+      --warn-ink: #fcd34d; --warn-soft: #2f2410; --warn-line: #5c4716;
+      --mine-soft: #2a2412; --mine-line: #574a1c; --mine-ink: #f5d26b;
+      --ring: #fb9d63;
+      --sh-1: 0 1px 2px rgb(0 0 0 / .4); --sh-2: 0 8px 24px -8px rgb(0 0 0 / .6); --sh-3: 0 28px 70px -16px rgb(0 0 0 / .7); --sh-accent: 0 10px 24px -12px rgb(234 88 12 / .55);
+    }
+  }
+
+  /* ================= 기본 ================= */
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }      /* 아이폰: 글씨 자동 확대 막기 */
-  button, input, select, textarea { font-family: inherit; }
-  :focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }                  /* 키보드로 옮겨 다닐 때 어디 있는지 보이게 */
-  .fld input:focus-visible, textarea:focus-visible, select:focus-visible, #waitp input:focus-visible { outline: none; }
-  .switch input:focus-visible + span { outline: 3px solid #2563eb; outline-offset: 2px; }
-  #room :focus-visible, #board :focus-visible, #waitp button:focus-visible { outline-color: #fbbf24; }
-  @media (prefers-reduced-motion: reduce) { html body, .tpl, .big, .switch span, .switch span::after, .toast { transition: none !important; } }
-  .tpl { min-width: 0; overflow: hidden; } .tpl b { display: block; word-break: keep-all; overflow-wrap: anywhere; line-height: 1.3; }
-  .places button, .hbtn { max-width: 100%; white-space: normal; word-break: keep-all; }
   html, body { margin: 0; }
-  body { font-family: "Pretendard Variable", Pretendard, "Malgun Gothic", sans-serif; color: var(--ink); background: var(--bg); }
-  input, select, textarea, button { font: inherit; color: inherit; }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: max(16px, env(safe-area-inset-top)) 16px 60px; }
-
-  header { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
-  .logo { display: flex; align-items: center; gap: 12px; margin-right: auto; }
-  .logo .mark { width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(145deg, #fb923c, #c2410c); display: grid; place-items: center; box-shadow: 0 10px 24px -10px #c2410caa; }
-  .logo b { font-size: 22px; letter-spacing: -.5px; display: block; }
-  .logo b em { font-style: normal; color: var(--accent); }
-  .logo small { color: var(--dim); font-size: 13px; }
-  .onair {
-    display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px; font-weight: 800; letter-spacing: 2px; font-size: 13px;
-    background: #f3ebe2; color: #8f7d6b; border: 1px solid var(--line); transition: .3s;
+  body { font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--ink); background: var(--bg);
+    font-size: var(--fs-md); line-height: 1.5; word-break: keep-all; overflow-wrap: break-word; -webkit-font-smoothing: antialiased; }
+  input, select, textarea, button { font: inherit; color: inherit; letter-spacing: inherit; }
+  button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  b, strong { font-weight: 700; }
+  ::placeholder { color: var(--faint); opacity: 1; }
+  ::selection { background: #fdba7466; }
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }                  /* 키보드로 옮겨 다닐 때 어디 있는지 보이게 */
+  .fld input:focus-visible, textarea:focus-visible, select:focus-visible, #waitp input:focus-visible, .inp:focus-visible { outline: none; }
+  .switch input:focus-visible + span { outline: 3px solid var(--ring); outline-offset: 2px; }
+  #room :focus-visible, #board :focus-visible, #waitp button:focus-visible { outline-color: var(--ring-room); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
   }
-  .onair i { width: 10px; height: 10px; border-radius: 50%; background: #d6c8b9; }
-  .onair.live { background: #dc2626; color: #fff; border-color: #dc2626; box-shadow: 0 0 0 4px #dc262633, 0 0 24px #dc262688; }
-  .onair.live i { background: #fff; animation: blink 1s infinite; }
-  @keyframes blink { 50% { opacity: .2; } }
-  .hbtn { height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 14px; }
-  .hbtn:hover { border-color: var(--accent); color: var(--accent2); }
+  .tpl { min-width: 0; overflow: hidden; } .tpl b { display: block; word-break: keep-all; overflow-wrap: anywhere; line-height: var(--lh-tight); }
+  .places button, .hbtn { max-width: 100%; white-space: normal; word-break: keep-all; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: max(var(--s5), env(safe-area-inset-top)) max(var(--s4), env(safe-area-inset-right)) 64px max(var(--s4), env(safe-area-inset-left)); }
+  #rateL, #volL, .est, #oaEst, .li .t, #roomClock, #bdClock, #f_num, .numkeys, #roomNumIn, .tm, #hCount { font-variant-numeric: tabular-nums; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; background: var(--surface-3); padding: 1px 5px; border-radius: var(--r-xs); }
 
-  .tabs { display: flex; gap: 6px; margin: -6px 0 16px; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+  /* ================= 머리글 ================= */
+  header { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; margin-bottom: var(--s5); }
+  .logo { display: flex; align-items: center; gap: var(--s3); margin-right: auto; }
+  .logo .mark { width: 44px; height: 44px; border-radius: 13px; background: linear-gradient(150deg, #fb923c, #c2410c 70%); display: grid; place-items: center; box-shadow: var(--sh-accent), inset 0 1px 0 rgb(255 255 255 / .25); flex: none; }
+  .logo b { font-size: 21px; font-weight: 800; letter-spacing: -.5px; display: block; line-height: 1.2; }
+  .logo b em { font-style: normal; color: var(--accent-ink); font-weight: 700; }
+  .logo small { color: var(--dim); font-size: var(--fs-sm); display: block; margin-top: 2px; }
+  .onair {
+    display: inline-flex; align-items: center; gap: var(--s2); height: 32px; padding: 0 var(--s3); border-radius: var(--r-pill); font-weight: 800; letter-spacing: 1.6px; font-size: var(--fs-xs);
+    background: transparent; color: var(--dim); border: 1px solid var(--line-strong); transition: background var(--t-slow), color var(--t-slow), box-shadow var(--t-slow), border-color var(--t-slow); white-space: nowrap;
+  }
+  .onair i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .55; }
+  .onair.live { background: var(--red-live); color: #fff; border-color: var(--red-live); box-shadow: 0 0 0 4px rgb(220 38 38 / .2), 0 0 24px rgb(220 38 38 / .5); }
+  .onair.live i { background: #fff; opacity: 1; animation: blink 1s infinite; }
+  @keyframes blink { 50% { opacity: .2; } }
+
+  /* ================= 버튼 (기본 · 보조 · 작게) ================= */
+  .hbtn, .mini, dialog .btns button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink);
+    cursor: pointer; font-weight: 600; transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast), box-shadow var(--t-fast); text-align: center;
+  }
+  .hbtn { min-height: var(--h-md); padding: 0 var(--s4); border-radius: var(--r-md); font-size: 14px; }
+  .mini { height: var(--h-sm); padding: 0 var(--s3); border-radius: var(--r-sm); font-size: var(--fs-sm); white-space: nowrap; }
+  .hbtn:hover, .mini:hover, dialog .btns button:hover { border-color: var(--accent-line); background: var(--surface-2); color: var(--accent-ink); }
+  .hbtn:active, .mini:active, dialog .btns button:active { background: var(--surface-3); }
+  .btn-primary, .mini.btn-primary, dialog .btns .ok { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+  .btn-primary:hover, .mini.btn-primary:hover, dialog .btns .ok:hover { background: var(--accent-hi); border-color: var(--accent-hi); color: var(--on-accent); }
+  .btn-primary:active, dialog .btns .ok:active { background: var(--accent-press); }
+  .btn-danger, dialog .btns .btn-danger { background: var(--danger); border-color: var(--danger); color: #fff; font-weight: 800; }
+  .btn-danger:hover, dialog .btns .btn-danger:hover { background: #b91c1c; border-color: #b91c1c; color: #fff; }
+  .btn-danger-ghost, dialog .btns .btn-danger-ghost { color: var(--danger-ink); }
+  .btn-danger-ghost:hover, dialog .btns .btn-danger-ghost:hover { color: var(--danger-ink); border-color: var(--danger-line); background: var(--danger-soft); }
+  .btn-wide { width: 100%; height: auto !important; min-height: var(--h-md); padding-top: 6px; padding-bottom: 6px; white-space: normal; font-size: 14px; line-height: 1.4; }
+  .btn-dashed { border-style: dashed; background: transparent; color: var(--ink-2); font-weight: 600; }
+  .row .btn-flex { flex: 1; height: var(--h-md); font-size: 14px; }
+
+  /* ================= 탭 (분할 단추) ================= */
+  .tabs { display: flex; gap: 2px; margin: 0 0 var(--s5); overflow-x: auto; max-width: 100%; width: max-content; scrollbar-width: none; padding: 4px; background: var(--surface-3); border-radius: 14px; }
   .tabs::-webkit-scrollbar { display: none; }
-  .tabs button { flex: none; height: 42px; padding: 0 16px; border-radius: 12px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 15px; font-weight: 600; color: #57534e; }
-  .tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tabs button { flex: none; height: 40px; padding: 0 var(--s4); border-radius: 10px; border: 0; background: transparent; cursor: pointer; font-size: var(--fs-md); font-weight: 600; color: var(--ink-2); transition: background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast); }
+  .tabs button:hover { color: var(--ink); background: var(--surface-2); }
+  .tabs button.on { background: var(--surface); color: var(--ink); font-weight: 700; box-shadow: var(--sh-1), 0 0 0 1px var(--line); }
   .pane { display: none; } body[data-tab="air"] .pane[data-pane="air"], body[data-tab="auto"] .pane[data-pane="auto"], body[data-tab="file"] .pane[data-pane="file"], body[data-tab="log"] .pane[data-pane="log"], body[data-tab="set"] .pane[data-pane="set"] { display: block; }
-  .pane.cards { display: none; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 16px; align-items: start; }
+  .pane.cards { display: none; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: var(--s4); align-items: start; }
   body[data-tab="auto"] .pane[data-pane="auto"], body[data-tab="file"] .pane[data-pane="file"], body[data-tab="log"] .pane[data-pane="log"], body[data-tab="set"] .pane[data-pane="set"] { display: grid; }
-  body.allView .tabs { display: none; } body.allView .pane { display: block !important; margin-bottom: 16px; } body.allView .pane.cards { display: grid !important; }
-  details.adv { margin: 6px 0 4px; border-top: 1px dashed var(--line); padding-top: 8px; } details.adv > summary { cursor: pointer; font-weight: 700; font-size: 14px; padding: 4px 0 8px; color: #57534e; }
-  details.adv > summary .muted { font-weight: 400; font-size: 12px; }
+  body.allView .tabs { display: none; } body.allView .pane { display: block !important; margin-bottom: var(--s4); } body.allView .pane.cards { display: grid !important; }
+
+  /* ================= 펼침 · 메뉴 ================= */
+  details > summary { -webkit-tap-highlight-color: transparent; }
+  details.adv { margin: var(--s3) 0 var(--s1); border-top: 1px solid var(--line); padding-top: var(--s2); }
+  details.adv > summary { cursor: pointer; font-weight: 700; font-size: 14px; padding: var(--s2) 0; color: var(--ink-2); list-style: none; display: flex; align-items: baseline; gap: var(--s2); flex-wrap: wrap; }
+  details.adv > summary::-webkit-details-marker { display: none; }
+  details.adv > summary::before { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(-45deg); transition: transform var(--t); flex: none; align-self: center; }
+  details.adv[open] > summary::before { transform: translateY(-3px) rotate(45deg); }
+  details.adv > summary .muted { font-weight: 400; font-size: var(--fs-xs); }
   details.more { position: relative; } details.more > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; } details.more > summary::-webkit-details-marker { display: none; }
-  details.more .menu { position: absolute; right: 0; top: 36px; z-index: 20; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px #0002; padding: 6px; display: flex; flex-direction: column; min-width: 180px; }
-  details.more .menu button { text-align: left; border: 0; background: none; padding: 10px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; } details.more .menu button:hover { background: var(--soft); }
+  details.more[open] > summary { background: var(--surface-3); border-color: var(--line-strong); }
+  details.more .menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--sh-2); padding: 6px; display: flex; flex-direction: column; min-width: 200px; }
+  details.more .menu button { text-align: left; border: 0; background: none; padding: 0 var(--s3); min-height: 40px; border-radius: var(--r-sm); font-size: 14px; cursor: pointer; white-space: nowrap; color: var(--ink); }
+  details.more .menu button:hover { background: var(--accent-soft); color: var(--accent-ink); }
   .lang.off textarea, .lang.off .tags { display: none; }
   #langs:not(.showoff) .lang.off { display: none; }
   #hList:not(.all) > .li:nth-child(n+6) { display: none; }
-  .grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; }
+
+  /* ================= 카드 · 배치 ================= */
+  .grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: var(--s4); align-items: start; }
+  .col { display: flex; flex-direction: column; gap: var(--s4); min-width: 0; }
+  @media (min-width: 921px) { .grid > .col:last-child { position: sticky; top: var(--s4); } }
   @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: 0 1px 2px #0000000a; min-width: 0; }
-  .card h2 { margin: 0 0 12px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-xl); padding: var(--s5); box-shadow: var(--sh-1); min-width: 0; }
+  .card h2 { margin: 0 0 var(--s3); font-size: var(--fs-lg); font-weight: 700; letter-spacing: -.3px; line-height: var(--lh-tight); display: flex; align-items: center; gap: var(--s2); min-height: var(--h-sm); }
   .card h2 .sp { flex: 1; }
-  .card h2 .mini, .card h2 summary.mini { white-space: nowrap; }
-  .lang .hd { display: flex; align-items: flex-start; gap: 6px; padding: 7px 12px 0; }
-  .lang .hd.end { padding: 0 12px 8px; } .lang .hd[hidden], .lang.off .hd { display: none; }
-  .lang .hd .hl { flex: none; width: 58px; font-size: 11.5px; font-weight: 700; color: var(--dim); padding-top: 5px; white-space: nowrap; }
-  .lang .hd .hin { flex: 1; min-width: 0; border: 1px dashed #e7d8c6; border-radius: 8px; padding: 3px 8px; font-size: 13.5px; line-height: 1.55; color: #78685a; outline: none; overflow-wrap: anywhere; cursor: text; }
-  .lang .hd .hin:empty::before { content: attr(data-ph); color: #b8a898; }
-  .lang .hd .hin:focus { border-style: solid; border-color: var(--accent); color: inherit; background: #fff; }
-  .lang .hd.mine .hin { border-style: solid; border-color: #fdba74; color: #1f1a14; background: #fffaf5; }
-  .lang .hd .hre { flex: none; height: 26px; padding: 0 7px; font-size: 12px; }
-  @media (max-width: 600px) { .lang .hd { padding: 6px 10px 0; } .lang .hd.end { padding: 0 10px 7px; } .lang .hd .hl { width: 46px; font-size: 11px; } .lang .hd .hin { font-size: 13px; } }
-  .lang .trall.due { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff !important; }
+  .card h2 .mini, .card h2 summary.mini { white-space: nowrap; font-weight: 600; letter-spacing: 0; }
+  .card > .muted:first-of-type, .card .lead { margin: calc(-1 * var(--s1)) 0 var(--s3); line-height: var(--lh); }
+  .card.feature { border-color: var(--accent-line); background: linear-gradient(180deg, var(--accent-soft), var(--surface) 140px); }
+  .callout { margin: 0 0 var(--s3); padding: var(--s3) var(--s4); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--line); font-size: 14px; line-height: 1.7; color: var(--ink-2); }
+  .callout .mini { margin-left: var(--s1); }
+  .muted { color: var(--dim); font-size: var(--fs-sm); }
+  .sep { color: var(--dim); }
+
+  /* ================= 언어 칸 머리 (인사말 · 끝인사) ================= */
+  .lang .hd { display: flex; align-items: flex-start; gap: var(--s2); padding: var(--s2) var(--s3) 0; }
+  .lang .hd.end { padding: 0 var(--s3) var(--s3); } .lang .hd[hidden], .lang.off .hd { display: none; }
+  .lang .hd .hl { flex: none; width: 52px; font-size: var(--fs-xs); font-weight: 700; color: var(--dim); padding-top: 6px; white-space: nowrap; }
+  .lang .hd .hin { flex: 1; min-width: 0; border: 1px dashed var(--line-strong); border-radius: var(--r-sm); padding: 4px var(--s2); font-size: 14px; line-height: 1.55; color: var(--dim); outline: none; overflow-wrap: anywhere; cursor: text; transition: border-color var(--t-fast), background var(--t-fast); }
+  .lang .hd .hin:empty::before { content: attr(data-ph); color: var(--faint); }
+  .lang .hd .hin:hover { border-color: var(--line-input); }
+  .lang .hd .hin:focus { border-style: solid; border-color: var(--accent); color: var(--ink); background: var(--surface); box-shadow: 0 0 0 3px rgb(234 88 12 / .18); }
+  .lang .hd.mine .hin { border-style: solid; border-color: var(--accent-line); color: var(--ink); background: var(--accent-soft); }
+  .lang .hd .hre { flex: none; height: 28px; padding: 0 var(--s2); font-size: var(--fs-xs); }
+  @media (max-width: 600px) { .lang .hd { padding: 6px 10px 0; } .lang .hd.end { padding: 0 10px var(--s2); } .lang .hd .hl { width: 44px; } .lang .hd .hin { font-size: 14px !important; padding: 3px 8px; } }
+  .lang .trall.due { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff !important; box-shadow: var(--sh-accent); }
   #markMenu .menu { right: auto; left: 50%; transform: translateX(-50%); }   /* 🎚 억양 메뉴: 버튼 아래 가운데 */
-  @media (max-width: 600px) { #markMenu .ml { display: none; } .card h2 { gap: 6px; } .card h2 .mini { padding: 0 8px; } }
-  .muted { color: var(--dim); font-size: 13px; }
+  @media (max-width: 600px) { #markMenu .ml { display: none; } .card h2 { gap: 6px; } .card h2 .mini { padding: 0 10px; } #markMenu .menu { left: 0; transform: none; } }
 
-  .tpls { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
-  .tpl { padding: 12px 8px; border-radius: 14px; border: 1px solid var(--line); background: #fffaf5; cursor: pointer; text-align: center; transition: .15s; }
-  .tpl:hover { border-color: #fdba74; background: var(--soft); }
-  .tpl.on { border-color: var(--accent); background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
-  .tpl .ic { font-size: 24px; display: block; }
-  .tpl b { font-size: 13.5px; font-weight: 600; }
-  .tpl.urgent { background: #fef2f2; border-color: #fecaca; }
-  .places { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-  .places button { padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 13.5px; }
-  .places button.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-  .grp + .grp { margin-top: 14px; }
-  .grp h4 { margin: 0 0 8px; font-size: 13px; color: var(--dim); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  /* ================= 방송 고르기 (장소 · 방송 버튼) ================= */
+  .tpls { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: var(--s2); }
+  .tpl { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 76px; padding: var(--s3) var(--s2); border-radius: 14px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; text-align: center; color: var(--ink);
+    transition: border-color var(--t-fast), background var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast); -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  .tpl:hover { border-color: var(--accent-line); background: var(--surface); box-shadow: var(--sh-2); }
+  .tpl:active { transform: scale(.97); }
+  .tpl.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+  .tpl.on b { color: var(--accent-ink); }
+  .tpl .ic { font-size: 24px; display: block; line-height: 1; }
+  .tpl b { font-size: 14px; font-weight: 600; }
+  .tpl.urgent { background: var(--danger-soft); border-color: var(--danger-line); }
+  .tpl.urgent b { color: var(--danger-ink); }
+  .tpl.urgent.on { border-color: var(--danger); box-shadow: inset 0 0 0 1px var(--danger); }
+  .places { display: flex; flex-wrap: wrap; gap: var(--s2); margin-bottom: var(--s4); }
+  .places button { min-height: 36px; padding: 0 14px; border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: var(--surface); cursor: pointer; font-size: 14px; color: var(--ink-2); transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast); }
+  .places button:hover { border-color: var(--accent-line); color: var(--accent-ink); }
+  .places button.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+  .grp + .grp { margin-top: var(--s5); }
+  .grp h4 { margin: 0 0 var(--s2); font-size: var(--fs-sm); color: var(--dim); font-weight: 700; display: flex; align-items: center; gap: var(--s2); letter-spacing: .1px; }
   .grp h4::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-  .grp.em h4 { color: #b91c1c; }
-  .grp.mine h4 { color: #a16207; }
-  .grp.fav h4 { color: #b45309; }
-  .tpl { position: relative; }
-  .tpl .fv { position: absolute; left: 6px; top: 3px; font-size: 15px; color: #b3a08c; padding: 0 3px; border-radius: 6px; line-height: 1.3; }
-  .tpl .fv:hover { color: #f59e0b; background: #fef3c7; }
-  .tpl .fv.on { color: #f59e0b; }
-  .grp.mine .tpl { position: relative; background: #fefce8; border-color: #fde68a; }
+  .grp.em h4 { color: var(--danger-ink); }
+  .grp.mine h4 { color: var(--mine-ink); }
+  .grp.fav h4 { color: var(--warn-ink); }
+  .tpl .fv { position: absolute; left: 4px; top: 2px; font-size: 14px; color: var(--faint); opacity: .7; padding: 2px 4px; border-radius: var(--r-xs); line-height: 1.2; }
+  .tpl .fv:hover { color: #f59e0b; background: var(--warn-soft); opacity: 1; }
+  .tpl .fv.on { color: #f59e0b; opacity: 1; }
+  .grp.mine .tpl { background: var(--mine-soft); border-color: var(--mine-line); }
   .grp.mine .tpl.on { border-color: #ca8a04; box-shadow: inset 0 0 0 1px #ca8a04; }
-  .tpl .x { position: absolute; right: 6px; top: 4px; font-size: 12px; color: #a8a29e; opacity: 0; padding: 2px 4px; border-radius: 6px; }
-  .tpl:hover .x { opacity: 1; } .tpl .x:hover { color: var(--red); background: #fee2e2; }
+  .tpl .x { position: absolute; right: 4px; top: 2px; font-size: var(--fs-xs); color: var(--faint); opacity: 0; padding: 2px 5px; border-radius: var(--r-xs); }
+  .tpl:hover .x { opacity: 1; } .tpl .x:hover { color: var(--danger-ink); background: var(--danger-soft); }
   @media (hover: none) { .tpl .x { opacity: .7; } }
+  .favtip { margin: 0 0 var(--s3); }
   .icons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-  .icons button { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-size: 20px; cursor: pointer; }
-  .icons button.on { border-color: var(--accent); background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
+  .icons button { width: 44px; height: 44px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--surface); font-size: 20px; cursor: pointer; }
+  .icons button.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
 
-  .fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px 14px; margin-top: 14px; }
-  .fld label { display: block; font-size: 12.5px; color: var(--dim); margin-bottom: 4px; }
-  .fld input, .fld select { width: 100%; height: 40px; border: 1px solid var(--line); border-radius: 10px; padding: 0 10px; background: #fff; font-size: 15px; }
-  .fld input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px #fb923c33; }
+  /* ================= 입력 칸 ================= */
+  .fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s3) var(--s4); margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--line); }
+  .fields:empty { display: none; }
+  .fld label { display: block; font-size: var(--fs-sm); font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
+  .fld input, .fld select, .inp { width: 100%; height: 44px; border: 1px solid var(--line-input); border-radius: var(--r-md); padding: 0 var(--s3); background: var(--surface); font-size: var(--fs-md); color: var(--ink); transition: border-color var(--t-fast), box-shadow var(--t-fast); }
+  .fld textarea, textarea.inp { width: 100%; border: 1px solid var(--line-input); border-radius: var(--r-md); padding: 10px var(--s3); background: var(--surface); font-size: var(--fs-md); line-height: var(--lh); resize: vertical; display: block; color: var(--ink); }
+  .fld input:hover, .fld select:hover, .fld textarea:hover, .inp:hover { border-color: var(--faint); }
+  .fld input:focus, textarea:focus, select:focus, .inp:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgb(234 88 12 / .2); }
   .fld.wide { grid-column: 1 / -1; }
+  .inp.sm { height: var(--h-md); width: auto; }
+  .search { position: relative; margin-bottom: var(--s4); }
+  .search::before { content: ""; position: absolute; left: 14px; top: 50%; width: 11px; height: 11px; border: 2px solid var(--faint); border-radius: 50%; transform: translateY(-62%); pointer-events: none; }
+  .search::after { content: ""; position: absolute; left: 26px; top: 50%; width: 2px; height: 6px; background: var(--faint); border-radius: 1px; transform: translate(0, 2px) rotate(-45deg); pointer-events: none; }
+  #tplQ { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; border: 1px solid var(--line-strong); border-radius: var(--r-md); padding: 0 44px 0 40px; font-size: var(--fs-md); background: var(--surface-2); }
+  #tplQ::-webkit-search-cancel-button { display: none; }
+  #tplQx { position: absolute; right: 6px; top: 6px; height: 32px; width: 32px; padding: 0; border-radius: var(--r-sm); border: 0; background: var(--surface-3); }
 
-  .langs { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
-  .lang { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  /* ================= 언어별 문장 칸 ================= */
+  .langs { display: flex; flex-direction: column; gap: var(--s3); margin-top: var(--s1); }
+  .lang { border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); transition: border-color var(--t-fast), box-shadow var(--t-fast); }
+  .lang:focus-within { border-color: var(--accent-line); box-shadow: 0 0 0 3px rgb(234 88 12 / .1); }
   .lang.off { opacity: .6; }
-  .lang .lh { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #fffaf5; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-  .lang .lh b { font-size: 14px; }
+  .lang .lh { display: flex; align-items: center; gap: var(--s2); padding: 10px var(--s3); background: var(--surface-2); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .lang .lh b { font-size: 14px; font-weight: 700; }
   .lang .lh .sp { flex: 1; }
-  .lang .lh select { height: 32px; border: 1px solid var(--line); border-radius: 8px; padding: 0 6px; max-width: 230px; font-size: 13px; background: #fff; }
-  .lang textarea { width: 100%; border: none; padding: 10px 12px; min-height: 92px; resize: vertical; line-height: 1.6; font-size: 15px; display: block; }
-  .tag { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: #fef3c7; color: #92400e; }
-  .tag.ok { background: #dcfce7; color: #166534; }
-  .mini { height: 30px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 12.5px; }
-  .mini:hover { border-color: var(--accent); color: var(--accent2); }
-  .switch { position: relative; width: 38px; height: 22px; flex: none; display: inline-block; }
-  .switch input { opacity: 0; width: 0; height: 0; }
-  .switch span { position: absolute; inset: 0; border-radius: 22px; background: #e5d9cc; cursor: pointer; transition: .2s; }
-  .switch span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: .2s; box-shadow: 0 1px 3px #0003; }
+  .lang .lh select { height: var(--h-sm); border: 1px solid var(--line-strong); border-radius: var(--r-sm); padding: 0 var(--s2); max-width: 230px; font-size: var(--fs-sm); background: var(--surface); color: var(--ink); }
+  .lang .lh .ord { display: inline-flex; flex-direction: column; gap: 2px; }
+  .lang .lh .ord .mini { height: 15px; width: 22px; padding: 0; font-size: 8px; border-radius: 4px; color: var(--dim); }
+  .lang .lh .lplay { color: var(--accent-ink); border-color: var(--accent-line); background: var(--accent-soft); }
+  .lang .lh .lplay { order: 1; } .lang .lh .cmp { order: 2; } .lang .lh .pol { order: 3; } .lang .lh .trall { order: 4; } .lang .lh .tr { order: 5; } .lang .lh .rm { order: 6; }
+  .lang textarea { width: 100%; border: none; padding: var(--s3); min-height: 96px; resize: vertical; line-height: 1.7; font-size: 16px; display: block; background: transparent; color: var(--ink); }
+  .lang textarea:focus { box-shadow: none; }
+  .tag { display: inline-flex; align-items: center; height: 22px; font-size: 11.5px; font-weight: 600; padding: 0 var(--s2); border-radius: var(--r-pill); background: var(--warn-soft); color: var(--warn-ink); }
+  .tag.ok { background: var(--ok-soft); color: var(--ok); }
+  #langOff { margin-top: var(--s3); width: 100%; height: var(--h-md); }
+
+  /* ================= 스위치 · 슬라이더 · 분할 단추 ================= */
+  .switch { position: relative; width: 44px; height: 26px; flex: none; display: inline-block; }
+  .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .switch span { position: absolute; inset: 0; border-radius: 26px; background: var(--line-strong); cursor: pointer; transition: background var(--t); }
+  .switch span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform var(--t) var(--ease); box-shadow: 0 1px 3px rgb(0 0 0 / .25), 0 0 0 .5px rgb(0 0 0 / .04); }
   .switch input:checked + span { background: var(--accent); }
-  .switch input:checked + span::after { transform: translateX(16px); }
+  .switch input:checked + span::after { transform: translateX(18px); }
 
-  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; }
-  .row + .row { margin-top: 12px; }
-  .row > label:first-child { min-width: 92px; color: var(--dim); font-size: 13px; }
-  .row input[type=range] { flex: 1; min-width: 120px; accent-color: var(--accent); }
-  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-  .seg button { border: none; background: #fff; padding: 8px 12px; cursor: pointer; font-size: 13.5px; }
-  .seg button + button { border-left: 1px solid var(--line); }
-  .seg button.on { background: var(--accent); color: #fff; }
+  .row { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; font-size: 14px; }
+  .row + .row { margin-top: var(--s3); }
+  .row > label:first-child { min-width: 96px; color: var(--ink-2); font-size: 14px; font-weight: 500; }
+  .row input[type=range] { flex: 1; min-width: 120px; accent-color: var(--accent); height: 28px; }
+  .row .val { width: 48px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  .row .hint { font-size: var(--fs-xs); line-height: 1.5; flex: 1 1 220px; }
+  .seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--surface-3); border-radius: 11px; }
+  .seg button { border: none; background: transparent; padding: 0 14px; min-height: 34px; border-radius: var(--r-sm); cursor: pointer; font-size: 14px; color: var(--ink-2); font-weight: 600; transition: background var(--t-fast), color var(--t-fast); }
+  .seg button:hover { color: var(--ink); }
+  .seg button.on { background: var(--surface); color: var(--accent-ink); box-shadow: var(--sh-1), 0 0 0 1px var(--line); font-weight: 700; }
+  select.mini { padding-right: var(--s2); font-weight: 500; }
 
-  .go { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; margin-top: 16px; }
-  .big { padding: 18px 10px; border-radius: 16px; border: none; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform .1s, filter .15s; }
+  /* ================= 큰 단추 (방송 시작이 가장 눈에 띄게) ================= */
+  .go { display: grid; grid-template-columns: 1fr 1.6fr; gap: var(--s3); margin-top: var(--s5); }
+  .big { min-height: 60px; padding: var(--s3) var(--s3); border-radius: var(--r-lg); border: 1px solid transparent; font-size: 19px; font-weight: 800; letter-spacing: -.2px; cursor: pointer;
+    transition: transform var(--t-fast), filter var(--t-fast), background var(--t-fast), box-shadow var(--t-fast); }
   .big:active { transform: scale(.98); }
-  .big.pre { background: #fff1e6; color: var(--accent2); border: 1px solid #fed7aa; }
-  .big.air { background: linear-gradient(135deg, #f97316, #c2410c); color: #fff; box-shadow: 0 14px 30px -14px #c2410c; }
-  .big.stop { background: #1f2937; color: #fff; }
-  .big:hover { filter: brightness(1.05); }
-  #board { position: fixed; inset: 0; z-index: 90; background: radial-gradient(ellipse at top, #3b1d0e, #140b06 70%); color: #fff7ed; display: flex; flex-direction: column; padding: 3vh 4vw; cursor: pointer; }
+  .big.pre { background: var(--surface); color: var(--ink); border-color: var(--line-strong); font-weight: 700; font-size: 17px; }
+  .big.pre:hover { border-color: var(--accent-line); color: var(--accent-ink); background: var(--surface-2); }
+  .big.air, .big.rec { background: linear-gradient(180deg, var(--accent-hi), var(--accent)); color: var(--on-accent); box-shadow: var(--sh-accent), inset 0 1px 0 rgb(255 255 255 / .18); }
+  .big.air:hover, .big.rec:hover { filter: brightness(1.06); }
+  .big.stop { background: #1f2937; color: #fff; box-shadow: 0 0 0 4px rgb(220 38 38 / .25); }
+  @media (prefers-color-scheme: dark) { .big.stop { background: #e5e7eb; color: #111827; } }
+  .big:disabled:active { transform: none; }
+
+  /* ================= 🖥 번호판 (TV) ================= */
+  #board { position: fixed; inset: 0; z-index: 90; background: radial-gradient(ellipse at top, #3b1d0e, #110906 72%); color: #fff7ed; display: flex; flex-direction: column; padding: 3vh 4vw; cursor: pointer; }
   #board[hidden] { display: none; }
   body.boardOnly > *:not(#board):not(.toast) { display: none !important; }
-  #board .bt { display: flex; justify-content: space-between; align-items: center; font-size: 3.2vh; opacity: .85; }
+  #board .bt { display: flex; justify-content: space-between; align-items: center; font-size: 3.4vh; color: #f3dcc6; }
+  #board .bt b { font-weight: 700; }
   #board .bm { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-  #board .bl { font-size: 5vh; font-weight: 800; color: #fdba74; }
-  #board .bn { font-size: min(42vh, 34vw); font-weight: 900; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; text-shadow: 0 0 6vh #f9731688; }
-  #board .bs { font-size: 3vh; opacity: .8; margin-top: 1vh; }
+  #board .bl { font-size: 5.4vh; font-weight: 800; color: #fdba74; letter-spacing: -.02em; }
+  #board .bn { font-size: min(44vh, 34vw); font-weight: 900; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; text-shadow: 0 0 6vh rgb(249 115 22 / .55); }
+  #board .bs { font-size: 3.2vh; color: #e7d3c0; margin-top: 1.5vh; }
   #board .bn.flash { animation: bflash .6s ease-in-out 4; }
   @keyframes bflash { 50% { color: #fb923c; transform: scale(1.06); } }
-  #board .br { display: flex; gap: 2vw; align-items: center; justify-content: center; flex-wrap: wrap; font-size: 3vh; padding-top: 2vh; border-top: 1px solid #ffffff22; }
-  #board .br span { background: #ffffff14; border-radius: 1.2vh; padding: .6vh 1.6vw; font-size: 4.2vh; font-weight: 800; font-variant-numeric: tabular-nums; }
-  #board .bx { position: absolute; right: 2vw; top: 2vh; } 
-  #waitp { position: fixed; inset: 0; z-index: 95; background: #fff7ed; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; gap: 14px; }
+  #board .br { display: flex; gap: 1.6vw; align-items: center; justify-content: center; flex-wrap: wrap; font-size: 3.2vh; padding-top: 2.4vh; border-top: 1px solid rgb(255 255 255 / .14); color: #e7d3c0; }
+  #board .br span { background: rgb(255 255 255 / .1); border: 1px solid rgb(255 255 255 / .12); border-radius: 1.4vh; padding: .6vh 1.8vw; font-size: 4.6vh; font-weight: 800; color: #fff7ed; font-variant-numeric: tabular-nums; }
+  #board .bx { position: absolute; right: 2vw; top: 2vh; }
+
+  /* ================= 📱 손님 대기 화면 ================= */
+  #waitp { position: fixed; inset: 0; z-index: 95; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: max(var(--s6), env(safe-area-inset-top)) var(--s6) max(var(--s6), env(safe-area-inset-bottom)); gap: var(--s4); }
   #waitp[hidden] { display: none; }
   body.waitOnly > *:not(#waitp):not(.toast) { display: none !important; }
-  #waitp .wn { font-size: min(34vw, 170px); font-weight: 900; line-height: 1; color: var(--accent2); font-variant-numeric: tabular-nums; }
-  #waitp .wt { font-size: 22px; font-weight: 800; } #waitp .wm { font-size: 15px; color: #78716c; line-height: 1.6; }
-  #waitp .wb { height: 56px; padding: 0 28px; border-radius: 16px; border: 0; background: var(--accent); color: #fff; font-size: 19px; font-weight: 800; }
-  #waitp input { height: 60px; width: 200px; font-size: 32px; text-align: center; font-weight: 800; border: 2px solid #fdba74; border-radius: 14px; }
-  #waitp.ready { background: #f97316; color: #fff; animation: wflash .5s ease-in-out infinite alternate; } #waitp.ready .wn, #waitp.ready .wm { color: #fff; }
+  #waitp .wn { font-size: min(36vw, 180px); font-weight: 900; line-height: 1; color: var(--accent-ink); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  #waitp .wt { font-size: 22px; font-weight: 800; letter-spacing: -.3px; } #waitp .wm { font-size: var(--fs-md); color: var(--dim); line-height: var(--lh); max-width: 340px; }
+  #waitp .wm b { color: var(--ink); }
+  #waitp .wb { min-height: 56px; min-width: 220px; padding: 0 var(--s8); border-radius: var(--r-lg); border: 0; background: linear-gradient(180deg, var(--accent-hi), var(--accent)); color: #fff; font-size: 19px; font-weight: 800; box-shadow: var(--sh-accent); cursor: pointer; }
+  #waitp .wb:active { transform: scale(.98); }
+  #waitp input { height: 64px; width: 200px; font-size: 32px; text-align: center; font-weight: 800; border: 2px solid var(--accent-line); border-radius: var(--r-lg); background: var(--surface); color: var(--ink); margin-top: var(--s3); font-variant-numeric: tabular-nums; }
+  #waitp input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgb(234 88 12 / .2); }
+  #waitp.ready { background: #f97316; color: #fff; animation: wflash .5s ease-in-out infinite alternate; } #waitp.ready .wn, #waitp.ready .wm, #waitp.ready .wm b { color: #fff; }
+  #waitp.ready .wb { background: #fff; color: #9a3412; box-shadow: 0 10px 30px -10px rgb(0 0 0 / .4); }
   @keyframes wflash { to { background: #dc2626; } }
-  #qrBox { display: flex; justify-content: center; padding: 10px; background: #fff; border-radius: 12px; } #qrBox img, #qrBox canvas { width: 240px !important; height: 240px !important; }
-  .now { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: #fffaf5; border: 1px dashed #fdba74; font-size: 14px; min-height: 46px; line-height: 1.55; }
-  .now b { color: var(--accent2); }
-  .est { font-size: 12.5px; color: var(--dim); margin-top: 6px; }
+  #qrBox { display: flex; justify-content: center; padding: var(--s3); background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); margin: 0 auto; width: max-content; max-width: 100%; } #qrBox img, #qrBox canvas { width: 240px !important; height: 240px !important; }
+  #qrBox .muted { color: #6b5c4f; padding: var(--s6) var(--s3); }
 
-  .list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; max-height: 260px; overflow: auto; }
-  .li { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 12px; font-size: 13.5px; }
-  .li .t { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 52px; }
-  .li .d { color: var(--dim); font-size: 12px; }
+  /* ================= 지금 상태 · 목록 ================= */
+  .now { margin-top: var(--s3); padding: var(--s3) var(--s4); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--line); font-size: 14px; min-height: 48px; line-height: var(--lh); color: var(--ink-2); }
+  .now b { color: var(--accent-ink); }
+  .est { font-size: var(--fs-xs); color: var(--dim); margin-top: var(--s2); padding: 0 var(--s1); }
+  .list { display: flex; flex-direction: column; gap: 6px; margin-top: var(--s2); max-height: 280px; overflow: auto; }
+  .li { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 6px 6px var(--s3); border: 1px solid var(--line); border-radius: var(--r-md); font-size: 14px; background: var(--surface); }
+  .li .t { font-weight: 700; min-width: 52px; }
+  .li .d { color: var(--dim); font-size: var(--fs-xs); }
   .li .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .li button { border: none; background: none; cursor: pointer; color: var(--dim); font-size: 14px; }
-  .li button:hover { color: var(--red); }
-  .days { display: flex; gap: 4px; }
-  .days button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 12.5px; }
-  .days button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .wait { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #ecfdf5; border: 1px solid #bbf7d0; color: #166534; font-size: 13px; }
-  .voices { font-size: 12.5px; color: var(--dim); line-height: 1.7; }
+  .li button { border: none; background: none; cursor: pointer; color: var(--dim); font-size: 14px; min-width: 36px; height: 36px; border-radius: var(--r-sm); }
+  .li button:hover { color: var(--danger-ink); background: var(--danger-soft); }
+  .days { display: flex; gap: 6px; flex-wrap: wrap; }
+  .days button { min-width: 36px; height: 36px; border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: var(--surface); cursor: pointer; font-size: var(--fs-sm); font-weight: 600; color: var(--ink-2); transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast); }
+  .days button:hover { border-color: var(--accent-line); }
+  .days button.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .wait { margin-top: var(--s3); padding: 10px var(--s3); border-radius: var(--r-md); background: var(--ok-soft); border: 1px solid var(--ok-line); color: var(--ok); font-size: var(--fs-sm); line-height: var(--lh); }
+  .voices { font-size: var(--fs-sm); color: var(--dim); line-height: 1.7; margin-top: var(--s3); }
   .voices b { color: var(--ink); }
-  .tip { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; font-size: 13px; line-height: 1.6; }
+  .tip { margin-top: var(--s3); padding: 10px var(--s3); border-radius: var(--r-md); background: var(--info-soft); border: 1px solid var(--info-line); color: var(--info-ink); font-size: var(--fs-sm); line-height: var(--lh); }
+  .card > details:not(.adv) > summary { cursor: pointer; font-weight: 700; font-size: var(--fs-md); list-style: none; display: flex; align-items: center; gap: var(--s2); min-height: 28px; }
+  .card > details:not(.adv) > summary::-webkit-details-marker { display: none; }
+  .card > details:not(.adv) > summary::after { content: ""; margin-left: auto; width: 7px; height: 7px; border-right: 2px solid var(--dim); border-bottom: 2px solid var(--dim); transform: rotate(45deg); transition: transform var(--t); }
+  .card > details:not(.adv)[open] > summary::after { transform: rotate(-135deg); }
 
-  .save { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
-  .save .big { flex: 1; padding: 13px 10px; font-size: 15.5px; background: #fff; color: var(--ink); border: 1px solid var(--line); }
-  .save select { height: 46px; border: 1px solid var(--line); border-radius: 12px; padding: 0 10px; background: #fff; }
-  dialog { border: none; border-radius: 18px; padding: 22px; width: min(520px, 92vw); box-shadow: 0 30px 80px #0005; color: var(--ink); }
-  dialog::backdrop { background: #2b211880; }
-  dialog h3 { margin: 0 0 10px; font-size: 18px; }
-  dialog ol { margin: 8px 0 12px; padding-left: 22px; line-height: 1.85; font-size: 14.5px; }
-  dialog .btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
-  dialog .btns button { height: 42px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 15px; }
-  dialog .btns .ok { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
-  .recdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #dc2626; margin-right: 6px; animation: blink 1s infinite; }
-  .recbar { position: fixed; inset: 0; z-index: 2147483000; display: flex; align-items: center; justify-content: center; background: #1c140ccc; padding: 20px; }
-  .recbar .box { width: min(560px, 100%); border-radius: 24px; padding: 30px 28px 24px; text-align: center; box-shadow: 0 30px 80px #0008; background: #fff; color: var(--ink); }
-  .recbar .big1 { font-size: 30px; font-weight: 800; margin: 6px 0 8px; display: flex; align-items: center; justify-content: center; gap: 12px; }
-  .recbar .sub1 { font-size: 15px; color: var(--dim); line-height: 1.6; min-height: 24px; }
-  .recbar .line { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: #fff7ed; font-size: 15px; min-height: 46px; text-align: left; }
-  .recbar .act { margin-top: 18px; display: flex; justify-content: center; gap: 10px; }
-  .recbar .act button { height: 48px; padding: 0 24px; border-radius: 12px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; }
-  .recbar .dot { width: 22px; height: 22px; border-radius: 50%; background: #dc2626; box-shadow: 0 0 0 6px #dc262633; animation: blink 1s infinite; }
+  .save { display: flex; gap: var(--s2); margin-top: var(--s3); align-items: stretch; }
+  .save .big { flex: 1; font-size: 17px; }
+  .save select { height: auto; min-height: 56px; border: 1px solid var(--line-strong); border-radius: var(--r-lg); padding: 0 var(--s3); background: var(--surface); font-weight: 700; color: var(--ink); }
+
+  /* ================= 대화 창 ================= */
+  dialog { border: 1px solid var(--line); border-radius: var(--r-xl); padding: var(--s6); width: min(520px, 92vw); box-shadow: var(--sh-3); color: var(--ink); background: var(--surface); line-height: 1.5; }
+  dialog::backdrop { background: rgb(28 20 12 / .45); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+  dialog[open] { animation: dlgIn var(--t-slow) var(--ease); }
+  @keyframes dlgIn { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+  dialog h3 { margin: 0 0 var(--s3); font-size: var(--fs-xl); font-weight: 800; letter-spacing: -.4px; line-height: var(--lh-tight); }
+  dialog ol { margin: var(--s2) 0 var(--s3); padding-left: 22px; line-height: 1.85; font-size: 15px; }
+  dialog .btns { display: flex; justify-content: flex-end; gap: var(--s2); margin-top: var(--s5); flex-wrap: wrap; }
+  dialog .btns button { min-height: 44px; padding: 0 var(--s5); border-radius: var(--r-md); font-size: var(--fs-md); }
+  dialog .btns .grp2 { display: flex; gap: var(--s2); }
+  dialog .fld + .fld { margin-top: var(--s3); }
+  dialog.danger { border: 2px solid var(--danger); }
+  dialog.danger h3 { color: var(--danger-ink); }
+  .urgsum { margin-top: var(--s3); padding: var(--s3) var(--s4); border-radius: var(--r-md); background: var(--danger-soft); border: 1px solid var(--danger-line); font-size: var(--fs-md); line-height: var(--lh); }
+  .dlg-lead { font-size: 14px; line-height: var(--lh); margin-bottom: var(--s4); }
+  .qrcheck { display: flex; gap: var(--s2); justify-content: center; align-items: center; margin: var(--s3) 0; font-size: 14px; cursor: pointer; }
+  .qrcheck input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; }
+  #langGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--s2); max-height: 56vh; overflow: auto; padding: 2px; }
+  #langGrid .tpl { align-items: flex-start; min-height: 64px; }
+
+  /* ================= 녹음 창 ================= */
+  .recdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--red-live); margin-right: 6px; animation: blink 1s infinite; }
+  .recbar { position: fixed; inset: 0; z-index: 2147483000; display: flex; align-items: center; justify-content: center; background: var(--overlay); padding: var(--s5); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  .recbar .box { width: min(560px, 100%); border-radius: 24px; padding: var(--s8) 28px var(--s6); text-align: center; box-shadow: var(--sh-3); background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+  .recbar .big1 { font-size: 28px; font-weight: 800; margin: 6px 0 var(--s2); display: flex; align-items: center; justify-content: center; gap: var(--s3); letter-spacing: -.5px; }
+  .recbar .sub1 { font-size: var(--fs-md); color: var(--dim); line-height: var(--lh); min-height: 24px; }
+  .recbar .line { margin-top: var(--s4); padding: var(--s3) var(--s4); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--line); font-size: var(--fs-md); min-height: 48px; text-align: left; }
+  .recbar .act { margin-top: var(--s5); display: flex; justify-content: center; gap: 10px; }
+  .recbar .act button { min-height: 48px; padding: 0 var(--s6); border-radius: var(--r-md); border: none; font-size: 16px; font-weight: 700; cursor: pointer; }
+  .recbar .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--red-live); box-shadow: 0 0 0 6px rgb(220 38 38 / .2); animation: blink 1s infinite; }
   .recbar[hidden] { display: none; }
-  .recbar.rec .big1 { color: #dc2626; }
-  .recbar.done .big1 { color: #15803d; }
-  .recbar.err .big1 { color: #b91c1c; font-size: 22px; }
-  .recbar .tm { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
-  .recbar .spin { width: 26px; height: 26px; border: 4px solid #e5d9cc; border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+  .recbar.rec .big1 { color: var(--red-live); }
+  .recbar.done .big1 { color: var(--ok); }
+  .recbar.err .big1 { color: var(--danger-ink); font-size: 22px; }
+  .recbar .tm { color: var(--ink); font-weight: 600; }
+  .recbar .spin { width: 26px; height: 26px; border: 4px solid var(--line-strong); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .foot { margin-top: 26px; text-align: center; font-size: 13px; color: var(--dim); }
-  .foot a { color: var(--accent2); text-decoration: none; font-weight: 600; }
-  #room { position: fixed; inset: 0; z-index: 45; background: #1c140c; color: #f5ede4; display: flex; flex-direction: column; padding: 16px; gap: 14px; }
+  .foot { margin: var(--s8) auto 0; padding: 0 var(--s4) var(--s6); max-width: 1180px; text-align: center; font-size: var(--fs-xs); color: var(--dim); line-height: 1.8; }
+  .foot a { color: var(--accent-ink); text-decoration: none; font-weight: 600; }
+  .foot a:hover { text-decoration: underline; }
+
+  /* ================= 🖥 방송실 모드 (항상 어두운 화면) ================= */
+  #room { position: fixed; inset: 0; z-index: 45; background: var(--rm-bg); color: var(--rm-ink); display: flex; flex-direction: column; padding: max(var(--s4), env(safe-area-inset-top)) max(var(--s4), env(safe-area-inset-right)) max(var(--s4), env(safe-area-inset-bottom)) max(var(--s4), env(safe-area-inset-left)); gap: var(--s4); color-scheme: dark; }
   #room[hidden] { display: none; }
-  #room .rbar { display: flex; align-items: center; gap: 14px; }
+  #room .rbar { display: flex; align-items: center; gap: var(--s3); }
   #room .rbar .sp { flex: 1; }
-  #room .rbar button { height: 46px; padding: 0 18px; border-radius: 12px; border: 1px solid #ffffff33; background: #ffffff14; color: #fff; font-size: 16px; cursor: pointer; }
-  #room .rbody { flex: 1; display: grid; grid-template-columns: 1fr 380px; gap: 16px; min-height: 0; }
-  @media (max-width: 860px) { #room { overflow: auto; } #room .rbody { grid-template-columns: 1fr; flex: none; } #room .rside { order: -1; overflow: visible; } #roomGrid { overflow: visible; } #room .rbar { flex-wrap: wrap; } }
-  #roomGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; overflow: auto; align-content: start; }
-  .rtile { min-height: 120px; border-radius: 18px; border: 2px solid #ffffff22; background: #ffffff10; color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 17px; padding: 10px; }
-  .rtile span { font-size: 40px; } .rtile:hover { background: #ffffff1c; }
-  .rtile.on { border-color: #fb923c; background: #fb923c33; } .rtile.urg { border-color: #f87171; background: #7f1d1d66; }
-  #room .rleft { display: flex; flex-direction: column; gap: 16px; overflow: auto; min-height: 0; } #room .rleft #roomGrid { overflow: visible; }
-  #roomHist h4 { margin: 0 0 8px; font-size: 16px; opacity: .85; display: flex; align-items: center; gap: 8px; } #roomHist h4 span { font-weight: 400; font-size: 13px; opacity: .7; }
-  #roomHist .rh { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: #ffffff0d; margin-bottom: 6px; cursor: pointer; border: 1px solid transparent; }
-  #roomHist .rh:hover { border-color: #f9731666; } #roomHist .rh .tm { font-variant-numeric: tabular-nums; opacity: .7; font-size: 14px; min-width: 70px; white-space: nowrap; }
-  #roomHist .rh .nm { flex: 1; min-width: 0; font-size: 15px; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } #roomHist .rh .nm b { margin-right: 6px; }
-  #roomHist .rh .k { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: #ffffff1a; white-space: nowrap; }
-  #roomHist .rh button { flex: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid #ffffff2a; background: #ffffff10; color: #fbbf24; font-size: 20px; cursor: pointer; }
-  #room .rside { display: flex; flex-direction: column; gap: 12px; overflow: auto; min-height: 0; }
-  #roomNow { flex: 1; min-height: 90px; border-radius: 16px; background: #ffffff10; padding: 16px; font-size: 18px; line-height: 1.6; overflow: auto; }
-  #roomAir { min-height: 110px; border: none; border-radius: 20px; font-size: 30px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #f97316, #c2410c); cursor: pointer; }
-  #roomAir.stop { background: #374151; }
-  #room .rbar .rstart { display: flex; align-items: center; gap: 6px; font-size: 14px; opacity: .8; cursor: pointer; white-space: nowrap; }
-  #room .rbar .rstart input { width: 18px; height: 18px; accent-color: #f97316; }
-  #room .rbar #roomFav.on { background: #f97316; border-color: #f97316; }
+  #room .rbar > b { font-size: 20px !important; font-weight: 800; letter-spacing: -.3px; }
+  #room .onair { color: var(--rm-dim); border-color: var(--rm-line); background: transparent; }
+  #room .onair.live { background: var(--red-live); color: #fff; border-color: var(--red-live); }
+  #roomClock { font-size: 28px !important; font-weight: 300 !important; letter-spacing: -.5px; color: var(--rm-ink); }
+  #room .rbar button { min-height: 44px; padding: 0 var(--s4); border-radius: var(--r-md); border: 1px solid var(--rm-line); background: var(--rm-panel); color: #fff; font-size: var(--fs-md); font-weight: 600; cursor: pointer; transition: background var(--t-fast); }
+  #room .rbar button:hover { background: var(--rm-panel-2); }
+  #room .rbody { flex: 1; display: grid; grid-template-columns: 1fr 380px; gap: var(--s4); min-height: 0; }
+  @media (max-width: 860px) { #room { overflow: auto; } #room .rbody { grid-template-columns: 1fr; flex: none; } #room .rside { order: -1; overflow: visible; } #roomGrid { overflow: visible; } #room .rbar { flex-wrap: wrap; }
+    #room .rbar #roomFav { order: 5; flex: 1 1 60%; } #room .rbar #roomExit { order: 6; } #room .rbar .rstart { order: 7; width: 100%; } #roomClock { font-size: 22px !important; } }
+  #roomGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--s3); overflow: auto; align-content: start; }
+  .rtile { position: relative; min-height: 120px; border-radius: var(--r-xl); border: 1.5px solid var(--rm-line); background: var(--rm-panel); color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s2); font-size: 17px; font-weight: 700; padding: var(--s3); transition: background var(--t-fast), border-color var(--t-fast), transform var(--t-fast); touch-action: manipulation; }
+  .rtile span { font-size: 40px; line-height: 1; } .rtile:hover { background: var(--rm-panel-2); }
+  .rtile:active { transform: scale(.98); }
+  .rtile.on { border-color: #fb923c; background: rgb(251 146 60 / .2); } .rtile.urg { border-color: #f87171; background: rgb(127 29 29 / .45); }
+  .rtile .st { position: absolute; right: 10px; top: 8px; font-size: 22px; color: #fbbf24; }
+  #room .rleft { display: flex; flex-direction: column; gap: var(--s4); overflow: auto; min-height: 0; } #room .rleft #roomGrid { overflow: visible; }
+  #roomGrid .rhint { grid-column: 1 / -1; padding: var(--s8); text-align: center; color: var(--rm-dim); font-size: 18px; line-height: 1.7; border: 2px dashed var(--rm-line); border-radius: var(--r-xl); }
+  #roomHist h4 { margin: 0 0 var(--s2); font-size: 16px; color: var(--rm-dim); display: flex; align-items: center; gap: var(--s2); } #roomHist h4 span { font-weight: 400; font-size: var(--fs-sm); opacity: .8; }
+  #roomHist .rh { display: flex; align-items: center; gap: 10px; padding: 10px var(--s3); border-radius: var(--r-md); background: var(--rm-panel); margin-bottom: 6px; cursor: pointer; border: 1px solid transparent; }
+  #roomHist .rh:hover { border-color: rgb(249 115 22 / .4); } #roomHist .rh .tm { opacity: .75; font-size: 14px; min-width: 70px; white-space: nowrap; }
+  #roomHist .rh .nm { flex: 1; min-width: 0; font-size: var(--fs-md); line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } #roomHist .rh .nm b { margin-right: 6px; }
+  #roomHist .rh .k { font-size: var(--fs-xs); padding: 2px var(--s2); border-radius: var(--r-pill); background: var(--rm-panel-2); white-space: nowrap; }
+  #roomHist .rh button { flex: none; width: 44px; height: 44px; border-radius: var(--r-md); border: 1px solid var(--rm-line); background: var(--rm-panel); color: #fbbf24; font-size: 20px; cursor: pointer; }
+  #room .rside { display: flex; flex-direction: column; gap: var(--s3); overflow: auto; min-height: 0; }
+  #roomNow { flex: 1; min-height: 90px; border-radius: var(--r-lg); background: var(--rm-panel); border: 1px solid rgb(255 255 255 / .06); padding: var(--s4); font-size: 18px; line-height: var(--lh); overflow: auto; color: var(--rm-ink); }
+  #roomAir { min-height: 112px; flex: none; border: none; border-radius: var(--r-xl); font-size: 30px; font-weight: 800; letter-spacing: -.5px; color: #fff; background: linear-gradient(180deg, #ea580c, #c2410c); box-shadow: 0 12px 28px -16px rgb(234 88 12 / .7), inset 0 1px 0 rgb(255 255 255 / .2); cursor: pointer; touch-action: manipulation; transition: transform var(--t-fast), filter var(--t-fast); }
+  #roomAir:hover { filter: brightness(1.06); } #roomAir:active { transform: scale(.985); }
+  #roomAir.stop { background: #374151; box-shadow: 0 0 0 4px rgb(220 38 38 / .35); }
+  #room .rbar .rstart { display: flex; align-items: center; gap: var(--s2); font-size: 14px; color: var(--rm-dim); cursor: pointer; white-space: nowrap; min-height: 44px; }
+  #room .rbar .rstart input { width: 20px; height: 20px; accent-color: #f97316; }
+  #room .rbar #roomFav.on { background: #c2410c; border-color: #ea580c; }
   #roomNum[hidden] { display: none; }
-  #roomNum { border-radius: 16px; background: #ffffff10; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-  #roomNum .rnl { font-size: 14px; opacity: .75; }
-  #roomNumIn { width: 100%; height: 76px; border: 2px solid #f9731688; border-radius: 14px; background: #00000040; color: #fff; font-size: 64px; font-weight: 900; text-align: center; font-variant-numeric: tabular-nums; }
-  #roomNumIn:focus { outline: none; border-color: #f97316; }
+  #roomNum { border-radius: var(--r-lg); background: var(--rm-panel); padding: var(--s3); display: flex; flex-direction: column; gap: var(--s2); }
+  #roomNum .rnl { font-size: 14px; color: var(--rm-dim); }
+  #roomNumIn { width: 100%; height: 76px; border: 2px solid rgb(249 115 22 / .5); border-radius: 14px; background: rgb(0 0 0 / .3); color: #fff; font-size: 64px; font-weight: 900; text-align: center; }
+  #roomNumIn:focus { outline: none; border-color: #f97316; box-shadow: 0 0 0 4px rgb(249 115 22 / .25); }
   #roomNum .rkeys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  #roomNum button { height: 46px; border-radius: 12px; border: 1px solid #ffffff2a; background: #ffffff14; color: #fff; font-size: 22px; font-weight: 700; cursor: pointer; }
-  #roomNum button:active { background: #f9731666; }
+  #roomNum button { height: 48px; border-radius: var(--r-md); border: 1px solid var(--rm-line); background: var(--rm-panel); color: #fff; font-size: 22px; font-weight: 700; cursor: pointer; touch-action: manipulation; font-variant-numeric: tabular-nums; }
+  #roomNum button:hover { background: var(--rm-panel-2); }
+  #roomNum button:active { background: rgb(249 115 22 / .4); }
   #roomNum .rtools { display: grid; grid-template-columns: 1fr 1fr 1.4fr 1fr; gap: 6px; } #roomNum .rtools button { font-size: 16px; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   @media (max-width: 380px) { #roomNum .rtools { grid-template-columns: 1fr 1fr; } }
-  .numkeys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
-  .numkeys button { height: 46px; padding: 0 4px; border-radius: 12px; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-  .numkeys [data-d] { font-size: 19px; font-weight: 700; }
+  #roomPre { min-height: 60px; border-radius: var(--r-lg); border: 1px solid var(--rm-line); background: var(--rm-panel); color: #fff; font-size: 18px; font-weight: 600; cursor: pointer; touch-action: manipulation; }
+  #roomPre:hover { background: var(--rm-panel-2); }
+
+  /* ================= 번호 빠르게 ================= */
+  .numkeys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s2); margin-top: var(--s2); }
+  .numkeys button { height: 48px; padding: 0 4px; border-radius: var(--r-md); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .numkeys [data-d] { font-size: 20px; font-weight: 700; }
   .numkeys .ngo, .numkeys [data-board], .numkeys [data-qr] { grid-column: span 2; }
-  .numkeys .ngo { font-size: 16px; font-weight: 800; background: var(--accent); border-color: var(--accent); color: #fff; } .numkeys .ngo:hover { color: #fff; filter: brightness(1.06); }
-  .rtile .st { position: absolute; right: 10px; top: 8px; font-size: 22px; color: #fbbf24; }
-  .rtile { position: relative; } #roomGrid .rhint { grid-column: 1 / -1; padding: 30px; text-align: center; opacity: .8; font-size: 18px; line-height: 1.7; border: 2px dashed #ffffff33; border-radius: 18px; }
-  #roomPre { min-height: 60px; border-radius: 16px; border: 1px solid #ffffff33; background: #ffffff10; color: #fff; font-size: 18px; cursor: pointer; }
+  .numkeys .ngo { font-size: 16px; font-weight: 800; background: linear-gradient(180deg, var(--accent-hi), var(--accent)); border-color: var(--accent); color: #fff; box-shadow: var(--sh-accent); } .numkeys .ngo:hover { color: #fff; border-color: var(--accent); filter: brightness(1.06); background: linear-gradient(180deg, var(--accent-hi), var(--accent)); }
+  #f_num { height: 56px !important; }
+
+  /* ================= 📘 설명서 ================= */
   #manDlg { width: min(780px, 96vw); padding: 0; max-height: 90vh; overflow: auto; }
-  #manDlg .mhead { position: sticky; top: 0; z-index: 2; background: #fff; display: flex; align-items: center; gap: 8px; padding: 14px 16px 10px 20px; border-bottom: 1px solid var(--line); }
+  #manDlg .mhead { position: sticky; top: 0; z-index: 2; background: var(--surface); display: flex; align-items: center; gap: var(--s2); padding: 14px var(--s4) var(--s3) var(--s5); border-bottom: 1px solid var(--line); }
   #manDlg .mhead h3 { margin: 0; flex: 1; min-width: 0; }
-  #manDlg .mclose { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-size: 18px; cursor: pointer; flex: none; }
-  #manDlg .mtoc { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 20px; border-bottom: 1px solid var(--line); background: #fffaf5; }
-  #manDlg .mtoc button { font-size: 13px; padding: 6px 10px; border-radius: 999px; border: 1px solid #fed7aa; background: #fff; color: var(--accent2); cursor: pointer; }
-  #manDlg .mbody { padding: 4px 20px 20px; font-size: 14.5px; line-height: 1.75; }
-  #manDlg section { padding-top: 14px; scroll-margin-top: 72px; } #manDlg h4 { margin: 0 0 4px; font-size: 16px; color: var(--accent2); }
-  #manDlg ul { margin: 0; padding-left: 20px; } #manDlg li + li { margin-top: 3px; } #manDlg dt { font-weight: 700; margin-top: 10px; } #manDlg dd { margin: 2px 0 0 0; padding-left: 12px; border-left: 3px solid var(--line); }
-  #manDlg a { color: var(--accent2); } #manTitle:focus { outline: none; }
-  #tplQ { -webkit-appearance: none; appearance: none; } #tplQ::-webkit-search-cancel-button { display: none; }
-  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(16px); background: #2b2118; color: #fff; padding: 11px 18px;
-    border-radius: 12px; font-size: 14px; opacity: 0; transition: .25s; pointer-events: none; z-index: 30; max-width: 90vw; text-align: center; }
+  #manDlg .mclose { width: 40px; height: 40px; border-radius: var(--r-pill); border: 0; background: var(--surface-3); color: var(--ink-2); font-size: 16px; cursor: pointer; flex: none; }
+  #manDlg .mclose:hover { background: var(--line-strong); }
+  #manDlg .mtoc { display: flex; flex-wrap: wrap; gap: 6px; padding: var(--s3) var(--s5); border-bottom: 1px solid var(--line); background: var(--surface-2); }
+  #manDlg .mtoc button { font-size: var(--fs-sm); min-height: 32px; padding: 0 var(--s3); border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; font-weight: 600; }
+  #manDlg .mtoc button:hover { border-color: var(--accent-line); color: var(--accent-ink); }
+  #manDlg .mbody { padding: var(--s1) var(--s5) var(--s6); font-size: 15px; line-height: 1.75; color: var(--ink-2); }
+  #manDlg .mbody b { color: var(--ink); }
+  #manDlg section { padding-top: var(--s5); scroll-margin-top: 72px; } #manDlg h4 { margin: 0 0 var(--s1); font-size: var(--fs-lg); color: var(--ink); letter-spacing: -.3px; }
+  #manDlg ul { margin: 0; padding-left: 20px; } #manDlg li + li { margin-top: var(--s1); } #manDlg dt { font-weight: 700; margin-top: var(--s3); color: var(--ink); } #manDlg dd { margin: 2px 0 0 0; padding-left: var(--s3); border-left: 3px solid var(--accent-line); }
+  #manDlg a { color: var(--accent-ink); } #manTitle:focus { outline: none; }
+
+  /* ================= 알림 (토스트) ================= */
+  .toast { position: fixed; left: 50%; bottom: max(var(--s6), calc(env(safe-area-inset-bottom) + var(--s3))); transform: translateX(-50%) translateY(16px); background: #2a211a; color: #fff; padding: var(--s3) var(--s5);
+    border-radius: var(--r-md); font-size: 14px; line-height: 1.5; opacity: 0; transition: opacity var(--t) var(--ease), transform var(--t) var(--ease); pointer-events: none; z-index: 30; width: max-content; max-width: min(92vw, 560px); text-align: center; box-shadow: 0 12px 32px -8px rgb(0 0 0 / .35); }
+  @media (prefers-color-scheme: dark) { .toast { background: #f4ece3; color: #1e1813; } }
   .toast.show { opacity: 1; transform: translateX(-50%); }
   @media (max-width: 359px) { .tpls { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } .logo b { font-size: 16px !important; letter-spacing: -.6px; } header .hbtn { padding: 0 7px !important; } }
   @media (max-width: 340px) { .logo b em { display: none; } }
+
+  /* ================= 📱 장소 고르기 시트 ================= */
   #oaBar { display: none; }
   #placeRow { display: none; }
-  #placeDlg { position: fixed; inset: auto 0 0 0; margin: 0; width: 100%; max-width: 100%; max-height: 86vh; max-height: 86dvh; padding: 0 0 calc(14px + env(safe-area-inset-bottom)); border-radius: 16px 16px 0 0; background: #f6f1ea; overflow: auto; overscroll-behavior: contain; box-shadow: 0 -10px 40px #0003; }
-  #placeDlg[open] { display: block; animation: sheetUp .3s cubic-bezier(.2, .85, .25, 1); }
-  #placeDlg::backdrop { background: #1c140c66; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  #placeDlg { position: fixed; inset: auto 0 0 0; margin: 0; width: 100%; max-width: 100%; max-height: 86vh; max-height: 86dvh; padding: 0 0 calc(14px + env(safe-area-inset-bottom)); border: 0; border-radius: 16px 16px 0 0; background: var(--bg); overflow: auto; overscroll-behavior: contain; box-shadow: 0 -10px 40px rgb(0 0 0 / .2); }
+  #placeDlg[open] { display: block; animation: sheetUp var(--t-slow) cubic-bezier(.2, .85, .25, 1); }
+  #placeDlg::backdrop { background: rgb(28 20 12 / .4); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
   @keyframes sheetUp { from { transform: translateY(100%); } }
-  @media (prefers-reduced-motion: reduce) { #placeDlg[open] { animation: none; } }
   #placeDlg:focus { outline: none; }
-  #placeDlg .grab { width: 36px; height: 5px; border-radius: 3px; background: #cdbfb0; margin: 7px auto 0; }
-  #placeDlg .sh { position: sticky; top: 0; z-index: 1; display: grid; grid-template-columns: 64px 1fr 64px; align-items: center; padding: 4px 8px 6px; background: #f6f1ea; }
-  #placeDlg .sh h3 { margin: 0; text-align: center; font-size: 17px; font-weight: 700; }
-  #placeDlg .sh button { height: 44px; border: 0; background: none; color: var(--accent2); font-size: 17px; font-weight: 700; cursor: pointer; justify-self: end; padding: 0 8px; }
-  #placeList { margin: 4px 16px 0; background: #fff; border-radius: 12px; overflow: hidden; }
-  #placeList button { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 50px; padding: 0 16px; border: 0; background: #fff; text-align: left; font-size: 16.5px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  #placeList button + button::before { content: ""; position: absolute; left: 52px; right: 0; top: 0; height: 1px; background: #e6dccf; transform: scaleY(.5); transform-origin: top; }
-  #placeList button:active { background: #f1e9df; } #placeList .pi { width: 24px; text-align: center; font-size: 21px; flex: none; }
-  #placeList .pn { flex: 1; min-width: 0; } #placeList .on .pn { font-weight: 700; } #placeList .ck { flex: none; color: var(--accent2); font-size: 18px; font-weight: 800; }
+  #placeDlg .grab { width: 36px; height: 5px; border-radius: 3px; background: var(--line-strong); margin: 7px auto 0; }
+  #placeDlg .sh { position: sticky; top: 0; z-index: 1; display: grid; grid-template-columns: 64px 1fr 64px; align-items: center; padding: 4px var(--s2) 6px; background: var(--bg); }
+  #placeDlg .sh h3 { margin: 0; text-align: center; font-size: var(--fs-lg); font-weight: 700; letter-spacing: -.3px; }
+  #placeDlg .sh button { height: 44px; border: 0; background: none; color: var(--accent-ink); font-size: var(--fs-lg); font-weight: 700; cursor: pointer; justify-self: end; padding: 0 var(--s2); }
+  #placeList { margin: var(--s1) var(--s4) 0; background: var(--surface); border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); }
+  #placeList button { position: relative; display: flex; align-items: center; gap: var(--s3); width: 100%; min-height: 52px; padding: 0 var(--s4); border: 0; background: var(--surface); text-align: left; font-size: 16.5px; cursor: pointer; -webkit-tap-highlight-color: transparent; color: var(--ink); }
+  #placeList button + button::before { content: ""; position: absolute; left: 52px; right: 0; top: 0; height: 1px; background: var(--line-strong); transform: scaleY(.5); transform-origin: top; }
+  #placeList button:active { background: var(--surface-3); } #placeList .pi { width: 24px; text-align: center; font-size: 21px; flex: none; }
+  #placeList .pn { flex: 1; min-width: 0; } #placeList .on .pn { font-weight: 700; } #placeList .ck { flex: none; color: var(--accent-ink); font-size: 18px; font-weight: 800; }
   html.nodlg #placeDlg[open] { left: 0; top: auto; bottom: 0; transform: none; max-height: 86vh; }
-  .warnbar { margin: -6px 0 14px; padding: 12px 14px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; font-size: 14.5px; line-height: 1.6; }
-  .warnbar[hidden] { display: none; } .warnbar small { color: #7f1d1d; font-size: 13px; }
+  .warnbar { margin: calc(-1 * var(--s2)) 0 var(--s4); padding: var(--s3) var(--s4); border-radius: var(--r-md); background: var(--danger-soft); border: 1px solid var(--danger-line); color: var(--danger-ink); font-size: 14.5px; line-height: var(--lh); }
+  .warnbar[hidden] { display: none; } .warnbar small { color: inherit; opacity: .85; font-size: var(--fs-sm); }
   dialog:not([open]) { display: none; }
-  html.nodlg dialog[open] { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 200; max-height: 90vh; overflow: auto; background: #fff; }
+  html.nodlg dialog[open] { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 200; max-height: 90vh; overflow: auto; background: var(--surface); }
+
+  /* ================= 손가락 (터치 화면): 누르기 쉬운 크기 ================= */
+  @media (pointer: coarse) {
+    .mini { height: 40px; padding: 0 var(--s3); }
+    .hbtn { min-height: 44px; }
+    .lang .lh .ord .mini { height: 21px; width: 30px; font-size: 10px; }
+    .lang .lh select { height: 40px; }
+    .seg button { min-height: 40px; }
+    .days button { min-width: 40px; height: 40px; }
+    .places button { min-height: 44px; }
+    .li button { min-width: 44px; height: 44px; }
+    .lang .hd .hre { height: 32px; }
+    .tabs button { height: 44px !important; }
+    .switch::before { content: ""; position: absolute; inset: -9px -4px; }
+    details.adv > summary, .card > details:not(.adv) > summary { min-height: 44px; }
+  }
+
   @media (max-width: 600px) {
     /* 📱 휴대폰: 간결하게 */
-    header { flex-wrap: nowrap; gap: 8px; margin-bottom: 10px; } .logo { gap: 8px; min-width: 0; flex: 1; } .logo .mark { width: 36px; height: 36px; border-radius: 11px; } .logo .mark svg { width: 22px; height: 22px; }
+    .wrap { padding-top: max(var(--s3), env(safe-area-inset-top)); padding-left: max(var(--s3), env(safe-area-inset-left)); padding-right: max(var(--s3), env(safe-area-inset-right)); }
+    header { flex-wrap: nowrap; gap: var(--s2); margin-bottom: var(--s3); } .logo { gap: 10px; min-width: 0; flex: 1; } .logo .mark { width: 36px; height: 36px; border-radius: 11px; } .logo .mark svg { width: 22px; height: 22px; }
     .logo b { font-size: 18px; white-space: nowrap; } .logo small { display: none; }
-    header .onair { padding: 0 8px; height: 30px; font-size: 11px; } header .onair i { display: none; } header .hbtn { height: 34px; padding: 0 9px; font-size: 13px; }
+    header .onair { padding: 0 10px; height: 28px; font-size: 10.5px; letter-spacing: 1.2px; } header .onair i { display: none; } header .hbtn { height: 40px; min-height: 40px; width: 40px; padding: 0; font-size: 16px; border-radius: var(--r-pill); }
     #roomBtn { font-size: 0 !important; } #roomBtn::before { content: "🖥"; font-size: 17px; }
-    .tabs { margin: 0 0 10px; } .tabs button { height: 38px; padding: 0 12px; font-size: 14px; }
+    .tabs { margin: 0 0 var(--s3); width: 100%; border-radius: 12px; -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); }
+    .tabs button { height: 38px; padding: 0 var(--s3); font-size: 14px; border-radius: 9px; }
+    .tabs button:last-child { margin-right: 28px; }
+    .card { padding: var(--s4); border-radius: 18px; }
+    .card h2 { font-size: 16px; }
     .places { display: none; }   /* 📱 장소는 한 줄 + 아래 창으로 고르기 */
-    #placeRow { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 54px; padding: 0 12px 0 14px; margin-bottom: 12px; border: 1px solid var(--line); border-radius: 14px; background: #fff; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-    #placeRow:active { background: #f6efe7; }
+    #placeRow { display: flex; align-items: center; gap: var(--s3); width: 100%; min-height: 56px; padding: 0 var(--s3) 0 14px; margin-bottom: var(--s3); border: 1px solid var(--line-strong); border-radius: 14px; background: var(--surface); text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; color: var(--ink); }
+    #placeRow:active { background: var(--surface-3); }
     #placeRow .pi { font-size: 24px; line-height: 1; flex: none; } #placeRow .pn { flex: 1; min-width: 0; font-size: 16.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #placeRow .pc { flex: none; color: var(--dim); font-size: 14px; display: flex; align-items: center; gap: 4px; } #placeRow .pc::after { content: "›"; font-size: 24px; line-height: 1; color: #c4b3a1; margin-top: -2px; }
+    #placeRow .pc { flex: none; color: var(--accent-ink); font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; } #placeRow .pc::after { content: "›"; font-size: 24px; line-height: 1; color: var(--faint); margin-top: -2px; }
+    .search { margin-bottom: var(--s3); }
     .favtip { display: none; }
-    .grp > h4 { cursor: pointer; user-select: none; padding: 7px 0; margin: 0 0 4px; font-size: 14px; } .grp > h4::before { content: "▾"; color: var(--accent2); width: 12px; } .grp.cl > h4::before { content: "▸"; } .grp.cl > h4 { margin-bottom: 0; }
+    .grp + .grp { margin-top: var(--s2); }
+    .grp > h4 { cursor: pointer; user-select: none; -webkit-user-select: none; min-height: 40px; padding: 0; margin: 0 0 var(--s1); font-size: 14px; color: var(--ink-2); -webkit-tap-highlight-color: transparent; }
+    .grp > h4::before { content: ""; width: 6px; height: 6px; border-right: 2px solid var(--accent-ink); border-bottom: 2px solid var(--accent-ink); transform: rotate(45deg) translate(-2px, -2px); flex: none; margin: 0 4px 0 2px; transition: transform var(--t); }
+    .grp.cl > h4::before { transform: rotate(-45deg); }
+    .grp.cl > h4 { margin-bottom: 0; }
+    .grp[class="grp"] > h4 { cursor: default; } .grp[class="grp"] > h4::before { display: none; }   /* 🔍 찾기 결과는 접지 않음 */
+    .grp.em > h4 { color: var(--danger-ink); } .grp.em > h4::before { border-color: var(--danger-ink); }
     .grp.cl > .tpls { display: none; }
-    #oaBar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; gap: 8px; align-items: center; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: #fffaf5; border-top: 1px solid var(--line); box-shadow: 0 -6px 18px #0000001a; }
-    #oaBar .nm { flex: 1; min-width: 0; font-size: 13px; line-height: 1.3; } #oaBar .nm b { display: block; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } #oaBar .nm span { color: var(--dim); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
-    #oaBar button { flex: none; height: 46px; border-radius: 12px; border: 1px solid var(--line); font-size: 15px; font-weight: 700; padding: 0 12px; background: #fff; }
-    #oaAir { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff; } #oaAir.stop { background: #374151 !important; border-color: #374151 !important; }
-    .wrap { padding-bottom: 86px; } body.room #oaBar, body.boardOnly #oaBar, body.waitOnly #oaBar { display: none !important; }
-    .tpls { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .tpl { padding: 9px 4px 8px; border-radius: 12px; } .tpl .ic { font-size: 20px; } .tpl b { font-size: 12.5px; }
-    .tpl .fv { font-size: 12px; left: 3px; top: 1px; }
+    .grp > .tpls { margin-bottom: var(--s2); }
+    #oaBar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; gap: var(--s2); align-items: center; padding: 10px max(var(--s3), env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(var(--s4), env(safe-area-inset-left));
+      background: color-mix(in srgb, var(--surface) 88%, transparent); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); border-top: 1px solid var(--line); box-shadow: 0 -8px 24px -12px rgb(0 0 0 / .18); }
+    #oaBar .nm { flex: 1; min-width: 0; font-size: var(--fs-sm); line-height: 1.3; } #oaBar .nm b { display: block; font-size: var(--fs-md); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } #oaBar .nm span { color: var(--dim); font-size: var(--fs-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; margin-top: 2px; }
+    #oaBar button { flex: none; height: 48px; border-radius: 14px; border: 1px solid var(--line-strong); font-size: var(--fs-md); font-weight: 700; padding: 0 14px; background: var(--surface); color: var(--ink); touch-action: manipulation; }
+    #oaAir { background: linear-gradient(180deg, var(--accent-hi), var(--accent)) !important; border-color: var(--accent) !important; color: #fff !important; padding: 0 var(--s5) !important; box-shadow: var(--sh-accent); } #oaAir.stop { background: #374151 !important; border-color: #374151 !important; box-shadow: 0 0 0 3px rgb(220 38 38 / .35); }
+    .wrap { padding-bottom: 92px; } body.room #oaBar, body.boardOnly #oaBar, body.waitOnly #oaBar { display: none !important; }
+    .toast { bottom: calc(84px + env(safe-area-inset-bottom)); }
+    body.room .toast, body.boardOnly .toast, body.waitOnly .toast { bottom: max(var(--s6), calc(env(safe-area-inset-bottom) + var(--s3))); }
+    .tpls { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .tpl { min-height: 70px; padding: 10px 4px 8px; border-radius: 12px; gap: 5px; } .tpl .ic { font-size: 22px; } .tpl b { font-size: 13px; }
+    .tpl .fv { font-size: 12px; left: 2px; top: 1px; }
+    .fields { margin-top: var(--s4); }
     input, select, textarea { font-size: 16px !important; }
-    #roomNumIn { font-size: 56px !important; } #waitp input { font-size: 32px !important; } #f_num { font-size: 22px !important; }   /* 번호 칸은 크게 (16px 이상이라 아이폰 확대도 안 됨) */
-    #manDlg .mhead h3 { font-size: 17px; } #manPrint { display: none; }
+    #roomNumIn { font-size: 56px !important; } #waitp input { font-size: 32px !important; } #f_num { font-size: 24px !important; }   /* 번호 칸은 크게 (16px 이상이라 아이폰 확대도 안 됨) */
+    #manDlg .mhead h3 { font-size: var(--fs-lg); } #manPrint { display: none; }
     .go { grid-template-columns: 1fr; }
+    .lang .lh { padding: 10px; gap: 6px; }
+    .lang .lh select { flex: 1 1 100%; max-width: none; order: 0; }
+    .lang .lh .lplay, .lang .lh .cmp, .lang .lh .pol, .lang .lh .tr, .lang .lh .rm { flex: 1 1 auto; }
+    .lang .lh .trall { flex: 1 1 100%; }
+    .row > label:first-child { min-width: 84px; }
+    /* 📱 대화 창 = 아래에서 올라오는 시트 */
+    dialog:not(#placeDlg):not(#manDlg) { margin: auto 0 0; width: 100% !important; max-width: 100%; max-height: 92vh; max-height: 92dvh; overflow: auto; border-radius: var(--r-xl) var(--r-xl) 0 0; border-width: 1px 0 0; padding: var(--s6) var(--s5) calc(var(--s5) + env(safe-area-inset-bottom)); }
+    dialog.danger:not(#placeDlg) { border-width: 3px 0 0; }
+    dialog:not(#placeDlg):not(#manDlg)[open] { animation: sheetUp var(--t-slow) cubic-bezier(.2, .85, .25, 1); }
+    dialog .btns button { flex: 1 1 auto; }
+    dialog .btns .grp2 { flex: 1 1 100%; } dialog .btns .grp2 button { flex: 1; }
+    html.nodlg dialog:not(#placeDlg)[open] { left: 0; top: auto; bottom: 0; transform: none; }
   }
 </style>
 </head>
@@ -355,18 +593,18 @@
 
   <div class="warnbar" id="ttsWarn" role="alert" hidden></div>
   <div class="pane" data-pane="air"><div class="grid">
-    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+    <div class="col">
       <section class="card">
         <h2>① 어떤 방송인가요?</h2>
         <button id="placeRow" type="button" aria-haspopup="dialog"></button>
         <div class="places" id="places"></div>
-        <div style="position:relative;margin-bottom:12px"><input id="tplQ" type="search" aria-label="방송 찾기" placeholder="🔍 방송 찾기 (예: 주차, 단수, 엘리베이터, 화재)" style="width:100%;height:42px;border:1px solid var(--line);border-radius:12px;padding:0 40px 0 14px;font-size:15px;background:#fffaf5">
-          <button id="tplQx" class="mini" style="position:absolute;right:6px;top:6px;height:30px" aria-label="찾기 지우기" hidden>✕</button></div>
+        <div class="search"><input id="tplQ" type="search" aria-label="방송 찾기" placeholder="방송 찾기 (예: 주차, 단수, 엘리베이터, 화재)">
+          <button id="tplQx" class="mini" aria-label="찾기 지우기" hidden>✕</button></div>
         <div id="tpls"></div>
         <div class="fields" id="fields"></div>
       </section>
     </div>
-    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+    <div class="col">
       <section class="card">
         <h2>② 방송 문장 <span class="sp"></span><details class="more" id="markMenu"><summary class="mini" aria-label="억양 표시" title="문장 칸에서 글자를 고른 뒤 누르면 억양 표시를 씌웁니다 (읽을 때만 적용)">🎚<span class="ml"> 억양</span></summary><div class="menu">
             <button data-mk="강조">🔆 [강조] 또렷하고 천천히</button><button data-mk="천천히">🐢 [천천히]</button><button data-mk="빠르게">🐇 [빠르게]</button>
@@ -377,21 +615,21 @@
             <button id="mNotice">📄 공지문 인쇄</button><button id="mKakao">💬 카톡 복사</button><button id="mAddLang">🌐 언어 추가</button></div></details></h2>
         <p class="muted" style="margin:-4px 0 10px">빈칸을 채우면 문장이 자동으로 만들어집니다. 직접 고쳐도 됩니다.</p>
         <div class="langs" id="langs"></div>
-        <button class="mini" id="langOff" hidden style="margin-top:8px;width:100%;height:36px;border-style:dashed;font-size:13.5px"></button>
+        <button class="mini btn-dashed" id="langOff" hidden></button>
       </section>
       <section class="card">
         <h2>③ 방송하기</h2>
-        <div class="row"><label>말 빠르기</label><input type="range" id="rate" aria-label="말 빠르기" min="0.75" max="1.25" step="0.01"><span id="rateL" style="width:46px">1.00</span></div>
-        <div class="row"><label>목소리 크기</label><input type="range" id="vol" aria-label="목소리 크기" min="0.3" max="1" step="0.05"><span id="volL" style="width:46px"></span></div>
+        <div class="row"><label>말 빠르기</label><input type="range" id="rate" aria-label="말 빠르기" min="0.75" max="1.25" step="0.01"><span id="rateL" class="val">1.00</span></div>
+        <div class="row"><label>목소리 크기</label><input type="range" id="vol" aria-label="목소리 크기" min="0.3" max="1" step="0.05"><span id="volL" class="val"></span></div>
         <div class="row"><label>차임 (딩동댕동)</label><label class="switch"><input type="checkbox" id="chimeOn" aria-label="차임 켜기"><span></span></label>
-          <select id="chimeType" aria-label="차임 종류" class="mini" style="height:32px"><option value="classic">딩동댕동 (기본)</option><option value="soft">부드러운 실로폰</option><option value="westminster">웨스트민스터</option></select></div>
+          <select id="chimeType" aria-label="차임 종류" class="mini"><option value="classic">딩동댕동 (기본)</option><option value="soft">부드러운 실로폰</option><option value="westminster">웨스트민스터</option></select></div>
         <details class="adv" id="advSet"><summary>⚙ 자세히 설정 <span class="muted">말투 · 성우 억양 · 반복 · 남·여 번갈아 · 목소리 높이 · 자동 다듬기</span></summary>
         <div class="row"><label>말투</label>
           <div class="seg" id="mood"><button data-v="calm">차분하게</button><button data-v="bright">밝게</button><button data-v="urgent">긴급</button></div></div>
         <div class="row"><label>🎙 성우 억양</label><label class="switch" title="시간·날짜·번호·장소를 조금 천천히 또렷하게, 문장 끝은 차분하게 읽음"><input type="checkbox" id="proOn" aria-label="성우 억양"><span></span></label>
-          <span class="muted" style="font-size:12.5px">시간·날짜·번호를 조금 천천히 또렷하게, 문장 끝은 차분하게 (끄면 문장을 한 번에 읽음) · ② <b>🎚 억양</b>으로 직접 표시</span></div>
+          <span class="muted hint">시간·날짜·번호를 조금 천천히 또렷하게, 문장 끝은 차분하게 (끄면 문장을 한 번에 읽음) · ② <b>🎚 억양</b>으로 직접 표시</span></div>
         <div class="row"><label>자동 다듬기</label><label class="switch" title="방송·미리 듣기·파일 저장 때 직접 쓴 한국어 문장에 쉼표를 알아서 넣음"><input type="checkbox" id="autoPol" aria-label="자동 다듬기"><span></span></label>
-          <span class="muted" style="font-size:12.5px">직접 쓰거나 고친 한국어 문장을, 방송할 때 쉼표를 넣어 읽음 (화면 글자는 그대로)</span></div>
+          <span class="muted hint">직접 쓰거나 고친 한국어 문장을, 방송할 때 쉼표를 넣어 읽음 (화면 글자는 그대로)</span></div>
         <div class="row"><label>반복</label><div class="seg" id="rep"><button data-v="1">1번</button><button data-v="2">2번</button><button data-v="3">3번</button></div></div>
         <div class="row" id="altRow"><label>남·여 번갈아</label><label class="switch" title="반복할 때 두 번째는 반대 성별 목소리로"><input type="checkbox" id="altOn" aria-label="남·여 번갈아"><span></span></label>
           <span class="muted" id="altInfo"></span></div>
@@ -410,7 +648,7 @@
   <div class="pane cards" data-pane="auto">
       <section class="card">
         <h2>⏰ 예약 방송 <span class="sp"></span><label class="switch" title="예약 방송 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="schedOn" aria-label="예약 방송 켜기"><span></span></label></h2>
-        <div class="row"><input type="time" id="sTime" aria-label="예약 시각" value="09:00" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"><div class="days" id="sDays"></div></div>
+        <div class="row"><input type="time" id="sTime" class="inp sm" aria-label="예약 시각" value="09:00"><div class="days" id="sDays"></div></div>
         <div class="row"><button class="mini" id="sAdd">＋ 지금 문장으로 예약 추가</button><span class="muted">요일을 안 고르면 매일</span></div>
         <div class="list" id="sList"></div>
         <div class="wait" id="sWait" hidden></div>
@@ -418,8 +656,8 @@
       <section class="card" id="cdCard">
         <h2>⏱ 카운트다운 방송 <span class="sp"></span><label class="switch" title="카운트다운 켜기 (이 창을 열어 두어야 합니다)"><input type="checkbox" id="cdOn" aria-label="카운트다운 켜기"><span></span></label></h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">공연·예식 시작 시각을 정하면, <b>정한 분 전마다 자동으로</b> 안내합니다. (예: 10분 전 → 5분 전 → 1분 전 → 정각)</p>
-        <div class="row"><label>시작 시각</label><input type="time" id="cdTime" aria-label="시작 시각" style="height:38px;border:1px solid var(--line);border-radius:10px;padding:0 8px"></div>
-        <div class="row"><label>무엇이 시작?</label><input id="cdWhat" placeholder="비우면 장소에 맞게 (공연·예식·행사)" style="flex:1;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px"></div>
+        <div class="row"><label>시작 시각</label><input type="time" id="cdTime" class="inp sm" aria-label="시작 시각"></div>
+        <div class="row"><label>무엇이 시작?</label><input id="cdWhat" class="inp" placeholder="비우면 장소에 맞게 (공연·예식·행사)" style="flex:1;height:var(--h-md)"></div>
         <div class="row" style="align-items:flex-start"><label style="padding-top:6px">알릴 때</label><div class="days" id="cdSteps" style="flex-wrap:wrap"></div></div>
         <div class="wait" id="cdWait" hidden></div>
       </section>
@@ -431,22 +669,22 @@
   </div>
 
   <div class="pane cards" data-pane="file">
-      <section class="card" style="border-color:#c7d2fe;background:#f8faff">
+      <section class="card feature">
         <h2>💾 안내방송 파일로 만들기 (USB)</h2>
         <p class="muted" style="margin:-4px 0 8px;line-height:1.6">안내방송을 할 내용을 선택하고 <b>💾 음성 파일로 저장</b>을 누르면 <b>MP3·WAV 파일</b>이 만들어집니다. USB에 담아 방송 앰프·스피커 같은 <b>외부 장비에서 실행</b>할 수 있습니다.</p>
-        <div style="margin:0 0 10px;padding:10px 12px;border-radius:10px;background:#eef2ff;font-size:14px;line-height:1.7">
+        <div class="callout">
           <b>예시)</b> ① 방송 종류에서 <b>🚗 차량 이동</b> 선택 → 차량 번호 입력 → <b>💾 음성 파일로 저장</b> 클릭하세요.
-          <button class="mini" id="exCar" style="margin-left:4px;border-color:#c7d2fe;background:#fff;color:#3730a3;font-weight:700">🧪 차량 이동 예시 선택</button>
+          <button class="mini" id="exCar">🧪 차량 이동 예시 선택</button>
         </div>
         <div class="save" style="margin-top:0">
-          <button class="big" id="recBtn" title="방송을 음성 파일로 저장 (PC의 Edge·Chrome)" style="background:#eef2ff;border-color:#c7d2fe;color:#3730a3">💾 음성 파일로 저장</button>
+          <button class="big rec" id="recBtn" title="방송을 음성 파일로 저장 (PC의 Edge·Chrome)">💾 음성 파일로 저장</button>
           <select id="recFmt" title="파일 형식"><option value="mp3">MP3</option><option value="wav">WAV</option></select>
         </div>
       </section>
       <section class="card">
         <h2>📄 공지문 · 💬 카톡</h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">지금 방송 문장을 <b>게시판용 A4 공지문</b>으로 인쇄하거나, <b>카톡·문자</b>로 보낼 글로 복사합니다.</p>
-        <div class="row"><button class="mini" id="notice" style="height:40px;flex:1;font-size:14px" title="게시판·엘리베이터용 공지문 (인쇄·PDF)">📄 공지문 인쇄</button><button class="mini" id="kakao" style="height:40px;flex:1;font-size:14px" title="카톡·문자로 보낼 글 복사">💬 카톡 복사</button></div>
+        <div class="row"><button class="mini btn-flex" id="notice" title="게시판·엘리베이터용 공지문 (인쇄·PDF)">📄 공지문 인쇄</button><button class="mini btn-flex" id="kakao" title="카톡·문자로 보낼 글 복사">💬 카톡 복사</button></div>
       </section>
   </div>
 
@@ -454,7 +692,7 @@
       <section class="card">
         <h2>📊 방송 기록 <span class="muted" id="hCount" style="font-weight:400;font-size:12px"></span><span class="sp"></span><button class="mini" id="hFav" title="방송 기록을 ★ 즐겨찾기에 넣으면 방송실 모드에 최근 방송이 보입니다">☆ 즐겨찾기</button><button class="mini" id="hCsv" title="엑셀에서 열 수 있는 파일로 저장 (업무일지용)">📊 엑셀</button><button class="mini" id="hClear">비우기</button></h2>
         <div class="list" id="hList"></div>
-        <button class="mini" id="hMore" hidden style="margin-top:8px;width:100%;height:34px">전체 보기</button>
+        <button class="mini btn-wide" id="hMore" hidden style="margin-top:8px">전체 보기</button>
       </section>
   </div>
 
@@ -463,32 +701,32 @@
         <h2>🏷 장소 이름 · 🌐 언어</h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">첫 인사에 들어갈 이름(예: 행복마을 관리사무소)과, 4개 국어 말고 더 방송할 언어를 정합니다.</p>
         <div class="row"><button class="hbtn" id="setBtn">⚙ 장소 이름</button></div>
-        <button class="mini" id="addLang" style="margin-top:10px;height:38px;width:100%;border-style:dashed;font-size:14px">＋ 언어 추가 (베트남어 · 태국어 · 러시아어 · 아랍어 … 27개)</button>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:12px"><label class="switch" style="flex:none"><input type="checkbox" id="allView" aria-label="전체 보기"><span></span></label><span><b>전체 보기</b> <span class="muted">— 탭 없이 모든 기능을 한 화면에 펼쳐 보기</span></span></div>
+        <button class="mini btn-dashed btn-wide" id="addLang" style="margin-top:12px">＋ 언어 추가 (베트남어 · 태국어 · 러시아어 · 아랍어 … 27개)</button>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:16px"><label class="switch"><input type="checkbox" id="allView" aria-label="전체 보기"><span></span></label><span><b>전체 보기</b> <span class="muted">— 탭 없이 모든 기능을 한 화면에 펼쳐 보기</span></span></div>
       </section>
       <section class="card">
         <h2>📖 발음 사전</h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">이름·고유명사를 원하는 대로 읽게 합니다. 화면 글자는 그대로, <b>읽을 때만</b> 바꿉니다. (예: 행복마을 → 행봉마을, KE → 대한항공)</p>
-        <div class="row"><input id="dFrom" placeholder="쓰는 말" style="flex:1;min-width:90px;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px">
-          <span>→</span><input id="dTo" placeholder="읽는 말" style="flex:1;min-width:90px;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px"></div>
-        <div class="row"><select id="dLang" class="mini" style="height:34px"></select><button class="mini" id="dTest">▶ 들어 보기</button><button class="mini" id="dAdd" style="background:var(--accent);border-color:var(--accent);color:#fff">＋ 추가</button></div>
+        <div class="row"><input id="dFrom" class="inp" placeholder="쓰는 말" style="flex:1;min-width:90px;height:var(--h-md)">
+          <span class="sep" aria-hidden="true">→</span><input id="dTo" class="inp" placeholder="읽는 말" style="flex:1;min-width:90px;height:var(--h-md)"></div>
+        <div class="row"><select id="dLang" class="mini"></select><button class="mini" id="dTest">▶ 들어 보기</button><button class="mini btn-primary" id="dAdd">＋ 추가</button></div>
         <div class="list" id="dList"></div>
       </section>
       <section class="card">
         <h2>💼 백업 · 옮기기</h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">내 방송 · 즐겨찾기 · 고친 문장 · 방송 묶음 · 예약 · 카운트다운 · 발음 사전 · 방송 기록 · 더한 언어 · 목소리 · 방송실 설정 · <b>📱 매장 QR 코드</b>까지 <b>파일 하나</b>로 저장합니다. 다른 PC나 브라우저에서 불러오면 그대로 옮겨집니다 (붙여 둔 QR도 계속 쓸 수 있음).</p>
-        <div class="row"><button class="mini" id="bkSave" style="height:40px;flex:1;background:var(--accent);border-color:var(--accent);color:#fff;font-size:14px">⬇ 백업 파일 저장</button>
-          <button class="mini" id="bkLoad" style="height:40px;flex:1;font-size:14px">⬆ 백업 불러오기</button></div>
-        <div class="muted" id="bkInfo" style="margin-top:8px;font-size:12.5px"></div>
+        <div class="row"><button class="mini btn-flex btn-primary" id="bkSave">⬇ 백업 파일 저장</button>
+          <button class="mini btn-flex" id="bkLoad">⬆ 백업 불러오기</button></div>
+        <div class="muted" id="bkInfo" style="margin-top:8px;font-size:var(--fs-xs)"></div>
         <input type="file" id="bkFile" accept=".json,application/json" hidden>
       </section>
       <section class="card">
         <h2>📘 사용 설명서 · 🔒 개인정보</h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">처음부터 차근차근: 방송 고르기 · 목소리 · 방송실 모드 · 식당 번호판·QR · 예약 · USB 파일 · 백업 · 자주 묻는 질문. 무엇이 어디에 저장되는지도 적어 두었습니다.</p>
-        <div class="row"><button class="mini" id="manBtn" style="height:40px;flex:1;font-size:14px">📘 사용 설명서</button><button class="mini" id="privBtn" style="height:40px;flex:1;font-size:14px">🔒 개인정보 · 저장 위치</button></div>
+        <div class="row"><button class="mini btn-flex" id="manBtn">📘 사용 설명서</button><button class="mini btn-flex" id="privBtn">🔒 개인정보 · 저장 위치</button></div>
       </section>
       <section class="card">
-        <details><summary style="cursor:pointer;font-weight:700">🎙 이 PC에서 쓸 수 있는 목소리</summary>
+        <details><summary>🎙 이 PC에서 쓸 수 있는 목소리</summary>
         <div class="voices" id="voiceInfo">목소리를 찾는 중…</div>
         <div class="tip" id="voiceTip" hidden></div>
         </details>
@@ -506,7 +744,7 @@
 <dialog id="langDlg" style="width:min(640px,94vw)">
   <h3>＋ 언어 추가</h3>
   <div class="muted" style="font-size:13.5px;line-height:1.6;margin-bottom:10px">고른 언어는 방송 문장이 <b>자동 번역</b>됩니다 (기기 안에서 무료 · 처음 한 번 번역 파일을 받음). 번역이 안 되는 언어는 직접 써 주세요.<br>★★★ = 고품질 AI 목소리 · 🌐 = 자동 번역 가능</div>
-  <div id="langGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;max-height:56vh;overflow:auto"></div>
+  <div id="langGrid"></div>
   <div class="btns" style="margin-top:14px"><button id="langClose" class="ok">닫기</button></div>
 </dialog>
 <dialog id="polDlg" style="width:min(640px,94vw)">
@@ -514,23 +752,23 @@
   <div class="muted" style="font-size:13px;margin-bottom:8px">아나운서처럼 끊어 읽도록 <b>쉼표</b>를 넣고, 시간·전화번호를 읽기 좋게 바꿉니다. 고칠 점도 알려 드립니다.</div>
   <div id="polReport" style="font-size:14px;line-height:1.8;margin-bottom:10px"></div>
   <div class="fld"><label for="polText">다듬은 문장 (여기서 더 고쳐도 됩니다)</label>
-    <textarea id="polText" rows="6" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;line-height:1.7;resize:vertical"></textarea></div>
+    <textarea id="polText" rows="6"></textarea></div>
   <div class="btns" style="justify-content:space-between;margin-top:12px">
     <button id="polPlay">▶ 다듬은 문장 듣기</button>
-    <span style="display:flex;gap:8px"><button id="polNo">취소</button><button class="ok" id="polOk">적용</button></span>
+    <span class="grp2"><button id="polNo">취소</button><button class="ok" id="polOk">적용</button></span>
   </div>
 </dialog>
 <dialog id="bkDlg">
   <h3>⬆ 백업 불러오기</h3>
   <div id="bkSum" style="font-size:14px;line-height:1.8"></div>
   <div class="muted" style="font-size:13px;margin-top:8px;line-height:1.6"><b>합치기</b>: 지금 것은 그대로 두고, 백업에 있는 내 방송·예약·사전·기록을 더합니다 (같은 이름은 백업 것으로).<br><b>모두 바꾸기</b>: 지금 것을 지우고 백업 그대로 되돌립니다.</div>
-  <div class="btns" style="margin-top:14px"><button id="bkNo">취소</button><button id="bkReplace" style="color:var(--red)">모두 바꾸기</button><button class="ok" id="bkMerge">합치기</button></div>
+  <div class="btns" style="margin-top:14px"><button id="bkNo">취소</button><button id="bkReplace" class="btn-danger-ghost">모두 바꾸기</button><button class="ok" id="bkMerge">합치기</button></div>
 </dialog>
-<dialog id="urgDlg" style="border:3px solid #dc2626">
-  <h3 style="color:#b91c1c">🚨 긴급 방송을 내보낼까요?</h3>
+<dialog id="urgDlg" class="danger">
+  <h3>🚨 긴급 방송을 내보낼까요?</h3>
   <div class="muted" style="font-size:14px;line-height:1.6">입주민·이용자 모두에게 <b>긴급 안내</b>가 바로 나갑니다. 내용을 한 번 더 확인해 주세요.</div>
-  <div id="urgSum" style="margin-top:10px;padding:12px;border-radius:10px;background:#fef2f2;font-size:15px;line-height:1.6"></div>
-  <div class="btns" style="margin-top:14px"><button id="urgNo">취소</button><button id="urgGo" style="background:#dc2626;border-color:#dc2626;color:#fff;font-weight:800">🚨 긴급 방송 시작</button></div>
+  <div id="urgSum" class="urgsum"></div>
+  <div class="btns" style="margin-top:14px"><button id="urgNo">취소</button><button id="urgGo" class="btn-danger">🚨 긴급 방송 시작</button></div>
 </dialog>
 <dialog id="helpDlg" style="width:min(600px,94vw)">
   <h3>👋 온에어 사용법</h3>
@@ -690,8 +928,8 @@
   <div class="fld" style="margin-bottom:10px"><label for="aptKo">한국어 방송용</label><input id="aptKo" placeholder="예: 행복마을 3단지 / 겐시스템 구미공장"></div>
   <div class="fld"><label for="aptEn">영어·일본어·중국어 방송용 (비워도 됩니다)</label><input id="aptEn" placeholder="예: Haengbok Village Complex 3"></div>
   <div class="btns" style="justify-content:space-between;margin-top:16px">
-    <button id="aptDel" style="color:var(--red)">🗑 이름 지우기</button>
-    <span style="display:flex;gap:8px"><button id="aptNo">취소</button><button class="ok" id="aptOk">저장</button></span>
+    <button id="aptDel" class="btn-danger-ghost">🗑 이름 지우기</button>
+    <span class="grp2"><button id="aptNo">취소</button><button class="ok" id="aptOk">저장</button></span>
   </div>
 </dialog>
 <dialog id="recDlg">
@@ -724,7 +962,7 @@
   <h3 id="qrTitle">📱 휴대폰 알림 QR</h3>
   <div class="muted" id="qrDesc" style="font-size:14px;line-height:1.6;margin-bottom:10px"></div>
   <div id="qrBox"></div>
-  <label style="display:flex;gap:8px;justify-content:center;align-items:center;margin:10px 0;font-size:14px"><input type="checkbox" id="qrShared"> 매장 공용 QR (손님이 번호를 직접 입력 · 카운터에 붙여 두기)</label>
+  <label class="qrcheck"><input type="checkbox" id="qrShared"> 매장 공용 QR (손님이 번호를 직접 입력 · 카운터에 붙여 두기)</label>
   <div class="muted" style="font-size:12px;line-height:1.5">손님 휴대폰에 대기 화면이 열리고, 그 번호를 <b>📢 방송</b>하면 손님 휴대폰이 소리·진동으로 울립니다.<br>메시지는 무료 중계 서비스(ntfy.sh)를 거칩니다 — 매장 코드와 번호만 보냅니다.</div>
   <div class="btns" style="margin-top:12px"><button id="qrSign" title="A5 크기 카운터 안내판 (매장 공용 QR)">🪧 카운터 안내판</button><button id="qrPrint">🖨 인쇄</button><button class="ok" id="qrClose">닫기</button></div>
 </dialog>
@@ -1764,7 +2002,7 @@ function renderTpls() {
   section("⭐ 내 방송", "mine", mine.map(m => "mine:" + m.id));
   GROUPS.forEach((g, gi) => section(g.name, g.em ? "em" : "", [...g.ids, ...(gi === 0 ? left.map(t => t.id) : [])]));
   if (!(S.fav || []).length) {
-    const tip = document.createElement("div"); tip.className = "muted favtip"; tip.style.cssText = "font-size:12.5px;margin-top:10px";
+    const tip = document.createElement("div"); tip.className = "muted favtip"; tip.style.cssText = "";
     tip.textContent = "버튼 왼쪽 위 ☆ 를 누르면 자주 쓰는 방송이 맨 위 '★ 즐겨찾기'에 모입니다.";
     root.prepend(tip);
   }
@@ -1785,7 +2023,7 @@ function renderFields() {
     d.innerHTML = `<label></label>`; d.querySelector("label").textContent = (t.labels || {})[k] || f.label;
     const el = document.createElement(f.type === "textarea" ? "textarea" : "input");
     if (f.type !== "textarea") el.type = f.type;
-    else { el.rows = 4; el.style.cssText = "width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;line-height:1.6;resize:vertical"; el.placeholder = "예: 오늘 오후 3시부터 지하 주차장 바닥 청소가 있습니다. 차량을 지상으로 옮겨 주세요."; }
+    else { el.rows = 4; el.style.cssText = ""; el.placeholder = "예: 오늘 오후 3시부터 지하 주차장 바닥 청소가 있습니다. 차량을 지상으로 옮겨 주세요."; }
     el.value = S.vals[k] ?? (k === "date2" ? S.vals.date : "");
     el.id = "f_" + k; d.querySelector("label").htmlFor = el.id;            // 칸 이름을 읽어 주는 프로그램용
     el.oninput = () => { if (k === "num") return setNum(el.value); S.vals[k] = el.value; regen(); };
@@ -1812,9 +2050,9 @@ function renderLangs() {
     const on = S.langs[L.id], d = document.createElement("div"); d.className = "lang" + (on ? "" : " off"); d.dataset.l = L.id;
     const lnm = L.extra ? L.ko : L.name;
     d.innerHTML = `<div class="lh"><label class="switch"><input type="checkbox" aria-label="${lnm} 방송 켜기" ${on ? "checked" : ""}><span></span></label>
-      <span style="display:inline-flex;flex-direction:column;line-height:.9"><button class="mini up" title="방송 순서 앞으로" aria-label="${lnm} 순서 앞으로" style="height:16px;padding:0 5px;font-size:10px">▲</button><button class="mini dn" title="방송 순서 뒤로" aria-label="${lnm} 순서 뒤로" style="height:16px;padding:0 5px;font-size:10px">▼</button></span>
+      <span class="ord"><button class="mini up" title="방송 순서 앞으로" aria-label="${lnm} 순서 앞으로">▲</button><button class="mini dn" title="방송 순서 뒤로" aria-label="${lnm} 순서 뒤로">▼</button></span>
       <b>${L.flag} ${L.extra ? L.ko + " · " + L.name : L.name}</b><span class="tags"></span><span class="sp"></span><select title="목소리" aria-label="${lnm} 목소리"></select>
-      <button class="mini lplay" title="이 칸의 문장만 바로 들어 보기 (차임·인사말 없이)" style="border-color:#fed7aa;background:#fff7ed;color:var(--accent2);font-weight:600">▶ 듣기</button>${L.id === "ko" ? '<button class="mini pol" title="쉼표 넣기 · 시간·전화번호 읽기 좋게 · 긴 문장·영어 약자 검사" style="border-color:#bbf7d0;background:#f0fdf4;color:#15803d;font-weight:600">✨ 다듬기</button><button class="mini trall" title="고친 한국어 문장을 켜 둔 다른 언어 칸에 한 번에 번역해 넣습니다" style="border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8;font-weight:600">🌐 다른 언어에도 적용</button>' : ""}<button class="mini cmp" title="이 언어의 목소리를 차례로 들어 보기">🔊 비교</button><button class="mini tr" hidden>${L.extra ? "🌐 번역" : "자동 번역"}</button>${L.extra ? '<button class="mini rm" title="이 언어 빼기">✕</button>' : ""}</div><textarea spellcheck="false" data-l="${L.id}" lang="${L.bcp}" aria-label="${lnm} 방송 문장"></textarea>`;
+      <button class="mini lplay" title="이 칸의 문장만 바로 들어 보기 (차임·인사말 없이)">▶ 듣기</button>${L.id === "ko" ? '<button class="mini pol" title="쉼표 넣기 · 시간·전화번호 읽기 좋게 · 긴 문장·영어 약자 검사">✨ 다듬기</button><button class="mini trall" title="고친 한국어 문장을 켜 둔 다른 언어 칸에 한 번에 번역해 넣습니다">🌐 다른 언어에도 적용</button>' : ""}<button class="mini cmp" title="이 언어의 목소리를 차례로 들어 보기">🔊 비교</button><button class="mini tr" hidden>${L.extra ? "🌐 번역" : "자동 번역"}</button>${L.extra ? '<button class="mini rm" title="이 언어 빼기">✕</button>' : ""}</div><textarea spellcheck="false" data-l="${L.id}" lang="${L.bcp}" aria-label="${lnm} 방송 문장"></textarea>`;
     d.querySelector("input").onchange = e => {
       if (!e.target.checked && LANGS.filter(x => S.langs[x.id]).length <= 1) { e.target.checked = true; toast("언어를 하나 이상 켜 두어야 합니다"); return; }
       S.langs[L.id] = e.target.checked; save(); renderLangs(); estimate(); altInfo();
@@ -1935,7 +2173,7 @@ async function playLang(L, ta, btn) {                   // 이 언어 칸의 문
     await say(parts[i], L);
     if (!lpStop) await sleep(/[.!?。！？]$/.test(unmark(parts[i])) ? 380 : 200);
   }
-  btn.textContent = keep; btn.style.background = "#fff7ed"; btn.style.color = "var(--accent2)";
+  btn.textContent = keep; btn.style.background = ""; btn.style.color = "";
   lpOn = false; running = false;
   $("now").textContent = lpStop ? "문장 듣기를 멈췄습니다." : "문장 듣기를 마쳤습니다. 괜찮으면 ③에서 방송 시작을 누르세요.";
 }
@@ -1950,7 +2188,7 @@ async function compareVoices(L, sel, btn) {             // 목록의 모든 목�
   running = true; speechSynthesis.cancel();
   for (let i = 0; i < list.length && !cmpStop; i++) {
     const v = list[i], g = gender(v) === "m" ? "남" : gender(v) === "f" ? "여" : "";
-    btn.textContent = `🔊 ${shortName(v)}${isMulti(v, L) ? "·다국어" : ""}${g ? " (" + g + ")" : ""} ${i + 1}/${list.length}`; btn.style.cssText = "background:#fff7ed;border-color:var(--accent);color:var(--accent2);font-weight:700";
+    btn.textContent = `🔊 ${shortName(v)}${isMulti(v, L) ? "·다국어" : ""}${g ? " (" + g + ")" : ""} ${i + 1}/${list.length}`; btn.style.cssText = "background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);font-weight:700";
     sel.value = v.voiceURI;                               // 목록에도 지금 읽는 목소리를 잠깐 표시
     $("now").innerHTML = `<b>🔊 ${L.flag} ${shortName(v)}${g ? " (" + g + "성)" : ""}</b>${/\(([^)]+)\)\s*$/.test(v.name) ? " · " + v.name.match(/\(([^)]+)\)\s*$/)[1] : ""} 목소리로 읽는 중 (${i + 1}/${list.length}) — 멈추려면 비교 버튼을 다시 누르세요`;
     const keep = S.voices[L.id]; S.voices[L.id] = v.voiceURI;
@@ -2151,7 +2389,7 @@ function renderPitch() {                                // 이번 방송에 쓰�
   });
   used.forEach(v => {
     const w = document.createElement("label"); w.style.cssText = "display:inline-flex;align-items:center;gap:4px;font-size:13px";
-    w.innerHTML = `<b style="font-weight:600"></b><select class="mini" style="height:30px"></select>`;
+    w.innerHTML = `<b style="font-weight:600"></b><select class="mini"></select>`;
     w.querySelector("b").textContent = shortName(v);
     const sel = w.querySelector("select"), cur = vPitch(v);
     PITCH.forEach(([x, t]) => { const o = document.createElement("option"); o.value = x; o.textContent = t; if (Math.abs(x - cur) < 0.001) o.selected = true; sel.appendChild(o); });
@@ -3348,7 +3586,7 @@ $("exCar").onclick = () => {                             // 🧪 💾 예시: �
   S.place = "apt"; S.tpl = "car"; S.edited = {}; S.vals = { ...S.vals, car: S.vals.car || "12가 3456" };
   save(); renderPlaces(); renderTpls(); renderFields(); regen(true); aptLabel();
   $("recBtn").scrollIntoView({ behavior: "smooth", block: "center" });
-  $("recBtn").animate?.([{ boxShadow: "0 0 0 0 #6366f1" }, { boxShadow: "0 0 0 10px #6366f100" }], { duration: 900, iterations: 3 });
+  $("recBtn").animate?.([{ boxShadow: "0 0 0 0 #ea580c" }, { boxShadow: "0 0 0 12px #ea580c00" }], { duration: 900, iterations: 3 });
   toast("🚗 차량 이동을 골랐습니다 — 차량 번호를 확인하고 💾 음성 파일로 저장을 누르세요");
 };
 
