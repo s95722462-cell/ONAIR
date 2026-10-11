@@ -326,8 +326,109 @@
   #waitp.ready { background: #f97316; color: #fff; animation: wflash .5s ease-in-out infinite alternate; } #waitp.ready .wn, #waitp.ready .wm, #waitp.ready .wm b { color: #fff; }
   #waitp.ready .wb { background: #fff; color: #9a3412; box-shadow: 0 10px 30px -10px rgb(0 0 0 / .4); }
   @keyframes wflash { to { background: #dc2626; } }
-  #qrBox { display: flex; justify-content: center; padding: var(--s3); background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); margin: 0 auto; width: max-content; max-width: 100%; } #qrBox img, #qrBox canvas { width: 240px !important; height: 240px !important; }
-  #qrBox .muted { color: #6b5c4f; padding: var(--s6) var(--s3); }
+  #qrBox, #qQrBox { display: flex; justify-content: center; padding: var(--s3); background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); margin: 0 auto; width: max-content; max-width: 100%; } #qrBox img, #qrBox canvas, #qQrBox img, #qQrBox canvas { width: 240px !important; height: 240px !important; }
+  #qrBox .muted, #qQrBox .muted { color: #6b5c4f; padding: var(--s6) var(--s3); }
+
+  /* ================= 🧾 대기 순번 — 매장 칸 (방송 탭 · 방송실 공용) ================= */
+  .qtop { display: flex; align-items: center; gap: var(--s3); margin: calc(-1 * var(--s1)) 0 var(--s3); min-height: 44px; }
+  .qtop .qsw { display: flex; align-items: center; gap: var(--s2); font-weight: 700; font-size: var(--fs-md); cursor: pointer; }
+  .qtop .qinfo { flex: 1; min-width: 0; font-size: var(--fs-sm); color: var(--dim); line-height: 1.4; text-align: right; }
+  .qtop .qinfo b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .qnote { margin: 0 0 var(--s3); padding: 10px var(--s3); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--line); font-size: var(--fs-sm); color: var(--ink-2); line-height: var(--lh); }
+  .qnote.warn { background: var(--warn-soft); border-color: var(--warn-line); color: var(--warn-ink); }
+  .qnext { display: flex; align-items: center; justify-content: center; gap: var(--s2); width: 100%; min-height: 60px; border-radius: var(--r-lg); border: 0; font-size: 19px; font-weight: 800; letter-spacing: -.2px; color: var(--on-accent); cursor: pointer; touch-action: manipulation;
+    background: linear-gradient(180deg, var(--accent-hi), var(--accent)); box-shadow: var(--sh-accent), inset 0 1px 0 rgb(255 255 255 / .18); transition: transform var(--t-fast), filter var(--t-fast); }
+  .qnext:hover { filter: brightness(1.06); } .qnext:active { transform: scale(.98); }
+  .qnext small { font-size: 15px; font-weight: 700; opacity: .9; font-variant-numeric: tabular-nums; }
+  .qnext:disabled { background: var(--surface-3); color: var(--faint); box-shadow: none; opacity: 1; filter: none; transform: none; }
+  .qtools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); margin-top: var(--s2); }
+  .qtools .mini { height: auto; min-height: 44px; font-size: 14px; }
+  .qlist { display: flex; flex-direction: column; gap: 6px; margin-top: var(--s3); }
+  .qrow { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; gap: var(--s2) var(--s3); padding: var(--s2) var(--s2) var(--s2) var(--s3); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); min-height: 60px; }
+  .qrow.c, .qrow.g { border-color: var(--accent-line); background: var(--accent-soft); }
+  .qrow .qn { font-size: 28px; font-weight: 900; line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: var(--ink); text-align: center; }
+  .qrow .qm { min-width: 0; font-size: var(--fs-sm); color: var(--dim); line-height: 1.45; font-variant-numeric: tabular-nums; }
+  .qrow .qm b { color: var(--ink-2); font-weight: 600; }
+  .qst { display: inline-flex; align-items: center; height: 22px; padding: 0 var(--s2); margin-right: 6px; border-radius: var(--r-pill); font-size: 12px; font-weight: 700; background: var(--surface-3); color: var(--ink-2); vertical-align: 1px; }
+  .qst.c { background: var(--accent); color: #fff; } .qst.g { background: var(--ok-soft); color: var(--ok); } .qst.n { background: var(--warn-soft); color: var(--warn-ink); }
+  .qst.x { background: var(--danger-soft); color: var(--danger-ink); } .qst.i { background: var(--info-soft); color: var(--info-ink); }
+  .qrow .qa { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .qrow .qa .mini { height: auto; min-height: 40px; padding: 0 var(--s3); }
+  .qrow .qa .mini.on { border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+  .qempty { padding: var(--s5) var(--s3); text-align: center; color: var(--dim); font-size: 14px; line-height: var(--lh); border: 1px dashed var(--line-strong); border-radius: var(--r-md); }
+  details.qdone { margin-top: var(--s3); } details.qdone > summary { cursor: pointer; list-style: none; min-height: 40px; display: flex; align-items: center; gap: var(--s2); font-size: var(--fs-sm); font-weight: 700; color: var(--dim); }
+  details.qdone > summary::-webkit-details-marker { display: none; }
+  details.qdone > summary::before { content: ""; width: 6px; height: 6px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform var(--t); }
+  details.qdone[open] > summary::before { transform: rotate(45deg); }
+  details.qdone .qrow { min-height: 48px; opacity: .85; } details.qdone .qrow .qn { font-size: 22px; }
+  .qfoot { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; margin-top: var(--s3); padding-top: var(--s3); border-top: 1px solid var(--line); }
+  .qfoot .qstat { flex: 1 1 200px; font-size: var(--fs-xs); color: var(--dim); line-height: 1.6; font-variant-numeric: tabular-nums; }
+  .qfoot .qstat.warn { color: var(--warn-ink); font-weight: 600; }
+  .qfoot .mini { min-height: 40px; height: auto; }
+  @media (pointer: coarse) { .qrow .qa .mini, .qfoot .mini { min-height: 44px; } }
+  @media (max-width: 600px) {
+    .qrow { grid-template-columns: 52px minmax(0, 1fr); }
+    .qrow .qa { grid-column: 1 / -1; justify-content: stretch; } .qrow .qa .mini { flex: 1 1 0; min-width: 0; padding: 0 6px; }
+    .qtop .qinfo { font-size: 12.5px; }
+  }
+  .qparty { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
+  .qparty button { height: 60px; border-radius: var(--r-lg); border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: 22px; font-weight: 800; cursor: pointer; touch-action: manipulation; font-variant-numeric: tabular-nums;
+    transition: background var(--t-fast), border-color var(--t-fast), box-shadow var(--t-fast); -webkit-tap-highlight-color: transparent; }
+  .qparty button small { font-size: 14px; font-weight: 600; color: var(--dim); margin-left: 2px; }
+  .qparty button.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); box-shadow: inset 0 0 0 1px var(--accent); }
+  .qparty button.on small { color: var(--accent-ink); }
+  .qwbig { font-size: 96px; font-weight: 900; line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; color: var(--accent-ink); margin: var(--s2) 0 var(--s1); }
+  .qwbig small { font-size: 32px; margin-left: 4px; font-weight: 800; }
+  /* 방송실(항상 어두운 화면): 같은 칸을 어두운 색으로 */
+  #roomQ { --surface: rgb(255 255 255 / .06); --surface-2: rgb(255 255 255 / .08); --surface-3: rgb(255 255 255 / .14); --line: var(--rm-line); --line-strong: rgb(255 255 255 / .24); --line-input: rgb(255 255 255 / .3);
+    --ink: var(--rm-ink); --ink-2: #eadccd; --dim: var(--rm-dim); --faint: #a8978a; --accent-soft: rgb(251 146 60 / .18); --accent-line: rgb(251 146 60 / .55); --accent-ink: #fdba74;
+    --ok: #86efac; --ok-soft: rgb(74 222 128 / .16); --warn-soft: rgb(252 211 77 / .14); --warn-line: rgb(252 211 77 / .35); --warn-ink: #fcd34d; --danger-soft: rgb(248 113 113 / .16); --danger-ink: #fca5a5; --info-soft: rgb(157 187 255 / .16); --info-ink: #c4d4ff;
+    color: var(--rm-ink); background: var(--rm-panel); border: 1px solid rgb(255 255 255 / .08); border-radius: var(--r-xl); padding: var(--s4); flex: none; }
+  #roomQ > h4 { margin: 0 0 var(--s3); font-size: 18px; font-weight: 800; letter-spacing: -.3px; }
+  #roomQ .qlist { max-height: 46vh; overflow: auto; }
+  #roomQ .qnext { min-height: 72px; font-size: 24px; }
+
+  /* ================= 🧾 손님 휴대폰: 대기 등록 · 내 번호 ================= */
+  #qp { position: fixed; inset: 0; z-index: 95; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg); color: var(--ink); display: flex; justify-content: center;
+    padding: max(var(--s6), env(safe-area-inset-top)) max(var(--s5), env(safe-area-inset-right)) max(var(--s6), env(safe-area-inset-bottom)) max(var(--s5), env(safe-area-inset-left)); transition: background var(--t-slow); }
+  #qp[hidden] { display: none; }
+  body.qOnly > *:not(#qp):not(.toast) { display: none !important; }
+  #qp .qpi { width: 100%; max-width: 420px; margin: auto 0; display: flex; flex-direction: column; gap: var(--s4); text-align: center; }
+  #qp .qshop { font-size: var(--fs-md); font-weight: 700; color: var(--dim); letter-spacing: -.1px; min-height: 22px; }
+  #qp h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -.6px; line-height: 1.25; }
+  #qp .qsub { margin: calc(-1 * var(--s2)) 0 0; font-size: var(--fs-md); color: var(--dim); line-height: var(--lh); }
+  #qp .qcard { background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: var(--s6) var(--s5); box-shadow: var(--sh-2); display: flex; flex-direction: column; gap: var(--s2); align-items: center; }
+  #qp .qlbl { font-size: var(--fs-sm); font-weight: 700; color: var(--dim); letter-spacing: .02em; }
+  #qp .qbig { font-size: min(32vw, 140px); font-weight: 900; line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; color: var(--ink); }
+  #qp .qbig small { font-size: .3em; font-weight: 800; margin-left: 2px; color: var(--dim); letter-spacing: 0; }
+  #qp .qpill { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 var(--s3); border-radius: var(--r-pill); font-size: 14px; font-weight: 700; background: var(--surface-3); color: var(--ink-2); }
+  #qp .qpill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  #qp .qpill.w { background: var(--accent-soft); color: var(--accent-ink); } #qp .qpill.w::before { animation: blink 1.6s infinite; }
+  #qp .qpill.g, #qp .qpill.i { background: var(--ok-soft); color: var(--ok); } #qp .qpill.n, #qp .qpill.x { background: var(--warn-soft); color: var(--warn-ink); }
+  #qp .qahead { font-size: 24px; font-weight: 800; letter-spacing: -.4px; margin-top: var(--s2); }
+  #qp .qest { font-size: var(--fs-md); color: var(--ink-2); }
+  #qp .qmeta { font-size: var(--fs-sm); color: var(--dim); font-variant-numeric: tabular-nums; }
+  #qp .qline { width: 100%; height: 1px; background: var(--line); margin: var(--s2) 0; }
+  #qp .qnow { font-size: var(--fs-sm); color: var(--dim); } #qp .qnow b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  #qp .qtxt { font-size: var(--fs-sm); color: var(--dim); line-height: var(--lh); margin: 0; }
+  #qp .qbtn { width: 100%; min-height: 56px; border-radius: var(--r-lg); border: 0; background: linear-gradient(180deg, var(--accent-hi), var(--accent)); color: #fff; font-size: 19px; font-weight: 800; letter-spacing: -.2px;
+    box-shadow: var(--sh-accent); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: transform var(--t-fast); }
+  #qp .qbtn:active { transform: scale(.98); }
+  #qp .qbtn:disabled { background: var(--surface-3); color: var(--faint); box-shadow: none; }
+  #qp .qbtn.ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); box-shadow: none; font-size: 17px; font-weight: 700; }
+  #qp .qbtns { display: flex; flex-direction: column; gap: var(--s2); }
+  #qp .qlink { align-self: center; min-height: 44px; padding: 0 var(--s4); border: 0; background: none; color: var(--dim); font-size: 15px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; touch-action: manipulation; }
+  #qp .qchip { align-self: center; min-height: 44px; padding: 0 var(--s4); border-radius: var(--r-pill); border: 1px solid var(--accent-line); background: var(--accent-soft); color: var(--accent-ink); font-size: 15px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+  #qp .qspin { width: 40px; height: 40px; border: 4px solid var(--line-strong); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; margin: var(--s4) auto; }
+  #qp .qicon { font-size: 56px; line-height: 1; }
+  #qp.call { background: #ea580c; color: #fff; animation: qflash .55s ease-in-out infinite alternate; }
+  @keyframes qflash { to { background: #dc2626; } }
+  #qp.call .qshop, #qp.call .qsub, #qp.call .qlbl, #qp.call .qbig, #qp.call .qbig small, #qp.call .qmeta { color: #fff; }
+  #qp.call .qcard { background: rgb(255 255 255 / .14); border-color: rgb(255 255 255 / .35); box-shadow: none; }
+  #qp.call .qbtn { background: #fff; color: #9a3412; box-shadow: 0 10px 30px -10px rgb(0 0 0 / .45); }
+  #qp.call .qbtn.ghost { background: transparent; color: #fff; border: 1.5px solid rgb(255 255 255 / .7); box-shadow: none; }
+  #qp .qparty button { height: 64px; }
+  #board .br.bq { border-top: 0; padding-top: 1.6vh; } #board .br.bq span { background: rgb(251 146 60 / .16); border-color: rgb(251 146 60 / .35); } #board .br .bqc { margin-left: 1vw; color: #fdba74; }
 
   /* ================= 지금 상태 · 목록 ================= */
   .now { margin-top: var(--s3); padding: var(--s3) var(--s4); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--line); font-size: 14px; min-height: 48px; line-height: var(--lh); color: var(--ink-2); }
@@ -551,9 +652,9 @@
     #oaBar .nm { flex: 1; min-width: 0; font-size: var(--fs-sm); line-height: 1.3; } #oaBar .nm b { display: block; font-size: var(--fs-md); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } #oaBar .nm span { color: var(--dim); font-size: var(--fs-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; margin-top: 2px; }
     #oaBar button { flex: none; height: 48px; border-radius: 14px; border: 1px solid var(--line-strong); font-size: var(--fs-md); font-weight: 700; padding: 0 14px; background: var(--surface); color: var(--ink); touch-action: manipulation; }
     #oaAir { background: linear-gradient(180deg, var(--accent-hi), var(--accent)) !important; border-color: var(--accent) !important; color: #fff !important; padding: 0 var(--s5) !important; box-shadow: var(--sh-accent); } #oaAir.stop { background: #374151 !important; border-color: #374151 !important; box-shadow: 0 0 0 3px rgb(220 38 38 / .35); }
-    .wrap { padding-bottom: 92px; } body.room #oaBar, body.boardOnly #oaBar, body.waitOnly #oaBar { display: none !important; }
+    .wrap { padding-bottom: 92px; } body.room #oaBar, body.boardOnly #oaBar, body.waitOnly #oaBar, body.qOnly #oaBar { display: none !important; }
     .toast { bottom: calc(84px + env(safe-area-inset-bottom)); }
-    body.room .toast, body.boardOnly .toast, body.waitOnly .toast { bottom: max(var(--s6), calc(env(safe-area-inset-bottom) + var(--s3))); }
+    body.room .toast, body.boardOnly .toast, body.waitOnly .toast, body.qOnly .toast { bottom: max(var(--s6), calc(env(safe-area-inset-bottom) + var(--s3))); }
     .tpls { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .tpl { min-height: 70px; padding: 10px 4px 8px; border-radius: 12px; gap: 5px; } .tpl .ic { font-size: 22px; } .tpl b { font-size: 13px; }
     .tpl .fv { font-size: 12px; left: 2px; top: 1px; }
     .fields { margin-top: var(--s4); }
@@ -594,6 +695,10 @@
   <div class="warnbar" id="ttsWarn" role="alert" hidden></div>
   <div class="pane" data-pane="air"><div class="grid">
     <div class="col">
+      <section class="card" id="qCard" hidden>
+        <h2>🧾 대기 순번</h2>
+        <div id="qBody"></div>
+      </section>
       <section class="card">
         <h2>① 어떤 방송인가요?</h2>
         <button id="placeRow" type="button" aria-haspopup="dialog"></button>
@@ -848,6 +953,7 @@
         <li><b>📱 QR</b>: 손님이 휴대폰 카메라로 찍으면 대기 화면이 열립니다. <b>매장 공용 QR</b>을 체크하면 한 장을 카운터에 붙여 두고 손님이 자기 번호를 넣습니다. 그 번호를 방송하면 손님 휴대폰이 <b>소리·진동·화면 번쩍</b>으로 알립니다.</li>
         <li>손님이 <b>확인했어요</b>를 누르면 매장 화면에 ✅가 뜨고, 그 번호 방송 중이면 자동으로 멈춥니다. 번호판에도 ✓ 표시가 붙습니다.</li>
         <li><b>🪧 카운터 안내판</b>: QR 창의 버튼 → A5 안내판(QR + 3단계 설명)을 인쇄합니다.</li>
+        <li><b>🧾 대기 순번</b> (키오스크 없이): ① 아래 <b>대기 순번</b>에서 <b>접수</b>를 켜고 🪧 안내판을 붙이면, 손님이 QR로 인원만 골라 번호를 받습니다. <b>다음 손님 부르기</b> 한 번에 방송 · 손님 휴대폰 · 번호판이 함께 알립니다. 번호는 이 PC가 정하므로 <b>온에어를 켜 둔 동안만</b> 등록됩니다.</li>
         <li>⚠️ 손님은 <b>대기 화면을 켜 둔 채</b> 기다려야 합니다 (화면이 꺼지면 아이폰은 소리가 안 날 수 있음). 매장 코드는 이 브라우저에 저장되므로, 다른 PC로 옮길 때는 <b>💼 백업</b>으로 옮겨야 붙여 둔 QR을 계속 쓸 수 있습니다.</li>
       </ul></section>
     <section id="m-auto"><h4>📅 예약 · ⏱ 카운트다운 · 📚 방송 묶음</h4>
@@ -895,6 +1001,7 @@
         <li>회원 가입·로그인이 없습니다. 방송 문장 · 설정 · 기록은 <b>이 기기의 브라우저 저장소에만</b> 저장되고, 온에어 서버로 보내지 않습니다.</li>
         <li>목소리는 브라우저가 읽어 줍니다. Edge 의 온라인(★★★) 목소리는 읽을 문장을 Microsoft 음성 서비스로 보내 소리로 바꿉니다. 자동 번역은 Edge 기기 안에서 합니다 (번역 파일만 처음 한 번 받음).</li>
         <li>📱 QR 휴대폰 알림은 무료 중계 서비스 <b>ntfy.sh</b> 를 거칩니다. 보내는 것은 <b>매장 코드와 주문 번호(와 시각)</b>뿐이며, 이름·전화번호 같은 개인정보는 보내지 않습니다. 손님 휴대폰도 번호만 받습니다.</li>
+        <li>🧾 대기 순번도 ntfy.sh 를 거치며, 보내는 것은 <b>매장 코드 · 휴대폰마다 만든 무작위 값 · 번호 · 인원 · 시각</b>뿐입니다 (이름·전화번호를 받지 않음).</li>
         <li>글꼴·QR 그리기·MP3 변환 도구는 처음 쓸 때 공개 CDN(jsDelivr·cdnjs)에서 받습니다.</li>
         <li>문의: <a href="mailto:ds5yrj@hotmail.com">ds5yrj@hotmail.com</a></li>
       </ul></section>
@@ -903,7 +1010,7 @@
 <div id="room" hidden>
   <div class="rbar"><span class="onair" id="roomLive" aria-hidden="true"><i></i>ON AIR</span><b style="font-size:20px">🖥 방송실</b><span class="sp"></span><span id="roomClock" style="font-size:28px;font-weight:300;font-variant-numeric:tabular-nums"></span><button id="roomFav">☆ 즐겨찾기 고르기</button><label class="rstart" title="온에어를 열 때 바로 방송실 모드로"><input type="checkbox" id="roomStart"> 다음에도 방송실로 시작</label><button id="roomExit">나가기 ✕</button></div>
   <div class="rbody">
-    <div class="rleft"><div id="roomGrid"></div><div id="roomHist"></div></div>
+    <div class="rleft"><div id="roomQ" hidden><h4>🧾 대기 순번</h4><div id="roomQBody"></div></div><div id="roomGrid"></div><div id="roomHist"></div></div>
     <div class="rside">
       <div id="roomNum" hidden>
         <div class="rnl" id="roomNumL">주문 번호</div>
@@ -948,6 +1055,7 @@
   <div class="bt"><b>🍽 호출 번호판</b><span id="bdClock"></span></div>
   <div class="bm"><div class="bl" id="bdLabel">주문하신 메뉴가 준비되면 번호가 표시됩니다</div><div class="bn" id="bdNum">—</div><div class="bs" id="bdSub">Order ready · ご注文の品ができました · 您的餐品已备好</div></div>
   <div class="br" id="bdList"><b>최근 호출</b></div>
+  <div class="br bq" id="bdQ" hidden></div>
 </div>
 <div id="waitp" hidden>
   <div class="wt" id="wTitle">🔔 주문 번호 알림</div>
@@ -966,6 +1074,18 @@
   <div class="muted" style="font-size:12px;line-height:1.5">손님 휴대폰에 대기 화면이 열리고, 그 번호를 <b>📢 방송</b>하면 손님 휴대폰이 소리·진동으로 울립니다.<br>메시지는 무료 중계 서비스(ntfy.sh)를 거칩니다 — 매장 코드와 번호만 보냅니다.</div>
   <div class="btns" style="margin-top:12px"><button id="qrSign" title="A5 크기 카운터 안내판 (매장 공용 QR)">🪧 카운터 안내판</button><button id="qrPrint">🖨 인쇄</button><button class="ok" id="qrClose">닫기</button></div>
 </dialog>
+<div id="qp" hidden><div class="qpi" id="qpIn" aria-live="polite"></div></div>
+<dialog id="qQrDlg" style="width:min(440px,94vw);text-align:center">
+  <h3>🧾 대기 등록 QR</h3>
+  <div class="muted" style="font-size:14px;line-height:1.6;margin-bottom:10px">카운터·입구에 붙여 두세요. 손님이 찍으면 <b>대기 등록</b> 화면이 열립니다.</div>
+  <div id="qQrBox"></div>
+  <div class="btns" style="margin-top:12px"><button id="qSign">🪧 안내판 인쇄</button><button class="ok" id="qQrClose">닫기</button></div>
+</dialog>
+<dialog id="qWalkDlg" style="width:min(420px,94vw);text-align:center">
+  <h3 id="qWalkT">＋ 직접 등록</h3>
+  <div id="qWalkBody"></div>
+  <div class="btns" style="margin-top:16px" id="qWalkBtns"></div>
+</dialog>
 <div id="oaBar"><div class="nm"><b id="oaName"></b><span id="oaEst"></span></div><button id="oaPre">▶ 듣기</button><button id="oaAir">📢 방송</button></div>
 <div class="recbar" id="recBar" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -975,6 +1095,8 @@
 const $ = id => document.getElementById(id);
 const BOARD = /[?&]board\b/.test(location.search);       // 🖥 번호판 전용 창
 const WAIT = new URLSearchParams(location.search).get("wait");   // 📱 손님 대기 화면 (QR로 연 휴대폰)
+const QPAGE = (new URLSearchParams(location.search).get("q") || "").replace(/[^a-z0-9]/g, "").slice(0, 40);   // 🧾 손님 대기 등록 화면 (카운터 QR)
+const PHONE = !!(WAIT || QPAGE);                           // 손님 휴대폰 화면 (방송·예약·안내 창 안 띄움)
 const ls = { get(k, d) { try { const v = localStorage.getItem("onair_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
              set(k, v) {
                if (ls.lock) return;                                    // 백업 복원 중: 다시 열 때까지 덮어쓰지 않음
@@ -1913,6 +2035,7 @@ function renderPlaces() {
   });
   const cp = PL(); $("placeRow").innerHTML = `<span class="pi">${cp.icon}</span><span class="pn">${cp.name}</span><span class="pc">변경</span>`;
   $("placeRow").setAttribute("aria-label", `장소: ${cp.name} — 바꾸기`);
+  try { qVis(); } catch (e) {}
 }
 function placeSheet() {                                   // 📱 아래에서 올라오는 장소 고르기 (고르면 위 장소 버튼을 누른 것과 똑같이)
   const box = $("placeList"), cur = S.place || "apt"; box.innerHTML = "";
@@ -2462,7 +2585,7 @@ function loadVoices() {
 }
 speechSynthesis.onvoiceschanged = loadVoices;
 function ttsWarn(final) {                                 // 음성 읽기가 없거나 목소리가 하나도 없으면 맨 위에 안내 (번호판·QR·공지문·기록·백업은 그대로 씀)
-  const w = $("ttsWarn"); if (!w || BOARD || WAIT) return;
+  const w = $("ttsWarn"); if (!w || BOARD || PHONE) return;
   if (voices.length) { w.hidden = true; return; }
   if (HAS_TTS && !final) return;                          // 목소리는 조금 늦게 올 수 있음 → 몇 초 기다린 뒤에만
   w.hidden = false;
@@ -2703,10 +2826,11 @@ function plan() {                                       // 방송 순서
   return seq;
 }
 async function run(real, rec) {
+  const viaQ = run.viaQ; run.viaQ = false;                 // 🧾 대기 순번에서 부름: 손님 알림은 대기 스냅숏으로
   if (running) { stop(); return; }
   if (!voices.length) {
     if (real && curT().f.includes("num")) {               // 🔇 목소리가 없어도 번호 호출은 번호판·손님 휴대폰으로 보냄
-      const n = (S.vals.num || "").trim() || "1"; boardPush(n, curT().id); phonePush(n, curT().id); addHistory("air", "🔇 음성 없이 번호판·휴대폰만");
+      const n = (S.vals.num || "").trim() || "1"; boardPush(n, curT().id); if (!viaQ) phonePush(n, curT().id); addHistory("air", "🔇 음성 없이 번호판·휴대폰만");
       toast(`🔇 소리 없이 ${n}번을 번호판·손님 휴대폰에 알렸습니다 — ${HAS_TTS ? (AND_EDGE ? "이 브라우저에는 목소리가 없습니다 (Chrome 으로 열어 주세요)" : "목소리를 찾지 못했습니다") : "이 브라우저는 음성 읽기를 지원하지 않습니다"}`); $("now").textContent = `🔇 ${n}번을 번호판·휴대폰에만 알렸습니다. ${noVoiceMsg()}`; return;
     }
     toast(noVoiceMsg()); $("now").textContent = noVoiceMsg(); return;
@@ -2714,7 +2838,7 @@ async function run(real, rec) {
   if (LANGS.some(x => x.extra && S.langs[x.id])) { $("now").textContent = "🌐 더한 언어 인사말 준비 중…"; await prepareExtras(); }
   const seq = plan(); if (!seq.length) { toast("방송할 문장이 없습니다"); return; }
   running = true; stopFlag = false; setLive(real ? "air" : rec ? "rec" : "pre");
-  if (real && curT().f.includes("num")) { boardPush((S.vals.num || "").trim() || "1", curT().id); phonePush((S.vals.num || "").trim() || "1", curT().id); }   // 🖥 번호판 · 📱 손님 휴대폰
+  if (real && curT().f.includes("num")) { boardPush((S.vals.num || "").trim() || "1", curT().id); if (!viaQ) phonePush((S.vals.num || "").trim() || "1", curT().id); }   // 🖥 번호판 · 📱 손님 휴대폰
   audio(); speechSynthesis.cancel();
   try { navigator.wakeLock?.request("screen").then(l => (run.lock = l)).catch(() => {}); } catch (e) {}
   if (S.chime && !S.__noOpen) await chime("open");
@@ -3023,7 +3147,7 @@ async function cdFire(n) {
   S.__bare = false; S.__cd = ""; Object.assign(S, keep); renderLangs(); estimate();
 }
 setInterval(async () => {
-  if (!$("cdOn").checked || BOARD || WAIT) return;                // 번호판 창에서는 방송 안 함
+  if (!$("cdOn").checked || BOARD || PHONE) return;                // 번호판 창에서는 방송 안 함
   cdInfo();
   if (running) return;
   const t = cdTarget(), now = Date.now();
@@ -3200,6 +3324,7 @@ async function playPack(pk) {
 // ================= 🖥 방송실 모드 =================
 function roomTiles() {
   const tiles = [];
+  if (S.place === "cafe") tiles.push({ kind: "q", icon: "🧾", name: "대기 순번" });   // 🧾 대기 순번 패널 열고 닫기
   (S.fav || []).forEach(id => { if (id === "hist") { tiles.push({ kind: "hist", id, icon: "📊", name: "최근 방송" }); return; } const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = !m && T.find(x => x.id === id); if (m) tiles.push({ kind: "tpl", id, icon: m.icon, name: m.name }); else if (t) tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: t.urgent }); });
   const hide = S.roomHide || [];
   S.packs.forEach(pk => { if (!hide.includes("pack:" + pk.id)) tiles.push({ kind: "pack", pk, icon: "📚", name: pk.name }); });
@@ -3231,9 +3356,9 @@ function renderRoom() {
   }
   if (!(S.fav || []).length && !roomTiles().length) g.insertAdjacentHTML("beforeend", '<div class="rhint">⭐ 자주 쓰는 방송을 큰 버튼으로 모아 두세요.<br>위의 <b>☆ 즐겨찾기 고르기</b>를 누르고 방송을 고르면 여기에 생깁니다.</div>');
   roomTiles().forEach(x => {
-    const b = document.createElement("button"); b.className = "rtile" + (x.urgent ? " urg" : "") + ((x.kind === "tpl" && S.tpl === x.id) || (x.kind === "hist" && S.roomHistOpen !== false) ? " on" : "");
+    const b = document.createElement("button"); b.className = "rtile" + (x.urgent ? " urg" : "") + ((x.kind === "tpl" && S.tpl === x.id) || (x.kind === "hist" && S.roomHistOpen !== false) || (x.kind === "q" && S.roomQOpen !== false) ? " on" : "");
     b.innerHTML = `<span>${x.icon}</span><b></b>`; b.querySelector("b").textContent = x.name;
-    b.onclick = () => { if (x.kind === "hist") { S.roomHistOpen = S.roomHistOpen === false; save(); renderRoom(); renderRoomHist(); return; } if (x.kind === "pack") { playPack(x.pk); return; } pickTpl(x.id); renderRoom(); };
+    b.onclick = () => { if (x.kind === "q") { S.roomQOpen = S.roomQOpen === false; save(); renderRoom(); qRoomVis(); return; } if (x.kind === "hist") { S.roomHistOpen = S.roomHistOpen === false; save(); renderRoom(); renderRoomHist(); return; } if (x.kind === "pack") { playPack(x.pk); return; } pickTpl(x.id); renderRoom(); };
     g.appendChild(b);
   });
 }
@@ -3287,7 +3412,7 @@ function roomTick() {
 setInterval(roomTick, 400);
 function roomOpen(on) {
   $("room").hidden = !on; document.body.classList.toggle("room", !!on);   // 📱 아래 고정 줄 숨김 (CSS body.room)
-  if (on) { renderRoom(); renderRoomHist(); roomTick(); try { document.documentElement.requestFullscreen?.()?.catch?.(() => {}); } catch (e) {} }
+  if (on) { renderRoom(); renderRoomHist(); qRoomVis(); roomTick(); try { document.documentElement.requestFullscreen?.()?.catch?.(() => {}); } catch (e) {} }
   else { try { document.fullscreenElement && document.exitFullscreen().catch(() => {}); } catch (e) {} }
 }
 
@@ -3301,7 +3426,7 @@ document.addEventListener("fullscreenchange", () => { if (!document.fullscreenEl
 // ================= ❓ 사용법 (처음 열 때 한 번) =================
 $("helpBtn").onclick = () => $("helpDlg").showModal();
 $("helpOk").onclick = () => { $("helpDlg").close(); ls.set("seenHelp", true); };
-setTimeout(() => { if (!ls.get("seenHelp", false) && !$("manDlg").open && !BOARD && !WAIT) $("helpDlg").showModal(); }, 600);
+setTimeout(() => { if (!ls.get("seenHelp", false) && !$("manDlg").open && !BOARD && !PHONE) $("helpDlg").showModal(); }, 600);
 // 📘 사용 설명서 (설정 탭 · 사용법 창 · 아래 링크 · 주소 #manual)
 function manOpen(id) {
   const d = $("manDlg"); if (!d.open) d.showModal();
@@ -3319,7 +3444,7 @@ $("manPrint").onclick = () => {
 <body><h1>📘 온에어 사용 설명서</h1>${document.querySelector("#manDlg .mbody").innerHTML}<script>setTimeout(() => print(), 400)<\/script></body></html>`);
   w.document.close();
 };
-const manHash = () => { if (BOARD || WAIT) return; if (location.hash === "#manual") manOpen(); else if (location.hash === "#privacy") manOpen("m-priv"); };
+const manHash = () => { if (BOARD || PHONE) return; if (location.hash === "#manual") manOpen(); else if (location.hash === "#privacy") manOpen("m-priv"); };
 window.addEventListener("hashchange", manHash); manHash();
 
 // ================= 예약 방송 =================
@@ -3365,7 +3490,7 @@ $("schedOn").onchange = e => {
 };
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && ($("schedOn").checked || $("cdOn").checked)) keepAwake(); });   // 화면 잠금이 풀리면 다시
 setInterval(async () => {
-  if (!$("schedOn").checked || running || BOARD || WAIT) return;
+  if (!$("schedOn").checked || running || BOARD || PHONE) return;
   const n = new Date();
   for (const it of sched) {
     const [hh, mm] = String(it.time || "").split(":").map(Number), at = new Date(n); at.setHours(hh, mm, 0, 0);
@@ -3437,6 +3562,13 @@ function boardRender(flash) {
   const b = ls.get("board", { recent: [] }), c = b.cur, k = BD_KIND[c?.kind] || BD_KIND.cf_ready;
   $("bdNum").textContent = c ? c.num : "—"; $("bdLabel").textContent = c ? k[0] : "주문하신 메뉴가 준비되면 번호가 표시됩니다"; $("bdSub").textContent = k[1];
   $("bdList").innerHTML = "<b>최근 호출</b>" + (b.recent || []).slice(1).map(n => `<span>${String(n).replace(/</g, "&lt;")}${(b.ack || []).includes(n) ? " ✓" : ""}</span>`).join("");
+  const q = b.q && b.q.on ? b.q : null; $("bdQ").hidden = !q;                // 🧾 대기 순번: 지금 입장 + 기다리는 번호
+  $("bdList").hidden = !!q && (b.recent || []).length < 2;                     // 대기 순번만 쓸 때 빈 '최근 호출' 줄은 숨김
+  if (q) {
+    if (!c) $("bdLabel").textContent = "차례가 되면 번호가 표시됩니다";
+    else if (c.kind === "rs_wait") { $("bdLabel").textContent = "지금 입장"; $("bdSub").textContent = "자리가 준비되었습니다 · Your table is ready"; }
+    $("bdQ").innerHTML = "<b>대기 중</b>" + (q.w.length ? q.w.slice(0, 10).map(n => `<span>${+n}</span>`).join("") + (q.cnt > 10 ? "<b>…</b>" : "") : "<b>—</b>") + `<b class="bqc">대기 ${+q.cnt || 0}팀</b>`;
+  }
   if (flash) { $("bdNum").classList.remove("flash"); void $("bdNum").offsetWidth; $("bdNum").classList.add("flash"); }
 }
 function boardOpen() {
@@ -3454,7 +3586,10 @@ if (BOARD) {                                             // 번호판 전용 창
 }
 
 // ================= 📱 손님 휴대폰 알림 (QR · ntfy.sh 중계) =================
-const RELAY = "https://ntfy.sh/", PUBLIC_URL = "https://s95722462-cell.github.io/ONAIR/";
+const RELAY = (() => {                                   // 중계 서버: 언제나 ntfy.sh. 시험 때만 이 PC 안의 가짜 중계 (localhost·파일로 열었을 때만 허용)
+  try { const r = window.ONAIR_RELAY; if (typeof r === "string" && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/$/.test(r) && (location.protocol === "file:" || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))) return r; } catch (e) {}
+  return "https://ntfy.sh/";
+})(), PUBLIC_URL = "https://s95722462-cell.github.io/ONAIR/";
 function shopId() {                                       // 매장 코드: 아무도 짐작할 수 없는 값 (처음 한 번 만들고 저장)
   let id = ls.get("shopId", "");
   if (!id) { const a = new Uint8Array(12); if (window.crypto?.getRandomValues) crypto.getRandomValues(a); else a.forEach((_, i) => (a[i] = Math.floor(Math.random() * 256))); id = [...a].map(b => b.toString(36).padStart(2, "0")).join("").slice(0, 20); ls.set("shopId", id); }
@@ -3462,11 +3597,11 @@ function shopId() {                                       // 매장 코드: 아�
 }
 function phonePush(num, kind) {
   if (!ls.get("shopId", "")) return;                      // QR을 한 번도 안 만들었으면 보내지 않음
-  fetch(RELAY + "onair-" + shopId(), { method: "POST", body: `${num}|${kind}|${Date.now()}` }).catch(() => toast("📱 휴대폰 알림을 보내지 못했습니다 (인터넷 연결 확인)"));
+  fetch(RELAY + "onair-" + shopId(), { method: "POST", body: `${num}|${kind}|${Date.now()}` }).then(r => { if (r.ok) qSentAdd(); }).catch(() => toast("📱 휴대폰 알림을 보내지 못했습니다 (인터넷 연결 확인)"));
 }
 let ackES = null, ackSeen = new Set();
 function shopListen() {                                   // ↩ 손님 '확인했어요' 받기 → 그 번호 방송 멈춤
-  if (BOARD || WAIT || !ls.get("shopId", "") || ackES || typeof EventSource !== "function") return;
+  if (BOARD || PHONE || !ls.get("shopId", "") || ackES || typeof EventSource !== "function") return;
   ackES = new EventSource(RELAY + "onair-" + shopId() + "/sse?since=" + Math.floor(Date.now() / 1000));
   ackES.onerror = () => { if (ackES && ackES.readyState === 2) { ackES = null; setTimeout(shopListen, 15000); } };   // 끊기면 15초 뒤 다시 (보통은 브라우저가 알아서 다시 연결)
   ackES.onmessage = e => {
@@ -3499,6 +3634,11 @@ $("qrSign").onclick = async () => {                       // 🪧 카운터 안�
   let img = "";
   try { await loadQR(); const box = document.createElement("div"); new QRCode(box, { text: waitUrl(""), width: 600, height: 600, correctLevel: QRCode.CorrectLevel.M }); img = box.querySelector("canvas")?.toDataURL() || box.querySelector("img")?.src || ""; }
   catch (e) { toast("QR 그리기 도구를 불러오지 못했습니다 (인터넷 연결 확인)"); return; }
+  signWin(img, { h1: "메뉴가 준비되면<br><b>휴대폰으로 알려 드려요</b>", en: "We'll notify your phone when your order is ready",
+    steps: [["휴대폰 카메라로<br>QR 찍기", "Scan the QR"], ["영수증의<br>주문 번호 입력", "Enter your order no."], ["🔔 알림 받기<br>누르고 기다리기", "Tap & wait"]],
+    note: "⚠️ 알림이 울리려면 <b>그 화면을 켜 둔 채</b> 기다려 주세요.<br>Please keep the screen open while you wait." });
+};
+function signWin(img, o) {                                // 🪧 A5 안내판 창 (QR + 3단계)
   const shop = (S.apt || "").replace(/</g, "&lt;"), w = window.open("", "_blank", "width=620,height=900");
   if (!w) { toast(POPUP_MSG); return; }
   w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=620"><title>카운터 안내판</title>
@@ -3513,13 +3653,13 @@ li i{display:block;font-style:normal;width:8mm;height:8mm;line-height:8mm;margin
 .note{margin-top:auto;font-size:10pt;color:#9a3412;line-height:1.5}.note b{color:#c2410c}
 @media screen{body{background:#e7e5e4;padding:16px}.pg{margin:0 auto;box-shadow:0 4px 20px #0002}}</style></head><body><div class="pg">
 <div class="shop">${shop}</div><div class="bell">🔔</div>
-<h1>메뉴가 준비되면<br><b>휴대폰으로 알려 드려요</b></h1><div class="en">We'll notify your phone when your order is ready</div>
+<h1>${o.h1}</h1><div class="en">${o.en}</div>
 <div class="qr"><img src="${img}" alt="QR"></div>
-<ol><li><i>1</i>휴대폰 카메라로<br>QR 찍기<small>Scan the QR</small></li><li><i>2</i>영수증의<br>주문 번호 입력<small>Enter your order no.</small></li><li><i>3</i>🔔 알림 받기<br>누르고 기다리기<small>Tap & wait</small></li></ol>
-<div class="note">⚠️ 알림이 울리려면 <b>그 화면을 켜 둔 채</b> 기다려 주세요.<br>Please keep the screen open while you wait.</div>
+<ol>${o.steps.map((x, i) => `<li><i>${i + 1}</i>${x[0]}<small>${x[1]}</small></li>`).join("")}</ol>
+<div class="note">${o.note}</div>
 </div><script>(document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => print(), 300))<\/script></body></html>`);
   w.document.close();
-};
+}
 $("qrPrint").onclick = () => {
   const img = $("qrBox").querySelector("img")?.src || $("qrBox").querySelector("canvas")?.toDataURL(); if (!img) return;
   const w = window.open("", "_blank", "width=500,height=700"); if (!w) { toast(POPUP_MSG); return; }
@@ -3555,6 +3695,355 @@ if (WAIT) {                                               // 📱 손님 휴대�
     $("wMsg").innerHTML = `<b>${num}번</b>이 준비되면 소리·진동으로 알려 드립니다.<br>Waiting for order <b>${num}</b>…`;
   };
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && es && $("wGo").hidden) { listen(); try { navigator.wakeLock?.request("screen").catch(() => {}); } catch (e) {} } });
+}
+
+// ================= 🧾 대기 순번 (키오스크 없이 · 카운터 QR 한 장 · ntfy.sh 무료 중계) =================
+/* 중계 약속 — ntfy.sh 무료는 하루 메시지 수 제한이 있음(보내는 IP마다, 비공식 약 250건 · 주문 번호 알림과 함께 셈) → 손님 한 팀당 메시지를 적게.
+   주제 2개 (매장 코드 = 비밀번호 역할 · 주문 번호 알림 'onair-<코드>' 와 따로):
+   ① onair-q-<코드>      매장 PC → 손님 : 'state' 스냅숏(JSON 한 줄)만. 손님은 since=latest 로 마지막 스냅숏부터 받음 (닫았다 다시 열어도 지금 상태)
+        {"k":"q1","o":1,"n":"매장 이름","r":"라운드","c":15,"m":4.5,"e":"15:a1b2c3:c1,16:d4e5f6:w0,…","t":초}
+        o 접수 켜짐 · r 초기화마다 바뀜(옛 번호표 무효) · c 지금 부른 번호 · m 한 팀당 분(오늘 부른 간격) · e 번호:기기 앞 6자:상태+부른 횟수
+        상태 w 대기 · c 호출 · g 가는 중 · i 입장 · n 부재 · x 취소. 진행 중 전부 + 끝난 최근 40팀, 4KB 안 (ntfy 는 4KB 넘으면 첨부 파일이 됨)
+        보내는 때를 모음: 등록·호출·접수 켜고 끄기 = 0.3초 뒤(최소 2초 간격) · 취소 = 20초 · 입장·부재·직접 등록 = 60초 (그 사이 다른 스냅숏에 묻어 감)
+        '가는 중'은 따로 안 보냄 (그 손님 휴대폰은 이미 앎). 같은 내용이면 안 보냄.
+   ② onair-q-<코드>-in   손님 → 매장 PC : 한 줄 글자
+        J|기기8자|인원|nonce|ms 대기 등록 · G|기기|번호|라운드|ms 가고 있어요 · X|기기|번호|라운드|ms 취소
+        번호는 매장 PC 한 창(Web Locks)이 차례대로 정함 → 동시에 등록해도 같은 번호 없음.
+        PC 를 켜면(새로 고침) since=마지막으로 받은 시각-60초 로 다시 받아 그동안 온 등록도 처리. ntfy 메시지 id · 기기 값으로 한 번만 처리 (한 기기 = 진행 중 번호 하나).
+   손님 한 팀 ≈ 등록 1 + 번호 스냅숏 1(같이 등록한 손님과 나눔) + 호출 스냅숏 1 + 가고 있어요 1 = 4건 이하.
+   하루 한도는 보내는 IP 로 셈: 매장 PC 는 스냅숏만 보냄 (손님 메시지는 손님 휴대폰 데이터 IP — 매장 와이파이면 매장 IP).
+   개인정보 없음: 매장 코드 · 휴대폰마다 만든 무작위 값 · 번호 · 인원 · 시각뿐. 이상한 메시지는 버림, 진행 중 200팀까지. */
+const Q_MAX = 200, Q_DONE_KEEP = 40, Q_LIMIT = 250;
+const QSTN = { w: "대기", c: "호출", g: "가는 중", i: "입장", n: "부재", x: "취소" };
+const qDay = () => { const d = new Date(); return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`; };
+const qRnd = n => { const a = new Uint8Array(n); try { crypto.getRandomValues(a); } catch (e) { a.forEach((_, i) => (a[i] = Math.floor(Math.random() * 256))); } return [...a].map(b => (b % 36).toString(36)).join(""); };
+const qHM = ms => { const d = new Date(ms); return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`; };
+const qPpl = p => (+p >= 6 ? "6명 이상" : (+p || 1) + "명");
+const qAct = e => "wcg".includes(e.st);
+function qParseE(e) {                                      // 스냅숏의 e 글자 → [{n, d, st, calls}]
+  return String(e || "").split(",").map(x => { const m = /^(\d{1,4}):([a-z0-9]{0,6}):([wcgnix])(\d{1,3})$/.exec(x); return m && { n: +m[1], d: m[2], st: m[3], calls: +m[4] }; }).filter(Boolean);
+}
+function qSentAdd() { const d = qDay(); let s = ls.get("qsent", null); if (!s || s.day !== d) s = { day: d, n: 0 }; s.n++; ls.set("qsent", s); if (s.n === 200) setTimeout(() => toast(`⚠️ 오늘 휴대폰 알림을 ${s.n}건 보냈습니다 — 무료 한도(약 ${Q_LIMIT}건)에 가까워요`), 2600); return s.n; }
+const qSentN = () => { const s = ls.get("qsent", null); return s && s.day === qDay() ? s.n : 0; };
+
+// ---------- 매장 PC ----------
+let Q = null, qLeader = false, qES = null, qPubT = 0, qPubDue = 0, qLastSend = 0, qFail = 0, qBusy = false, qDoneOpen = false;
+const qTopic = () => RELAY + "onair-q-" + shopId();
+function qNew() { return { on: false, r: qRnd(4), day: qDay(), next: 1, openAt: 0, cur: 0, list: [], seen: [], lastT: 0, pub: "", pubAt: 0 }; }
+function qLoad() {
+  const v = ls.get("queue", null); Q = v && typeof v === "object" && Array.isArray(v.list) ? { ...qNew(), ...v } : qNew();
+  if (Q.day !== qDay() && !Q.list.some(qAct)) { Object.assign(Q, { r: qRnd(4), day: qDay(), next: 1, cur: 0, list: [] }); }   // 날이 바뀌면 1번부터 (기다리는 손님이 있으면 그대로)
+  return Q;
+}
+function qSave() { ls.set("queue", Q); qBoardSync(); renderQ(); }
+function qPace() {                                         // 한 팀당 몇 분 (오늘 처음 부른 시각 간격)
+  const t = Q.list.filter(e => e.c1).map(e => e.c1).sort((a, b) => a - b); if (t.length < 2) return 0;
+  return Math.min(60, Math.max(1, Math.round((t[t.length - 1] - t[0]) / (t.length - 1) / 30000) / 2));
+}
+function qAvgWait() { const a = Q.list.filter(e => e.c1); return a.length ? Math.round(a.reduce((s, e) => s + (e.c1 - e.at), 0) / a.length / 60000) : 0; }
+function qSnapBody() {
+  const act = Q.list.filter(qAct).sort((a, b) => a.n - b.n), done = Q.list.filter(e => !qAct(e)).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0)).slice(0, Q_DONE_KEEP);
+  const ent = e => `${e.n}:${(e.d || "").slice(0, 6)}:${e.st}${Math.min(999, e.calls || 0)}`;
+  const o = { k: "q1", o: Q.on ? 1 : 0, n: (S.apt || "").slice(0, 40), r: Q.r, c: Q.cur || 0, m: qPace(), e: "" };
+  const mk = () => { o.e = [...act, ...done].map(ent).join(","); return JSON.stringify(o); };
+  let j = mk(); const B = x => (window.TextEncoder ? new TextEncoder().encode(x).length : x.length * 3);
+  while (B(j) > 3900 && done.length) { done.pop(); j = mk(); }
+  while (B(j) > 3900 && act.length) { act.pop(); j = mk(); }
+  return j;
+}
+function qPub(delay = 300) {                               // 스냅숏 보내기 예약 (모아서 한 번에)
+  if (!qLeader) return;
+  const due = Math.max(Date.now() + delay, qLastSend + 2000);
+  if (qPubT && qPubDue <= due) return;
+  clearTimeout(qPubT); qPubDue = due; qPubT = setTimeout(qSend, due - Date.now());
+}
+async function qSend() {
+  qPubT = 0; if (qBusy) { qPub(600); return; }
+  const body = qSnapBody(); if (body === Q.pub) return;     // 바뀐 게 없으면 안 보냄
+  qBusy = true;
+  try {
+    const r = await fetch(qTopic(), { method: "POST", body: body.replace(/}$/, `,"t":${Math.floor(Date.now() / 1000)}}`) });
+    if (!r.ok) throw new Error(String(r.status));
+    qLastSend = Date.now(); qFail = 0; Q.pub = body; Q.pubAt = Date.now(); ls.set("queue", Q); qSentAdd(); renderQ();
+  } catch (e) {
+    qFail++; const wait = [2, 5, 15, 30, 60][Math.min(qFail - 1, 4)] * 1000;
+    if (qFail === 1 || qFail % 5 === 0) toast(e.message === "429" ? "⏳ 알림 서버가 잠시 바쁩니다 — 곧 다시 보냅니다 (오늘 보낸 양이 많을 수 있어요)" : "📶 대기 정보를 보내지 못했습니다 — 인터넷 연결을 확인해 주세요 (자동으로 다시 보냅니다)");
+    qBusy = false; qPub(wait); renderQ(); return;
+  }
+  qBusy = false;
+}
+function qListen() {                                       // 손님 등록·확인·취소 받기
+  if (!qLeader || qES || typeof EventSource !== "function") return;
+  if (!Q.on && !Q.list.some(e => "wcgn".includes(e.st))) return;
+  const since = Math.max(Math.floor((Q.openAt || Date.now()) / 1000), (Q.lastT || 0) - 60);   // 다시 켜면 그동안 온 것도 받음
+  qES = new EventSource(qTopic() + "-in/sse?since=" + since);
+  qES.onmessage = e => { try { const d = JSON.parse(e.data); if (d.event === "message") qIn(d); } catch (er) {} };
+  qES.onerror = () => { if (qES && qES.readyState === 2) { qES = null; setTimeout(qListen, 5000); } };
+}
+function qIn(d) {
+  const t = +d.time || 0, p = String(d.message || "").split("|");
+  if (!d.id || Q.seen.includes(d.id)) return;
+  Q.seen.push(d.id); if (Q.seen.length > 400) Q.seen = Q.seen.slice(-300);
+  Q.lastT = Math.max(Q.lastT || 0, t);
+  const dev = p[1] || "";
+  if (!/^[a-z0-9]{8}$/.test(dev) || p.length < 5 || p.some(x => x.length > 20)) { ls.set("queue", Q); return; }   // 이상한 메시지는 버림
+  if (p[0] === "J") {
+    const party = Math.min(6, Math.max(1, parseInt(p[2], 10) || 1)), mine = Q.list.filter(e => e.d === dev);
+    if (!Q.on || t * 1000 < (Q.openAt || 0) - 3000) { ls.set("queue", Q); return; }          // 접수 꺼짐 · 켜기 전 등록
+    if (mine.some(qAct)) { if (Date.now() - (Q.pubAt || 0) > 60000) Q.pub = ""; ls.set("queue", Q); qPub(); return; }   // 이미 번호 있음 → 번호만 다시 알려 줌 (1분에 한 번까지)
+    if (mine.some(e => t * 1000 <= (e.doneAt || 0) + 1000)) { ls.set("queue", Q); return; }   // 끝나기 전에 보낸 옛 등록 (다시 받을 때)
+    if (Q.list.filter(qAct).length >= Q_MAX) { ls.set("queue", Q); toast(`⚠️ 대기가 ${Q_MAX}팀이라 더 받지 않습니다`); return; }
+    const n = Q.next++; Q.list.push({ n, d: dev, p: party, at: t ? Math.min(Date.now(), t * 1000) : Date.now(), st: "w", calls: 0 });
+    qSave(); qPub(); toast(`🧾 ${n}번 대기 등록 · ${qPpl(party)}`);
+  } else if (p[0] === "G" || p[0] === "X") {
+    const n = parseInt(p[2], 10), e = Q.list.find(x => x.n === n && x.d === dev);
+    if (!e || p[3] !== Q.r) { ls.set("queue", Q); return; }
+    if (p[0] === "G" && "cn".includes(e.st)) { e.st = "g"; qSave(); toast(`🚶 ${n}번 고객님이 가고 있어요`); }
+    else if (p[0] === "X" && "wcgn".includes(e.st)) { e.st = "x"; e.doneAt = Date.now(); e.self = 1; qSave(); qPub(20000); toast(`${n}번 고객님이 대기를 취소했습니다`); }
+    else ls.set("queue", Q);
+  } else ls.set("queue", Q);
+}
+function qStart() {
+  if (BOARD || PHONE) return;
+  qLoad(); qVis();
+  const go = () => { qLeader = true; qLoad(); if (Q.on && Date.now() - (Q.pubAt || 0) > 10 * 3600e3) Q.pub = ""; qListen(); if (Q.on) qPub(); qBoardSync(); renderQ(); };
+  try { if (navigator.locks && navigator.locks.request) { navigator.locks.request("onair_queue", () => { go(); return new Promise(() => {}); }).catch(go); return; } } catch (e) {}
+  go();
+}
+window.addEventListener("storage", e => { if (e.key === "onair_queue" && !qLeader && Q) { qLoad(); renderQ(); } });   // 다른 창이 번호를 맡고 있을 때: 보기만
+setInterval(() => { if (Q && Q.list.some(qAct)) renderQ(); }, 30000);   // 기다린 시간(분) 새로
+function qToggle(on) {
+  if (!qLeader) return;
+  shopId(); Q.on = on; if (on) { Q.openAt = Date.now(); if (Q.day !== qDay() && !Q.list.some(qAct)) Object.assign(Q, { r: qRnd(4), day: qDay(), next: 1, cur: 0, list: [] }); }
+  qSave(); qPub(); if (on) qListen(); else if (!Q.list.some(e => "wcgn".includes(e.st))) { qES?.close(); qES = null; }
+  toast(on ? "🧾 대기 접수를 시작했습니다 — 손님이 카운터 QR로 등록할 수 있어요" : "대기 접수를 멈췄습니다 — 새 등록은 받지 않습니다");
+}
+function qCall(e) {                                        // 부르기 · 다시 부르기: 방송 + 손님 휴대폰 + 번호판
+  e.st = "c"; e.calls = (e.calls || 0) + 1; if (!e.c1) e.c1 = Date.now(); e.ct = Date.now(); delete e.doneAt; Q.cur = e.n;
+  qSave(); qPub(); qAnnounce(e.n);
+}
+function qNext() {
+  if (!qLeader) return;
+  const e = Q.list.filter(x => x.st === "w").sort((a, b) => a.n - b.n)[0];
+  if (!e) { toast("기다리는 손님이 없습니다"); return; }
+  qCall(e);
+}
+async function qAnnounce(n) {                              // '대기 번호 입장' 방송 (차임·반복 설정 그대로)
+  if (running) { stop(); for (let i = 0; i < 60 && running; i++) await sleep(50); }
+  if (S.tpl !== "rs_wait") { S.tpl = "rs_wait"; S.edited = {}; if (S.mood === "urgent") { S.mood = "calm"; applyMood(); } renderTpls(); }
+  setNum(String(n)); renderFields(); oaSync();
+  run.viaQ = true; run(true);
+}
+function qWalkAdd(party) {
+  if (!qLeader) return 0;
+  if (Q.list.filter(qAct).length >= Q_MAX) { toast(`⚠️ 대기가 ${Q_MAX}팀이라 더 받지 않습니다`); return 0; }
+  const n = Q.next++; Q.list.push({ n, d: "", p: party, at: Date.now(), st: "w", calls: 0, walk: 1 }); qSave(); qPub(60000); return n;
+}
+function qReset() {
+  if (!qLeader || !confirm("오늘 대기를 모두 지우고 1번부터 다시 시작할까요?")) return;
+  Object.assign(Q, { r: qRnd(4), day: qDay(), next: 1, cur: 0, list: [] }); qSave(); qPub();
+  toast("🧾 대기를 초기화했습니다 — 다음 등록은 1번입니다");
+}
+function qBoardSync() {                                    // 🖥 번호판: 기다리는 번호
+  if (!Q) return;
+  const w = Q.list.filter(e => e.st === "w").sort((a, b) => a.n - b.n).map(e => e.n), nq = { on: !!Q.on || w.length > 0, w: w.slice(0, 12), cnt: w.length };
+  const b = ls.get("board", { recent: [] }); if (JSON.stringify(b.q || null) === JSON.stringify(nq)) return;
+  b.q = nq; ls.set("board", b); boardRender(false);
+}
+function qVis() { if (BOARD || PHONE) return; const show = S.place === "cafe" || !!(Q && (Q.on || Q.list.some(qAct))); $("qCard").hidden = !show; if (show) renderQ(); qRoomVis(); }
+function qRoomVis() { if (BOARD || PHONE || !$("roomQ")) return; $("roomQ").hidden = $("room").hidden || S.place !== "cafe" || S.roomQOpen === false; if (!$("roomQ").hidden) renderQ(); }
+function qUrl() { const base = location.protocol.startsWith("http") ? location.href.split("#")[0].split("?")[0] : PUBLIC_URL; return base + "?q=" + shopId(); }
+function qRowHTML(e) {
+  const now = Date.now(), end = e.c1 || (qAct(e) || e.st === "n" ? now : e.doneAt || now), min = Math.max(0, Math.round((end - e.at) / 60000));   // 기다린 분 (처음 부를 때까지)
+  const act = e.st === "w" ? `<button class="mini" data-qa="call" data-n="${e.n}">부르기</button><button class="mini btn-danger-ghost" data-qa="del" data-n="${e.n}">삭제</button>`
+    : "cgn".includes(e.st) ? `<button class="mini" data-qa="again" data-n="${e.n}">다시 부르기</button><button class="mini on" data-qa="in" data-n="${e.n}">입장</button>` + (e.st === "n" ? `<button class="mini btn-danger-ghost" data-qa="del" data-n="${e.n}">삭제</button>` : `<button class="mini" data-qa="no" data-n="${e.n}">부재</button>`)
+    : "";
+  return `<div class="qrow ${e.st}"><div class="qn">${e.n}</div><div class="qm"><span class="qst ${e.st}">${QSTN[e.st]}${e.st === "c" && e.calls > 1 ? " " + e.calls : ""}</span><b>${qPpl(e.p)}</b> · ${qHM(e.at)}${e.walk ? " · 직접" : ""} · ${min}분</div>${qLeader && act ? `<div class="qa">${act}</div>` : ""}</div>`;
+}
+function qHTML() {
+  const act = Q.list.filter(e => "wcgn".includes(e.st)).sort((a, b) => a.n - b.n), done = Q.list.filter(e => "ix".includes(e.st) && !e.del).sort((a, b) => b.n - a.n);
+  const w = act.filter(e => e.st === "w"), nx = w[0], sent = qSentN(), avg = qAvgWait();
+  return `<div class="qtop"><label class="qsw"><span class="switch"><input type="checkbox" data-qa="on" aria-label="대기 접수"${Q.on ? " checked" : ""}${qLeader ? "" : " disabled"}><span></span></span>${Q.on ? "접수 중" : "접수 꺼짐"}</label>
+    <div class="qinfo">대기 <b>${w.length}</b>팀${Q.cur ? ` · 지금 <b>${Q.cur}</b>번` : ""}</div></div>`
+    + (!qLeader ? `<div class="qnote warn">다른 창(탭)에서 대기 순번을 받고 있습니다. 그 창에서 부르세요.</div>`
+      : !Q.on && !act.length ? `<div class="qnote">켜면 손님이 <b>카운터 QR</b>로 인원만 골라 번호를 받습니다. 이 화면을 켜 둔 동안 등록됩니다.</div>` : "")
+    + (qFail ? `<div class="qnote warn">📶 대기 정보를 다시 보내는 중… (${qFail}번째)</div>` : "")
+    + (qLeader ? `<button class="qnext" data-qa="next"${nx ? "" : " disabled"}>📢 다음 손님 부르기${nx ? ` <small>${nx.n}번</small>` : ""}</button>
+    <div class="qtools"><button class="mini" data-qa="walk">＋ 직접 등록</button><button class="mini" data-qa="qr">🪧 QR · 안내판</button></div>` : "")
+    + `<div class="qlist">${act.length ? act.map(qRowHTML).join("") : `<div class="qempty">기다리는 손님이 없습니다</div>`}</div>`
+    + (done.length ? `<details class="qdone"${qDoneOpen ? " open" : ""}><summary>지난 손님 ${done.length}팀</summary><div class="qlist">${done.map(qRowHTML).join("")}</div></details>` : "")
+    + `<div class="qfoot"><div class="qstat${sent >= 200 ? " warn" : ""}" title="ntfy.sh 무료 중계는 하루 약 ${Q_LIMIT}건까지 (주문 번호 알림 포함)">오늘 ${Q.list.filter(e => !e.del).length}팀${avg ? ` · 평균 대기 ${avg}분` : ""} · 보낸 알림 ${sent}/${Q_LIMIT}건${sent >= 200 ? " ⚠️ 무료 한도에 가까워요" : ""}</div>${qLeader && Q.list.length ? `<button class="mini btn-danger-ghost" data-qa="reset">오늘 대기 초기화</button>` : ""}</div>`;
+}
+function renderQ() {
+  if (!Q || BOARD || PHONE) return;
+  [$("qCard").hidden ? null : $("qBody"), $("roomQ") && !$("roomQ").hidden ? $("roomQBody") : null].forEach(box => {
+    if (!box) return; const y = box.querySelector(".qlist")?.scrollTop || 0; box.innerHTML = qHTML(); const l = box.querySelector(".qlist"); if (l) l.scrollTop = y;
+  });
+}
+function qClick(e) {
+  const b = e.target.closest("[data-qa]"); if (!b || !qLeader || b.dataset.qa === "on") return;
+  const a = b.dataset.qa, ent = Q.list.find(x => x.n === +b.dataset.n);
+  if (a === "next") qNext();
+  else if (a === "walk") qWalkOpen();
+  else if (a === "qr") qQrOpen();
+  else if (a === "reset") qReset();
+  else if (!ent) return;
+  else if (a === "call" || a === "again") qCall(ent);
+  else if (a === "in") { ent.st = "i"; ent.doneAt = Date.now(); qSave(); qPub(60000); }
+  else if (a === "no") { ent.st = "n"; ent.doneAt = Date.now(); qSave(); qPub(60000); toast(`${ent.n}번 부재 — 다시 부르거나 지울 수 있습니다`); }
+  else if (a === "del") { if (!confirm(`${ent.n}번을 지울까요?`)) return; ent.st = "x"; ent.del = 1; ent.doneAt = Date.now(); qSave(); qPub(20000); }
+}
+["qBody", "roomQBody"].forEach(id => {
+  $(id).addEventListener("click", qClick);
+  $(id).addEventListener("change", e => { if (e.target.dataset.qa === "on") qToggle(e.target.checked); });
+  $(id).addEventListener("toggle", e => { if (e.target.classList?.contains("qdone")) qDoneOpen = e.target.open; }, true);
+});
+let qWalkP = 2;
+function qWalkOpen() {                                     // 휴대폰 없는 손님: 번호를 바로 받아 크게 보여 줌
+  qWalkP = 2; $("qWalkT").textContent = "＋ 직접 등록";
+  const draw = () => {
+    $("qWalkBody").innerHTML = `<div class="muted" style="font-size:14px;margin-bottom:12px">휴대폰이 없는 손님 · 인원을 고르세요</div><div class="qparty">${[1, 2, 3, 4, 5, 6].map(p => `<button type="button" data-p="${p}" class="${p === qWalkP ? "on" : ""}">${p}<small>${p === 6 ? "명+" : "명"}</small></button>`).join("")}</div>`;
+    $("qWalkBody").querySelectorAll("[data-p]").forEach(b => b.onclick = () => { qWalkP = +b.dataset.p; draw(); });
+  };
+  draw();
+  $("qWalkBtns").innerHTML = `<button id="qWalkNo">취소</button><button class="ok" id="qWalkOk">번호 받기</button>`;
+  $("qWalkNo").onclick = () => $("qWalkDlg").close();
+  $("qWalkOk").onclick = () => {
+    const n = qWalkAdd(qWalkP); if (!n) return;
+    $("qWalkT").textContent = "🧾 대기 번호";
+    $("qWalkBody").innerHTML = `<div class="qwbig" id="qWalkNum">${n}<small>번</small></div><div class="muted" style="font-size:15px">${qPpl(qWalkP)} · 손님께 번호를 알려 주세요</div>`;
+    $("qWalkBtns").innerHTML = `<button class="ok" id="qWalkDone">확인</button>`; $("qWalkDone").onclick = () => $("qWalkDlg").close(); $("qWalkDone").focus();
+  };
+  $("qWalkDlg").showModal();
+}
+async function qQrOpen() {
+  shopId(); $("qQrDlg").showModal(); $("qQrBox").innerHTML = "<div class='muted'>QR 만드는 중…</div>";
+  try { await loadQR(); $("qQrBox").innerHTML = ""; new QRCode($("qQrBox"), { text: qUrl(), width: 480, height: 480, correctLevel: QRCode.CorrectLevel.M }); $("qQrBox").title = qUrl(); }
+  catch (e) { $("qQrBox").innerHTML = "<div class='muted'>QR 그리기 도구를 불러오지 못했습니다 (인터넷 연결 확인)</div>"; }
+}
+$("qQrClose").onclick = () => $("qQrDlg").close();
+$("qSign").onclick = async () => {                        // 🪧 대기 등록 안내판 (A5)
+  let img = "";
+  try { await loadQR(); const box = document.createElement("div"); new QRCode(box, { text: qUrl(), width: 600, height: 600, correctLevel: QRCode.CorrectLevel.M }); img = box.querySelector("canvas")?.toDataURL() || box.querySelector("img")?.src || ""; }
+  catch (e) { toast("QR 그리기 도구를 불러오지 못했습니다 (인터넷 연결 확인)"); return; }
+  signWin(img, { h1: "QR 찍고<br><b>대기 등록하세요</b>", en: "Scan to join the waiting list",
+    steps: [["휴대폰 카메라로<br>QR 찍기", "Scan the QR"], ["인원 고르고<br>대기 등록", "Choose party size"], ["차례가 되면<br>🔔 알려 드려요", "We'll call you"]],
+    note: "📱 번호 화면을 켜 두면 차례에 소리로 알려 드립니다.<br>휴대폰이 없으면 카운터에 말씀해 주세요." });
+};
+
+// ---------- 손님 휴대폰 (?q=매장코드) ----------
+const QS = {                                               // 손님 화면 글자 (2차: 여러 나라 말)
+  title: "대기 등록", loading: "불러오는 중…", pick: "몇 분이세요?", join: "대기 등록", noPII: "이름·전화번호는 받지 않아요", waitN: n => `지금 대기 ${n}팀`,
+  getting: "번호 받는 중…", closed: "지금은 대기 등록을 받지 않아요", closedSub: "카운터에 말씀해 주세요", retry: "다시 시도",
+  myNum: "내 대기 번호", ahead: n => (n ? `앞에 ${n}팀` : "다음 차례예요"), est: m => `예상 약 ${m}분`, soon: "곧 차례예요", hold: "잠시만 기다려 주세요",
+  regAt: (t, p) => `${t} 등록 · ${p}`, now: n => `지금 입장 <b>${n}번</b>`, keep: "이 화면을 켜 두면 차례에 소리로 알려 드려요", cancel: "대기 취소", cancelQ: "대기를 취소할까요?",
+  callT: "차례가 됐어요!", callSub: "입구로 와 주세요", goBtn: "가고 있어요", noBtn: "취소할게요",
+  goingT: "가고 있어요", goingSub: "입구 직원에게 번호를 보여 주세요", inT: "입장했어요", inSub: "맛있게 드세요 😊", noT: "순서가 지나갔어요", noSub: "카운터에 말씀해 주세요",
+  xT: "대기가 취소됐어요", again: "다시 대기 등록", sound: "🔔 알림 소리 켜기", net: "인터넷 연결을 확인해 주세요", notif: n => `🔔 ${n}번 차례예요 — 입구로 와 주세요`,
+  st: { w: "대기 중", c: "호출", g: "가는 중", i: "입장", n: "지나감", x: "취소" },
+};
+if (QPAGE) {
+  document.body.classList.add("qOnly"); $("qp").hidden = false; document.title = "🧾 " + QS.title; ls.set("seenHelp", true);
+  const TOP = RELAY + "onair-q-" + QPAGE, box = $("qpIn");
+  let dev = ls.get("qdev", ""); if (!/^[a-z0-9]{8}$/.test(dev)) { dev = qRnd(8); ls.set("qdev", dev); }
+  const d6 = dev.slice(0, 6);
+  let tk = ls.get("qticket", null); if (!tk || tk.s !== QPAGE) tk = { s: QPAGE };
+  let snap = null, loaded = false, party = 2, joining = 0, failed = "", es = null, ring = 0, ringEnd = 0, unlocked = false;
+  const saveTk = () => ls.set("qticket", tk);
+  const esc = x => String(x || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const post = async body => { for (let i = 0; i < 3; i++) { try { const r = await fetch(TOP + "-in", { method: "POST", body }); if (r.ok) return true; } catch (e) {} await sleep(1200 * (i + 1)); } return false; };
+  const wake = () => { try { navigator.wakeLock?.request("screen").catch(() => {}); } catch (e) {} };
+  const unlock = () => {                                   // 소리 잠금 풀기 · 화면 켜 두기 · 알림 권한 (누른 순간에만 됨)
+    audio(); unlocked = !!ctx; wake(); navigator.vibrate?.(40);
+    try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(() => {}); } catch (e) {}
+  };
+  const beep = () => { try { audio(); const t = ctx.currentTime; [0, .25, .5].forEach(d => { bell(1046.5, t + d, .22, .5); bell(1318.5, t + d + .12, .22, .5); }); } catch (e) {} };
+  const ringStop = () => { clearInterval(ring); ring = 0; navigator.vibrate?.(0); };
+  const ringStart = n => {
+    ringStop(); ringEnd = Date.now() + 120000;
+    const go = () => { if (Date.now() > ringEnd) return ringStop(); beep(); navigator.vibrate?.([500, 200, 500, 200, 900]); }; go(); ring = setInterval(go, 2500);
+    try { if (Notification.permission === "granted" && document.visibilityState !== "visible") navigator.serviceWorker?.ready.then(r => r.showNotification(QS.notif(n), { tag: "onair-q", renotify: true, vibrate: [500, 200, 500] })).catch(() => {}); } catch (e) {}
+  };
+  function mine() {                                        // 이 휴대폰의 번호표 (스냅숏에서 찾기)
+    if (!snap) return null;
+    const all = qParseE(snap.e).filter(x => x.d === d6 && !(tk.skipR === snap.r && x.n <= (tk.skip || 0)));
+    const e = all.find(x => qAct(x) || x.st === "n") || all.sort((a, b) => b.n - a.n)[0] || null;
+    if (e && tk.cx === e.n && tk.r === snap.r) e.st = "x";    // 내가 취소한 것 (매장 스냅숏 전)
+    return e;
+  }
+  function render() {
+    const me = mine(), shop = snap && snap.n ? `<div class="qshop">${esc(snap.n)}</div>` : `<div class="qshop"></div>`;
+    $("qp").classList.remove("call");
+    if (me) {
+      if (tk.r !== snap.r || tk.n !== me.n) { tk = { s: QPAGE, r: snap.r, n: me.n, at: tk.n === me.n ? tk.at : (joining ? tk.at : 0), p: tk.p, skip: tk.skip, skipR: tk.skipR }; saveTk(); }
+      joining = 0; failed = "";
+      const ents = qParseE(snap.e), meta = tk.at && tk.p ? `<div class="qmeta">${QS.regAt(qHM(tk.at), qPpl(tk.p || 1))}</div>` : "";
+      const big = `<div class="qlbl">${QS.myNum}</div><div class="qbig" id="qpNum">${me.n}<small>번</small></div>`;
+      let st = me.st; if (st === "c" && (tk.ack || 0) >= me.calls) st = "g";
+      if (st === "c") {
+        $("qp").classList.add("call");
+        if (tk.rung !== me.calls) { tk.rung = me.calls; saveTk(); ringStart(me.n); }
+        box.innerHTML = `${shop}<div class="qcard">${big}</div><h1>${QS.callT}</h1><p class="qsub">${QS.callSub}</p>
+          <div class="qbtns"><button class="qbtn" data-a="go">${QS.goBtn}</button><button class="qbtn ghost" data-a="cancel">${QS.noBtn}</button></div>`;
+        return;
+      }
+      ringStop();
+      if (st === "w") {
+        const ahead = ents.filter(x => x.st === "w" && x.n < me.n).length, m = +snap.m || 0;
+        const est = !ahead ? QS.soon : m ? QS.est(Math.max(1, Math.round(ahead * m))) : QS.hold;
+        box.innerHTML = `${shop}<div class="qcard">${big}<span class="qpill w">${QS.st.w}</span><div class="qahead" id="qpAhead">${QS.ahead(ahead)}</div><div class="qest">${est}</div>${meta}
+          ${snap.c ? `<div class="qline"></div><div class="qnow">${QS.now(+snap.c)}</div>` : ""}</div>
+          ${unlocked ? `<p class="qtxt">${QS.keep}</p>` : `<button class="qchip" data-a="sound">${QS.sound}</button><p class="qtxt">${QS.keep}</p>`}
+          <button class="qlink" data-a="cancel">${QS.cancel}</button>`;
+        return;
+      }
+      const [ic, h, sub] = { g: ["🚶", QS.goingT, QS.goingSub], i: ["😊", QS.inT, QS.inSub], n: ["⏰", QS.noT, QS.noSub], x: ["🙏", QS.xT, ""] }[st];
+      box.innerHTML = `${shop}<div class="qcard">${big}<span class="qpill ${st}">${QS.st[st]}</span></div><div class="qicon">${ic}</div><h1>${h}</h1>${sub ? `<p class="qsub">${sub}</p>` : ""}`
+        + (st === "g" ? "" : `<div class="qbtns"><button class="qbtn ghost" data-a="again">${QS.again}</button></div>`);
+      return;
+    }
+    ringStop();
+    if (joining || !loaded) { box.innerHTML = `${shop}<div class="qspin" aria-hidden="true"></div><p class="qsub">${joining ? QS.getting : QS.loading}</p>`; return; }
+    if (failed || (snap && !snap.o)) {
+      box.innerHTML = `${shop}<div class="qicon">🕒</div><h1>${failed === "net" ? QS.net : QS.closed}</h1><p class="qsub">${QS.closedSub}</p><div class="qbtns"><button class="qbtn ghost" data-a="retry">${QS.retry}</button></div>`; return;
+    }
+    const wN = snap ? qParseE(snap.e).filter(x => x.st === "w").length : -1;
+    box.innerHTML = `${shop}<h1>${QS.title}</h1><p class="qsub">${QS.pick}</p>
+      <div class="qparty" id="qpParty">${[1, 2, 3, 4, 5, 6].map(p => `<button type="button" data-p="${p}" class="${p === party ? "on" : ""}" aria-pressed="${p === party}">${p}<small>${p === 6 ? "명+" : "명"}</small></button>`).join("")}</div>
+      <button class="qbtn" data-a="join">${QS.join}</button><p class="qtxt">${wN >= 0 ? QS.waitN(wN) + " · " : ""}${QS.noPII}</p>`;
+  }
+  async function join() {
+    unlock(); joining = Date.now(); failed = ""; tk = { s: QPAGE, at: Date.now(), p: party, skip: tk.skip, skipR: tk.skipR }; saveTk(); render();
+    const ok = await post(`J|${dev}|${party}|${qRnd(6)}|${Date.now()}`);
+    if (!ok) { joining = 0; failed = "net"; render(); return; }
+    const j0 = joining; setTimeout(() => { if (joining === j0 && !mine()) { joining = 0; failed = "closed"; render(); } }, 8000);   // 매장 PC 가 안 켜져 있거나 접수 꺼짐
+  }
+  box.addEventListener("click", async e => {
+    const pb = e.target.closest("[data-p]"); if (pb) { party = +pb.dataset.p; render(); return; }
+    const b = e.target.closest("[data-a]"); if (!b) return; const a = b.dataset.a, me = mine();
+    if (a === "join") join();
+    else if (a === "sound") { unlock(); render(); }
+    else if (a === "retry") { failed = ""; listen(); if (!snap || snap.o) join(); else render(); }
+    else if (a === "go" && me) { ringStop(); unlock(); tk.ack = me.calls; saveTk(); render(); post(`G|${dev}|${me.n}|${snap.r}|${Date.now()}`); }
+    else if (a === "cancel" && me) { if (!confirm(QS.cancelQ)) return; ringStop(); tk.cx = me.n; tk.r = snap.r; saveTk(); render(); post(`X|${dev}|${me.n}|${snap.r}|${Date.now()}`); }
+    else if (a === "again" && me) { tk = { s: QPAGE, skip: me.n, skipR: snap.r }; saveTk(); render(); }
+  });
+  function listen() {                                      // 마지막 스냅숏부터 (닫았다 열어도 지금 상태)
+    es?.close(); clearTimeout(listen.t);
+    if (typeof EventSource !== "function") { loaded = true; failed = "net"; render(); return; }
+    es = new EventSource(TOP + "/sse?since=latest");
+    es.onmessage = e => {
+      try {
+        const d = JSON.parse(e.data); if (d.event !== "message") return;
+        const s = JSON.parse(d.message); if (!s || s.k !== "q1" || typeof s.e !== "string" || typeof s.r !== "string") return;
+        if (snap && (+s.t || 0) < (+snap.t || 0)) return;
+        snap = s; loaded = true; render();
+      } catch (er) {}
+    };
+    es.onerror = () => { if (es && es.readyState === 2) listen.t = setTimeout(listen, 5000); };
+  }
+  listen(); render(); setTimeout(() => { if (!loaded) { loaded = true; render(); } }, 3000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { listen(); if (unlocked) wake(); } });
 }
 
 // ================= 화면 탭 (간결하게) =================
@@ -3617,9 +4106,10 @@ function renderAll() {
 renderDays(); renderSched(); renderHist();
 regen();                                                 // 직접 고치지 않은 문장은 최신 템플릿으로 다시 만듦
 renderAll(); loadVoices(); aptLabel();
-if (!HAS_TTS) { ttsWarn(true); if (!BOARD && !WAIT) $("now").textContent = NO_TTS_MSG; } else setTimeout(() => { if (!voices.length) { voices = speechSynthesis.getVoices(); if (voices.length) loadVoices(); else ttsWarn(true); } }, 4000);
+if (!HAS_TTS) { ttsWarn(true); if (!BOARD && !PHONE) $("now").textContent = NO_TTS_MSG; } else setTimeout(() => { if (!voices.length) { voices = speechSynthesis.getVoices(); if (voices.length) loadVoices(); else ttsWarn(true); } }, 4000);
 shopListen();                                            // QR을 쓰는 매장이면 손님 확인을 들음
-if (!BOARD && !WAIT && ls.get("roomStart", false)) roomOpen(true);   // 다음에도 방송실로 시작
+qStart();                                                // 🧾 대기 순번 (매장 PC 한 창만 번호를 정함)
+if (!BOARD && !PHONE && ls.get("roomStart", false)) roomOpen(true);   // 다음에도 방송실로 시작
 Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 800))]).then(() => document.documentElement.classList.remove("boot"));   // 글꼴 준비 뒤 한 번에 보이기 (커졌다 작아짐 방지)
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});   // 인터넷 주소로 열면 홈 화면 앱·오프라인
 })();
