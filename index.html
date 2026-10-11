@@ -1909,20 +1909,26 @@ async function compareVoices(L, sel, btn) {             // 목록의 모든 목�
 // ================= 자동 번역 =================
 const TRC = ls.get("trcache", {});                        // 번역 결과 저장 (같은 문장은 다시 번역하지 않음 · 인터넷 없이도)
 const trs = {}, trFail = {};                              // trFail: 자동 번역이 안 되는 언어
-// "11번, 11번 고객님" 처럼 번호를 두 번 부르는 한국어는 번역기가 "11과 11"로 옮김 → 한 번으로 줄여 번역한 뒤 그 언어 방식으로 번호를 한 번 더 부름
+// "11번, 11번 고객님" 처럼 번호를 두 번 부르는 한국어는 번역기가 "11과 11"로 옮김 → 한 번으로 줄여 번역한 뒤,
+// 번역 결과의 번호 부분(예: "Customer No. 11", "11番のお客様")을 그대로 한 번 더 부름
 const DUPCALL = { en: n => `Number ${n}, `, ja: n => `${n}番、`, zh: n => `${n}号，`, "zh-Hant": n => `${n}號，` };
+function dupCall(out, n, tgt) {
+  const m = out.match(/^([^,、，。!?！？]{1,40}?)([,、，]\s*)/);                 // 첫 쉼표까지 = 부르는 말
+  if (m && m[1].includes(n)) return m[1].trim() + m[2] + out;
+  return (DUPCALL[tgt] || (x => `${x}, `))(n) + out;
+}
 async function trText(text, src, tgt) {
   text = (text || "").trim(); if (!text) return "";
   let body = text, dupN = null;
   if (src === "ko") { const m = text.match(/(\d+)\s*번\s*,\s*\1\s*번/); if (m) { dupN = m[1]; body = text.replace(/(\d+)\s*번\s*,\s*(?=\1\s*번)/g, ""); } }
-  const key = `${dupN ? "d|" : ""}${src}>${tgt}:${text}`;
+  const key = `${dupN ? "d2|" : ""}${src}>${tgt}:${text}`;
   if (TRC[key]) return TRC[key];
   if (!("Translator" in self)) throw new Error("no-translator");
   const k = src + ">" + tgt;
   if (!trs[k]) trs[k] = Translator.create({ sourceLanguage: src, targetLanguage: tgt, monitor(m) { m.addEventListener("downloadprogress", e => { $("now").textContent = `🌐 번역 파일 받는 중… ${Math.round(e.loaded * 100)}% (처음 한 번만)`; }); } });
   const tr = await trs[k].catch(e => { delete trs[k]; throw e; });
   let out = (await tr.translate(body)).trim();
-  if (dupN && out) out = (DUPCALL[tgt] || (n => `${n}, `))(dupN) + out;
+  if (dupN && out) out = dupCall(out, dupN, tgt);
   TRC[key] = out;
   const keys = Object.keys(TRC); if (keys.length > 400) keys.slice(0, keys.length - 400).forEach(x => delete TRC[x]);
   ls.set("trcache", TRC);
