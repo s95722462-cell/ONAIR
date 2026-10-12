@@ -833,6 +833,10 @@
         <div class="row"><select id="dLang" class="mini"></select><button class="mini" id="dTest">▶ 들어 보기</button><button class="mini btn-primary" id="dAdd">＋ 추가</button></div>
         <div class="list" id="dList"></div>
       </section>
+      <section class="card" id="callLock" hidden>
+        <h2>🔔 호출·대기</h2>
+        <div class="row"><button class="mini" id="callLockBtn">🔒 다시 잠그기</button></div>
+      </section>
       <section class="card">
         <h2>💼 백업 · 옮기기</h2>
         <p class="muted" style="margin:-4px 0 10px;line-height:1.6">내 방송 · 즐겨찾기 · 고친 문장 · 방송 묶음 · 예약 · 카운트다운 · 발음 사전 · 방송 기록 · 더한 언어 · 목소리 · 방송실 설정 · <b>📱 매장 QR 코드</b>까지 <b>파일 하나</b>로 저장합니다. 다른 PC나 브라우저에서 불러오면 그대로 옮겨집니다 (붙여 둔 QR도 계속 쓸 수 있음).</p>
@@ -906,7 +910,7 @@
 <dialog id="manDlg" aria-labelledby="manTitle">
   <div class="mhead"><h3 id="manTitle" tabindex="-1" autofocus>📘 온에어 사용 설명서</h3><button class="mini" id="manPrint" title="설명서 인쇄">🖨 인쇄</button><button class="mclose" id="manClose" aria-label="설명서 닫기">✕</button></div>
   <nav class="mtoc" id="manToc" aria-label="설명서 차례">
-    <button data-to="m-start">처음 시작</button><button data-to="m-pick">장소·방송 고르기</button><button data-to="m-edit">문장 고치기</button><button data-to="m-voice">목소리</button><button data-to="m-pro">성우 억양</button><button data-to="m-air">미리 듣기·방송</button><button data-to="m-room">방송실 모드</button><button data-to="m-shop">식당·카페 번호</button><button data-to="m-auto">예약·카운트다운·묶음</button><button data-to="m-file">USB 파일</button><button data-to="m-paper">공지문·카톡</button><button data-to="m-log">기록</button><button data-to="m-bk">백업</button><button data-to="m-faq">자주 묻는 질문</button><button data-to="m-priv">개인정보</button>
+    <button data-to="m-start">처음 시작</button><button data-to="m-pick">장소·방송 고르기</button><button data-to="m-edit">문장 고치기</button><button data-to="m-voice">목소리</button><button data-to="m-pro">성우 억양</button><button data-to="m-air">미리 듣기·방송</button><button data-to="m-room">방송실 모드</button><button data-to="m-shop">호출·대기 번호</button><button data-to="m-auto">예약·카운트다운·묶음</button><button data-to="m-file">USB 파일</button><button data-to="m-paper">공지문·카톡</button><button data-to="m-log">기록</button><button data-to="m-bk">백업</button><button data-to="m-faq">자주 묻는 질문</button><button data-to="m-priv">개인정보</button>
   </nav>
   <div class="mbody">
     <section id="m-start"><h4>🚀 처음 시작하기</h4>
@@ -962,14 +966,14 @@
         <li>주문 번호 방송이면 오른쪽에 <b>번호 패드</b>가 나옵니다. 숫자를 누르고 <b>Enter</b> 또는 큰 <b>📢 N번 호출</b> 버튼.</li>
         <li><b>다음에도 방송실로 시작</b>을 체크하면 온에어를 열 때 바로 방송실 모드가 됩니다. 나가기: <b>나가기 ✕</b> 또는 Esc.</li>
       </ul></section>
-    <section id="m-shop"><h4>🍽 식당·카페 — 번호판 · 📱 QR 휴대폰 알림 · 🪧 카운터 안내판</h4>
+    <section id="m-shop"><h4>🔔 호출·대기 — 번호판 · 📱 QR 휴대폰 알림 · 🪧 카운터 안내판</h4>
       <ul>
-        <li>장소 <b>🍽 식당·카페</b> → <b>☕ 메뉴 준비 완료</b>(또는 대기 번호 입장 · 포장 주문)을 고르면 번호 칸이 나옵니다. <b>−1 / +1</b>, <b>📢 바로 호출</b>.</li>
+        <li>장소 <b>🔔 호출·대기</b>(처음 한 번 비밀번호 — 중계 서버 무료 한도 때문) → <b>☕ 메뉴 준비 완료</b>(또는 대기 번호 입장 · 포장 주문)을 고르면 번호 칸이 나옵니다. <b>−1 / +1</b>, <b>📢 바로 호출</b>.</li>
         <li><b>🖥 번호판</b>: 새 창이 열립니다. TV·두 번째 모니터로 끌어다 놓고 화면을 한 번 누르면 전체 화면이 됩니다. 방송할 때마다 번호가 크게 뜨고, 최근 호출 번호가 아래에 남습니다.</li>
         <li><b>📱 QR</b>: 손님이 휴대폰 카메라로 찍으면 대기 화면이 열립니다. <b>매장 공용 QR</b>을 체크하면 한 장을 카운터에 붙여 두고 손님이 자기 번호를 넣습니다. 그 번호를 방송하면 손님 휴대폰이 <b>소리·진동·화면 번쩍</b>으로 알립니다.</li>
         <li>손님이 <b>확인했어요</b>를 누르면 매장 화면에 ✅가 뜨고, 그 번호 방송 중이면 자동으로 멈춥니다. 번호판에도 ✓ 표시가 붙습니다.</li>
         <li><b>🪧 카운터 안내판</b>: QR 창의 버튼 → A5 안내판(QR + 3단계 설명)을 인쇄합니다.</li>
-        <li><b>🧾 대기 순번</b> (키오스크 없이): ① 위쪽 <b>🧾 대기</b> 탭에서 <b>접수</b>를 켜고 (장소가 <b>식당·카페</b>일 때 탭이 보임) 🪧 안내판을 붙이면, 손님이 QR로 인원만 골라 번호를 받습니다. <b>다음 손님 부르기</b> 한 번에 방송 · 손님 휴대폰 · 번호판이 함께 알립니다. 번호는 이 PC가 정하므로 <b>온에어를 켜 둔 동안만</b> 등록됩니다.</li>
+        <li><b>🧾 대기 순번</b> (키오스크 없이): ① 위쪽 <b>🧾 대기</b> 탭에서 <b>접수</b>를 켜고 (장소가 <b>🔔 호출·대기</b>일 때 탭이 보임) 🪧 안내판을 붙이면, 손님이 QR로 인원만 골라 번호를 받습니다. <b>다음 손님 부르기</b> 한 번에 방송 · 손님 휴대폰 · 번호판이 함께 알립니다. 번호는 이 PC가 정하므로 <b>온에어를 켜 둔 동안만</b> 등록됩니다.</li>
         <li>⚠️ 손님은 <b>대기 화면을 켜 둔 채</b> 기다려야 합니다 (화면이 꺼지면 아이폰은 소리가 안 날 수 있음). 매장 코드는 이 브라우저에 저장되므로, 다른 PC로 옮길 때는 <b>💼 백업</b>으로 옮겨야 붙여 둔 QR을 계속 쓸 수 있습니다.</li>
       </ul></section>
     <section id="m-auto"><h4>📅 예약 · ⏱ 카운트다운 · 📚 방송 묶음</h4>
@@ -1044,6 +1048,13 @@
   <div class="grab" aria-hidden="true"></div>
   <div class="sh"><span></span><h3 id="placeTitle">어떤 방송인가요</h3><button id="placeDone" type="button">완료</button></div>
   <div id="placeList"></div>
+</dialog>
+<dialog id="callDlg">
+  <h3>🔔 호출·대기</h3>
+  <div class="muted" style="font-size:14px;margin-bottom:12px">비밀번호를 넣어 주세요. 한 번 열면 이 PC에서는 계속 쓸 수 있어요.</div>
+  <form id="callForm" method="dialog"><div class="fld"><label for="callPin">비밀번호 6자리</label><input id="callPin" type="password" inputmode="numeric" maxlength="12" autocomplete="off" style="font-size:22px;letter-spacing:6px;text-align:center"></div>
+  <div class="muted" id="callMsg" style="color:var(--red,#d00);min-height:22px;margin-top:6px" role="alert"></div>
+  <div class="btns" style="justify-content:flex-end;margin-top:10px"><span class="grp2"><button type="button" id="callNo">취소</button><button class="ok" id="callOkBtn">열기</button></span></div></form>
 </dialog>
 <dialog id="aptDlg">
   <h3>⚙ 장소 이름</h3>
@@ -1733,12 +1744,12 @@ const T = [
     ja: "礼拝後ご退出の際は、ゆっくりお進みいただき、ご年配の方にお先をお譲りください。今週も、平安に過ごされますように。",
     zh: "礼拜结束离开时，请慢慢移动，并请先让长辈通过。愿大家这一周平安。" },
   // ---- 식당·카페 (식당·커피숍·푸드코트·휴게소)
-  { id: "cf_ready", icon: "☕", name: "메뉴 준비 완료", f: ["num", "note"], bare: true, places: ["cafe"],
+  { id: "cf_ready", icon: "☕", name: "메뉴 준비 완료", f: ["num", "note"], bare: true, places: ["call"],
     ko: "{num}번, {num}번 고객님, 주문하신 메뉴가 준비되었습니다. 픽업대에서 받아 가시기 바랍니다.",
     en: "Order number {num}, order number {num}. Your order is ready. Please pick it up at the counter.",
     ja: "{num}番、{num}番でお待ちのお客様、大変お待たせいたしました。ご注文の品が出来上がりました。受け取りカウンターまでお越しください。",
     zh: "{num}号、{num}号顾客，您点的餐已经好了，请到取餐台取餐。" },
-  { id: "cf_again", icon: "🔁", name: "번호 다시 부르기", f: ["num", "note"], bare: true, places: ["cafe"],
+  { id: "cf_again", icon: "🔁", name: "번호 다시 부르기", f: ["num", "note"], bare: true, places: ["call"],
     ko: "{num}번 고객님, 다시 한번 안내해 드립니다. 주문하신 메뉴가 준비되어 있으니, 픽업대로 와 주시기 바랍니다.",
     en: "Calling order number {num} once again. Your order is ready, so please come to the pickup counter.",
     ja: "{num}番でお待ちのお客様、もう一度ご案内いたします。ご注文の品が出来上がっておりますので、受け取りカウンターまでお越しください。",
@@ -1768,12 +1779,12 @@ const T = [
     en: "You can find the Wi-Fi name and password at the bottom of your receipt and on the sign at the counter.",
     ja: "店内Wi-Fiの名前とパスワードは、レシートの下部とカウンターの案内でご確認いただけます。",
     zh: "店内无线网络名称和密码，请查看小票底部和柜台的提示牌。" },
-  { id: "rs_wait", icon: "🔔", name: "대기 번호 입장", f: ["num", "note"], labels: { num: "대기 번호 (예: 15)" }, bare: true, places: ["cafe"],
+  { id: "rs_wait", icon: "🔔", name: "대기 번호 입장", f: ["num", "note"], labels: { num: "대기 번호 (예: 15)" }, bare: true, places: ["call"],
     ko: "대기 번호 {num}번, {num}번 고객님, 자리가 준비되었습니다. 입구의 직원에게 말씀해 주시기 바랍니다.",
     en: "Waiting number {num}, waiting number {num}. Your table is ready. Please see our staff at the entrance.",
     ja: "順番待ち{num}番、{num}番でお待ちのお客様、大変お待たせいたしました。お席の準備ができました。入口のスタッフまでお声がけください。",
     zh: "{num}号、{num}号等位的顾客，您的座位已经准备好了，请到入口处找工作人员。" },
-  { id: "rs_take", icon: "🥡", name: "포장 주문 준비 완료", f: ["num", "note"], bare: true, places: ["cafe"],
+  { id: "rs_take", icon: "🥡", name: "포장 주문 준비 완료", f: ["num", "note"], bare: true, places: ["call"],
     ko: "포장 주문 {num}번, {num}번 고객님, 포장 메뉴가 준비되었습니다. 카운터에서 받아 가시기 바랍니다.",
     en: "Takeout order number {num}, order number {num}. Your order is ready. Please pick it up at the counter.",
     ja: "お持ち帰りご注文の{num}番、{num}番のお客様、大変お待たせいたしました。お品物のご用意ができました。カウンターでお受け取りください。",
@@ -1879,6 +1890,7 @@ const PLACES = {
   welfare:  { icon: "🏠", name: "복지관",      sender: ["복지관 사무실", "welfare center office", "福祉館事務室", "福利中心办公室"], aud: ["이용자 여러분", "everyone", "ご利用の皆様", "各位朋友"] },
   temple:   { icon: "🪷", name: "사찰",     sender: ["종무소", "temple office", "寺務所", "寺院办公室"], aud: ["불자 여러분", "everyone", "皆様", "各位信众"] },
   cafe:     { icon: "🍽", name: "식당·카페",   sender: ["카운터", "the counter", "カウンター", "柜台"], aud: ["고객 여러분", "customers", "お客様", "各位顾客"] },
+  call:     { icon: "🔔", name: "호출·대기",   sender: ["카운터", "the counter", "カウンター", "柜台"], aud: ["고객 여러분", "customers", "お客様", "各位顾客"], lock: true },
   airport:  { icon: "✈️", name: "공항·역",     sender: ["안내 센터", "information center", "インフォメーションセンター", "问询处"], aud: ["승객 여러분", "passengers", "ご利用のお客様", "各位旅客"] },
   wedding:  { icon: "💒", name: "예식장",      sender: ["안내 데스크", "information desk", "案内デスク", "服务台"], aud: ["하객 여러분", "guests", "ご列席の皆様", "各位来宾"] },
   show:     { icon: "🎭", name: "공연장",      sender: ["안내실", "front of house", "案内所", "服务台"], aud: ["관객 여러분", "ladies and gentlemen", "ご来場の皆様", "各位观众"] },
@@ -1886,6 +1898,14 @@ const PLACES = {
 };
 const LI = { ko: 0, en: 1, ja: 2, zh: 3 };
 const PL = () => PLACES[S.place] || PLACES.apt;
+// 🔔 호출·대기: 중계 서버(하루 무료 한도)를 쓰므로 비밀번호를 아는 PC만 — 맞히면 이 PC는 계속 열림 (코드에는 비밀번호 대신 해시만)
+const CALL_IDS = ["cf_ready", "cf_again", "rs_wait", "rs_take"], CALL_H = "5c68d37b9bfb85b53e08b8ac93db4dcb96c0f996b4cca6057957acb3eadb6313";
+const callOk = () => ls.get("callOk", false) === true;
+async function callHash(pin) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("onair-call-v1:" + pin)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+function callUnlock(then) {
+  const d = $("callDlg"), inp = $("callPin"); inp.value = ""; $("callMsg").textContent = ""; d.showModal(); setTimeout(() => inp.focus(), 50);
+  callUnlock.then = then;
+}
 const OPEN = {
   ko: a => `안녕하십니까. ${a || ""} ${PL().sender[0]}에서, ${PL().aud[0]}께 안내 말씀 드립니다.`.replace(/\s{2,}/g, " "),
   en: a => `Hello, ${PL().aud[1]}. This is an announcement from the ${a ? a + " " : ""}${PL().sender[1]}.`,
@@ -2028,6 +2048,7 @@ const GROUPS_APT = [                                     // 아파트 방송 묶
 const SHARED_SAFE = ["fire", "stuck", "falarm", "typhoon"], SHARED_EM = ["efire", "equake", "urgent"];
 function groupsFor(pl) {
   if (pl === "apt") return GROUPS_APT;
+  if (pl === "call") return [{ name: "🔔 호출·대기", ids: CALL_IDS }];
   const own = T.filter(t => (t.places || []).includes(pl)).sort((a, b) => a.places.length - b.places.length).map(t => t.id);   // 이 장소 전용 방송이 먼저
   return [
     { name: `${PLACES[pl].icon} ${PLACES[pl].name} 안내`, ids: [...own, "lost", "event", "car", "custom"] },
@@ -2039,8 +2060,9 @@ function groupsFor(pl) {
 function renderPlaces() {
   const box = $("places"); box.innerHTML = "";
   Object.entries(PLACES).forEach(([id, p]) => {
-    const b = document.createElement("button"); b.textContent = `${p.icon} ${p.name}`; b.className = S.place === id ? "on" : ""; b.dataset.p = id;
+    const b = document.createElement("button"); b.textContent = `${p.icon} ${p.name}${p.lock && !callOk() ? " 🔒" : ""}`; b.className = S.place === id ? "on" : ""; b.dataset.p = id;
     b.onclick = () => {
+      if (p.lock && !callOk()) { callUnlock(() => b.onclick()); return; }
       S.place = id; S.edited = {};
       const ids = groupsFor(id).flatMap(g => g.ids);
       if (!ids.includes(S.tpl)) S.tpl = ids[0];
@@ -2057,7 +2079,7 @@ function placeSheet() {                                   // 📱 아래에서 �
   const box = $("placeList"), cur = S.place || "apt"; box.innerHTML = "";
   Object.entries(PLACES).forEach(([id, p]) => {
     const b = document.createElement("button"); b.type = "button"; b.className = id === cur ? "on" : ""; b.setAttribute("aria-pressed", id === cur);
-    b.innerHTML = `<span class="pi">${p.icon}</span><span class="pn">${p.name}</span><span class="ck">${id === cur ? "✓" : ""}</span>`;
+    b.innerHTML = `<span class="pi">${p.icon}</span><span class="pn">${p.name}${p.lock && !callOk() ? " 🔒" : ""}</span><span class="ck">${id === cur ? "✓" : ""}</span>`;
     b.onclick = () => { $("placeDlg").close(); if (id !== (S.place || "apt")) $("places").querySelector(`[data-p="${id}"]`).click(); };
     box.appendChild(b);
   });
@@ -3069,6 +3091,21 @@ $("regen").onclick = () => {                             // ↻ 고친 문장을
 function aptLabel() { $("setBtn").textContent = S.apt ? `${PL().icon} ${S.apt}` : "⚙ 장소 이름"; $("setBtn").title = S.apt ? "장소 이름 바꾸기·지우기" : "장소 이름 넣기"; }
 $("setBtn").onclick = () => { $("aptKo").value = S.apt; $("aptEn").value = S.aptEn; $("aptDlg").showModal(); $("aptKo").focus(); };
 $("aptNo").onclick = () => $("aptDlg").close();
+$("callNo").onclick = () => $("callDlg").close();
+$("callForm").onsubmit = async e => {
+  e.preventDefault(); const pin = $("callPin").value.trim();
+  if (!(window.crypto && crypto.subtle)) { $("callMsg").textContent = "이 브라우저에선 확인할 수 없어요 — Edge·Chrome 으로 열어 주세요"; return; }
+  if (await callHash(pin) !== CALL_H) { $("callMsg").textContent = "비밀번호가 달라요"; $("callPin").select(); return; }
+  ls.set("callOk", true); $("callDlg").close(); callLockSync(); renderPlaces(); toast("🔔 호출·대기를 열었습니다");
+  const f = callUnlock.then; callUnlock.then = null; if (f) f();
+};
+function callLockSync() { $("callLock").hidden = !callOk(); }
+$("callLockBtn").onclick = () => {
+  if (!confirm("🔔 호출·대기를 다시 잠글까요? 다음에 쓸 때 비밀번호를 다시 넣어야 합니다.")) return;
+  ls.set("callOk", false); callLockSync(); renderPlaces();
+  if (S.place === "call") $("places").querySelector('[data-p="cafe"]').click(); else { qVis(); if (!$("room").hidden) renderRoom(); }
+  toast("🔒 호출·대기를 잠갔습니다");
+};
 $("aptOk").onclick = () => { S.apt = $("aptKo").value.trim(); S.aptEn = $("aptEn").value.trim(); save(); estimate(); aptLabel(); $("aptDlg").close(); toast(S.apt ? "장소 이름을 저장했습니다" : "장소 이름을 비웠습니다"); };
 $("aptDel").onclick = () => { S.apt = ""; S.aptEn = ""; save(); estimate(); aptLabel(); $("aptDlg").close(); toast(`장소 이름을 지웠습니다 — 첫 인사는 '${PL().sender[0]}에서…'로 나갑니다`); };
 ["aptKo", "aptEn"].forEach(id => $(id).addEventListener("keydown", e => { if (e.key === "Enter") $("aptOk").click(); }));
@@ -3352,8 +3389,8 @@ async function playPack(pk) {
 // ================= 🖥 방송실 모드 =================
 function roomTiles() {
   const tiles = [];
-  if (qInUse()) tiles.push({ kind: "q", icon: "🧾", name: "대기 순번" });   // 🧾 대기 순번 패널 열고 닫기 (접수 중 · 부를 손님이 남았을 때만)
-  (S.fav || []).forEach(id => { if (id === "hist") { tiles.push({ kind: "hist", id, icon: "📊", name: "최근 방송" }); return; } const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = !m && T.find(x => x.id === id); if (m) tiles.push({ kind: "tpl", id, icon: m.icon, name: m.name }); else if (t) tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: t.urgent }); });
+  if (callOk() && qInUse()) tiles.push({ kind: "q", icon: "🧾", name: "대기 순번" });   // 🧾 대기 순번 패널 열고 닫기 (접수 중 · 부를 손님이 남았을 때만)
+  (S.fav || []).forEach(id => { if (!callOk() && CALL_IDS.includes(id)) return; if (id === "hist") { tiles.push({ kind: "hist", id, icon: "📊", name: "최근 방송" }); return; } const m = id.startsWith("mine:") && mine.find(x => "mine:" + x.id === id), t = !m && T.find(x => x.id === id); if (m) tiles.push({ kind: "tpl", id, icon: m.icon, name: m.name }); else if (t) tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: t.urgent }); });
   const hide = S.roomHide || [];
   S.packs.forEach(pk => { if (!hide.includes("pack:" + pk.id)) tiles.push({ kind: "pack", pk, icon: "📚", name: pk.name }); });
   ["efire", "equake", "urgent"].forEach(id => { if (!tiles.some(x => x.id === id) && !hide.includes(id)) { const t = T.find(x => x.id === id); tiles.push({ kind: "tpl", id, icon: t.icon, name: t.name, urgent: true }); } });
@@ -3880,8 +3917,8 @@ function qBoardSync() {                                    // 🖥 번호판: �
 }
 function qInUse() { try { return !!(Q && (Q.on || Q.list.some(e => "wcgn".includes(e.st)))); } catch (e) { return false; } }   // 접수 중이거나 아직 부를 손님이 있음
 let qRoomUse = null;
-function qVis() {                                          // 🧾 대기 탭: 식당·카페이거나 대기를 쓰는 중일 때만
-  if (BOARD || PHONE) return; const show = S.place === "cafe" || qInUse();
+function qVis() {                                          // 🧾 대기 탭: 🔔 호출·대기(비밀번호 연 PC)이거나 대기를 쓰는 중일 때만
+  if (BOARD || PHONE) return; const show = callOk() && (S.place === "call" || qInUse());
   $("qCard").hidden = !show; $("qTab").hidden = !show;
   if (!show && document.body.dataset.tab === "q") goTab("air");
   qRoomVis(1); if (show || !$("roomQ").hidden) renderQ(); else qBarSync();
@@ -4155,6 +4192,9 @@ function renderAll() {
   [...$("rep").children].forEach(b => b.classList.toggle("on", +b.dataset.v === S.rep));
   estimate(); altInfo();
 }
+if (S.place === "cafe" && CALL_IDS.includes(S.tpl)) { if (callOk()) S.place = "call"; else S.tpl = groupsFor("cafe")[0].ids[0]; }
+if (S.place === "call" && !callOk()) { S.place = "cafe"; S.tpl = groupsFor("cafe")[0].ids[0]; }
+callLockSync();
 renderDays(); renderSched(); renderHist();
 regen();                                                 // 직접 고치지 않은 문장은 최신 템플릿으로 다시 만듦
 renderAll(); loadVoices(); aptLabel();

@@ -15,7 +15,7 @@
 
 ## 구조
 - `index.html` 하나 (CSS + `(() => { ... })()` IIFE 스크립트, 약 42만 자). `manifest.webmanifest`, `sw.js`, `icons/`.
-- **push 할 때마다 `sw.js` 의 `CACHE` 번호를 올릴 것** (지금 `onair-v14` → 다음 `onair-v15`). 안 올리면 사용자 기기에 옛 화면이 남음.
+- **push 할 때마다 `sw.js` 의 `CACHE` 번호를 올릴 것** (지금 `onair-v15` → 다음 `onair-v16`). 안 올리면 사용자 기기에 옛 화면이 남음.
 - 외부 라이브러리는 cdnjs 에서 정확한 버전만, 필요할 때 늦게 불러옴: lamejs 1.2.1(MP3), qrcodejs 1.0.0(QR).
 - 저장: localStorage 키 접두사 `onair_` (`ls.get/ls.set` 도우미, 공간 부족 알림). 백업(💼)은 `onair_*` 전부를 JSON 으로.
 - 스크립트가 IIFE 라 내부 변수는 밖에서 안 보임 → 시험은 화면·localStorage 로 확인하거나, 시험용 사본에서만 `window.__t` 로 노출 (저장소에 넣지 말 것).
@@ -35,6 +35,7 @@
 - 🖥 호출 번호판 `?board` 창 — `onair_board` + storage 이벤트로 같은 PC 다른 창 갱신 (`boardPush`).
 - 📱 QR 휴대폰 알림: 손님 화면 `?wait=<매장코드>[&n=번호]`, `phonePush`/`shopListen`(손님 '확인했어요' 되받기).
 - 🧾 대기 순번: 카운터 QR `?q=<코드>`, 번호는 매장 PC 한 창이 `navigator.locks` 로 정함.
+- 🔔 호출·대기 장소 `call` (메뉴 준비·다시 부르기·대기 번호·포장 = `CALL_IDS`, 📱 QR·🖥 번호판·🧾 대기 탭): 중계 무료 한도 때문에 **비밀번호 잠금**. 코드엔 해시 `CALL_H` 만, 맞히면 `onair_callOk` 로 그 PC 계속 열림, ⚙ 설정 `🔒 다시 잠그기`. **비밀번호 숫자를 커밋·문서·로그에 쓰지 말 것** (사용자가 알고 있음). 손님 화면 `?wait=`·`?q=`·`?board` 는 잠그지 않음.
 - 예약 방송·⏱ 카운트다운·📚 방송 묶음, 💾 음성 파일(getDisplayMedia 시스템 오디오 → WAV/MP3), 📄 공지문 인쇄, 💬 카톡 복사, 📊 기록 CSV(BOM), 📘 앱 안 설명서 `#manual`.
 
 ## 중계 (ntfy.sh)
