@@ -2806,12 +2806,18 @@ function sayOne(g, L, v, base) {                          // 조각 하나 읽�
     speechSynthesis.speak(u);
   });
 }
+// 인터넷이 끊기면 ★★★ 온라인 목소리는 소리가 안 남 → 이 PC 안 목소리로 바꿔 끝까지 읽음 (1분 뒤 다시 온라인 목소리 시도)
+const netVoice = v => v.localService === false || /online|natural|neural/i.test(v.name);
+const localVoice = L => voicesFor(L).find(x => !netVoice(x)) || null;
+function netWarn() { toast("인터넷 끊김 — 이 PC 기본 목소리로 방송했어요"); clearTimeout(toast.t); toast.t = setTimeout(() => $("toast").classList.remove("show"), 6000); }
 async function say(text, L, voice, o = {}) {              // 한 문장(또는 인사말) 읽기 — 성우 억양이면 조각으로 나눠 이어 읽음
-  const v = voice || pickVoice(L); if (!v || !text) return false;
-  const c = cancelN, base = {
+  let v = voice || pickVoice(L); if (!v || !text) return false;
+  if (netVoice(v) && (navigator.onLine === false || Date.now() - (say.netFail || 0) < 60000)) { const lv = localVoice(L); if (lv) { v = lv; netWarn(); } }
+  const c = cancelN, mkBase = v => ({
     rate: S.rate * (L.id === "ko" ? 1 : 0.97), vol: S.vol,
     pitch: /natural|neural|premium|enhanced/i.test(v.name) ? vPitch(v) : MOODS[S.mood].pitch * vPitch(v),   // AI 음성: 목소리별로 정한 높이만
-  };
+  });
+  let base = mkBase(v);
   const segs = prosodyPlan(text, L, { ...o, lat: latOf(v), hi: latOf(v) >= 200 || /online|natural|neural/i.test(v.name) || v.localService === false });   // 온라인 목소리는 조각 수를 적게
   say.last = segs;
   for (const g of segs) {
@@ -2819,7 +2825,12 @@ async function say(text, L, voice, o = {}) {              // 한 문장(또는 �
     const w = g.pre ? Math.max(0, g.pre - latOf(v)) : 0;   // 조각 사이 틈(말 시작 지연)만큼은 덜 쉼
     if (w) { await sleepC(w, c); if (cancelN !== c) return false; }
     if (!g.t) continue;
-    if (!(await sayOne(g, L, v, base))) return false;
+    if (!(await sayOne(g, L, v, base))) {
+      if (cancelN !== c || !netVoice(v)) return false;
+      const lv = localVoice(L); if (!lv) return false;          // 온라인 목소리 실패 → 이 조각부터 PC 안 목소리로
+      say.netFail = Date.now(); v = lv; base = mkBase(v); netWarn();
+      if (!(await sayOne(g, L, v, base))) return false;
+    }
   }
   return cancelN === c;
 }

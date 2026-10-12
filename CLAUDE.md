@@ -15,7 +15,7 @@
 
 ## 구조
 - `index.html` 하나 (CSS + `(() => { ... })()` IIFE 스크립트, 약 42만 자). `manifest.webmanifest`, `sw.js`, `icons/`.
-- **push 할 때마다 `sw.js` 의 `CACHE` 번호를 올릴 것** (지금 `onair-v13` → 다음 `onair-v14`). 안 올리면 사용자 기기에 옛 화면이 남음.
+- **push 할 때마다 `sw.js` 의 `CACHE` 번호를 올릴 것** (지금 `onair-v14` → 다음 `onair-v15`). 안 올리면 사용자 기기에 옛 화면이 남음.
 - 외부 라이브러리는 cdnjs 에서 정확한 버전만, 필요할 때 늦게 불러옴: lamejs 1.2.1(MP3), qrcodejs 1.0.0(QR).
 - 저장: localStorage 키 접두사 `onair_` (`ls.get/ls.set` 도우미, 공간 부족 알림). 백업(💼)은 `onair_*` 전부를 JSON 으로.
 - 스크립트가 IIFE 라 내부 변수는 밖에서 안 보임 → 시험은 화면·localStorage 로 확인하거나, 시험용 사본에서만 `window.__t` 로 노출 (저장소에 넣지 말 것).
